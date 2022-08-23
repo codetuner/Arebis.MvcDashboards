@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Trash\\TrashProjects\\WebApplication1\\MyMvcApp\\MyMvcApp.csproj": {}
+    "C:\\SRCRB\\Github\\CodeTuner\\Arebis.MvcDashboards\\MyMvcApp\\MyMvcApp.csproj": {}
   },
   "projects": {
-    "C:\\Trash\\TrashProjects\\WebApplication1\\MyMvcApp\\MyMvcApp.csproj": {
+    "C:\\SRCRB\\Github\\CodeTuner\\Arebis.MvcDashboards\\MyMvcApp\\MyMvcApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Trash\\TrashProjects\\WebApplication1\\MyMvcApp\\MyMvcApp.csproj",
+        "projectUniqueName": "C:\\SRCRB\\Github\\CodeTuner\\Arebis.MvcDashboards\\MyMvcApp\\MyMvcApp.csproj",
         "projectName": "MyMvcApp",
-        "projectPath": "C:\\Trash\\TrashProjects\\WebApplication1\\MyMvcApp\\MyMvcApp.csproj",
+        "projectPath": "C:\\SRCRB\\Github\\CodeTuner\\Arebis.MvcDashboards\\MyMvcApp\\MyMvcApp.csproj",
         "packagesPath": "C:\\Users\\rudib\\.nuget\\packages\\",
-        "outputPath": "C:\\Trash\\TrashProjects\\WebApplication1\\MyMvcApp\\obj\\",
+        "outputPath": "C:\\SRCRB\\Github\\CodeTuner\\Arebis.MvcDashboards\\MyMvcApp\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\rudib\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -39,48 +39,17 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
-          "dependencies": {
-            "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": {
-              "target": "Package",
-              "version": "[6.0.8, )"
-            },
-            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
-              "target": "Package",
-              "version": "[6.0.8, )"
-            },
-            "Microsoft.AspNetCore.Identity.UI": {
-              "target": "Package",
-              "version": "[6.0.8, )"
-            },
-            "Microsoft.EntityFrameworkCore.SqlServer": {
-              "target": "Package",
-              "version": "[6.0.8, )"
-            },
-            "Microsoft.EntityFrameworkCore.Tools": {
-              "target": "Package",
-              "version": "[6.0.8, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "frameworkReferences": {
-            "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
-            },
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.403\\RuntimeIdentifierGraph.json"
         }
       }
     }
