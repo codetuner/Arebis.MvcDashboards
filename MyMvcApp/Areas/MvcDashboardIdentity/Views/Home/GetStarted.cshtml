@@ -1,0 +1,58 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> userManager
+@{
+    ViewBag.Title = "Get Started";
+}
+
+<h1>Getting Started</h1>
+
+<p>The MvcDasboardIdentity component allows for managing local user accounts and roles.</p>
+
+<h2>Managing Users</h2>
+
+<h3>Creating Users</h3>
+
+<p>Users can be created in two ways:</p>
+<ol>
+    <li>The user creates its own account <a href="~/Identity/Account/Register">by registering</a></li>
+    <li>An administrator creates an account by pressing the [+ New] button on the Users list</li>
+</ol>
+
+<h3>Managing users</h3>
+
+<p>By clicking on a user, an administrator can change username, email and phone number. Roles can be added or removed (provided the roles have been defined first) and claims can be added, removed or updated.</p>
+
+<p>If the identity store supports it, an Initial Password can be given to new user accounts. To reset the password on accounts that already have a password, first remove the password, then assign a new initial password and save.</p>
+
+<h3>Deleting users</h3>
+
+<p>To delete a user account, click on the user, then press the [Delete] button and confirm.</p>
+
+<h2>Managing Roles</h2>
+
+@if (userManager.SupportsUserRole)
+{
+<h3>Creating Roles</h3>
+
+<p>To create a role, press the [+ New] button on the Roles list.</p>
+
+<h3>Renaming Roles</h3>
+
+<p>To rename a role, click on the role, then rename and save.</p>
+
+<h3>Deleting Roles</h3>
+
+<p>To delete a role, click on the role, then press [Delete] and confirm.</p>
+}
+else
+{
+    <p>The identity store does not support roles.</p>
+    
+    <p>To enable user roles, add the role services to identity as instructed on: <a href="https://docs.microsoft.com/en-us/aspnet/core/security/authorization/roles" target="_blank">https://docs.microsoft.com/en-us/aspnet/core/security/authorization/roles</a>.</p>
+}
+
+<h2>Keyboard navigation</h2>
+
+<p>Paged lists can be navigated using the <kbd>&larr;</kbd> and <kbd>&rarr;</kbd> keys.</p>
+
+<p>The [+ New] button can be triggered by the <kbd>+</kbd> key.</p>

@@ -1,0 +1,99 @@
+﻿<html>
+<head>
+<title>Arebis MvcDashboardIdentity ReadMe</title>
+    <style>
+        html {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+        pre {
+            padding: 12px;
+            border-radius: 4px;
+            background-color: lavenderblush;
+            overflow: auto;
+        }
+        .highlight {
+            background-color: yellow;
+        }
+        .old-code {
+            background-color: lightgray;
+        }
+        .new-code {
+            background-color: yellow;
+        }
+    </style>
+</head>
+<body>
+<h1>Arebis MvcDashboardIdentity</h1>
+
+<h2>Introduction</h2>
+
+<p>
+Arebis MvcDashboardIdentity is an ASP.NET Core MVC dashboard area allowing to manage
+ASP.NET Core Identities such as creating or deleting users and groups, manage group
+membership, etc.
+</p>
+
+<h2>Setup</h2>
+
+<p>After installing the dashboard area, follow these steps:</p>
+
+<h3>Add support for role-based identity</h3>
+
+<p>Add role-based identity by adding the following (highlighted) line of code in the identity service configuration (in Startup.cs):</p>
+
+<pre>
+builder.Services.AddDefaultIdentity&lt;IdentityUser&gt;(options =&gt; options.SignIn.RequireConfirmedAccount = true)
+    <b><span class="new-code">.AddRoles&lt;IdentityRole&gt;()</span></b>
+    .AddEntityFrameworkStores&lt;ApplicationDbContext&gt;();
+</pre>
+
+<p>The Arebis MvcDasboardIdentity component requires and uses role-based identity.</p>
+
+<p>Find more about role-based authorization here: <a href="https://docs.microsoft.com/en-us/aspnet/core/security/authorization/roles" target="_blank">https://docs.microsoft.com/en-us/aspnet/core/security/authorization/roles</a>.</p>
+
+<h3>Add routing for the MvcDashboardIdentity area</h3>
+
+<p>
+The Arebis MvcDashboardIdentity component is implemented as an area. Therefore area routing must be defined. If this is not yet done in your project (if you do not use areas yet or did not define a default route for the areas), add the following (highlighted) code <i>before</i> the "default" route declaration:
+</p>
+
+<pre>
+<b><span class="new-code">app.MapControllerRoute(
+    name: "area",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");</span></b>
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
+</pre>
+
+<p>Find more about areas and area configuration here: <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/areas" target="_blank">https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/areas</a>.</p>
+
+<h3>Access the Dashboard Identity</h3>
+
+<p>As to not come unsecure out of the box, the area is secured to be accessible only by users in the "Administrator" or "IdentityAdministrator" role.</p>
+
+<p>Either create any of those roles and assign it to your user account, change the MvcDashboardIdentity code to rely on other roles.</p>
+
+<p>For the latter, edit the <code>Areas\MvcDashboardIdentity\Controllers\BaseController.cs</code> file, and set whatever role(s) you want to secure the Identity dashboard with:</p>
+
+<pre>
+[Area("MvcDashboardIdentity")]
+<b>[Authorize(Roles = "<span class="highlight">Administrator,IdentityAdministrator</span>")]<span style="color: #00a000"> // Comment this line to disable security</span></b>
+public abstract class BaseController : Controller
+{
+    ...
+</pre>
+
+<p>To create the roles and assign them to your user account, either update data in the database directly, or temporarily disable security on the MvcDashboardIdentity component so
+   you can use the component to create the required roles and assign them to user accounts. You can easily disable security on the MvcDashboardIdentity component by putting the
+    <code>[Authorize(Roles = "Administrator,IdentityAdministrator")]</code> attribute shown in the above code extract in comments. Don't forget to uncomment afterwards.</p>
+
+<p>To access the MvcDashboardIdentity area, run your website and navigate to ~<span style="color: mediumblue; text-decoration: underline">/MvcDashboardIdentity</span>.</p>
+
+<p>&nbsp;</p>
+<hr/>
+</body>
+</html>
