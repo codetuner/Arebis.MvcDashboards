@@ -214,7 +214,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
                 model.UserClaims.Add(model.NewClaim);
 
                 // Mark dirty:
-                model.HasChanges = true;
+                Response.Headers.Add("X-Sircl-Form-Changed", "true");
             }
 
             // Return view:
@@ -230,7 +230,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
             model.UserClaims.RemoveAt(claimIndex);
 
             // Mark dirty:
-            model.HasChanges = true;
+            Response.Headers.Add("X-Sircl-Form-Changed", "true");
 
             // Return view:
             return EditView(model, viewName: "Edit_Claims");
