@@ -35,7 +35,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
                 UserCount = context.Users.Count(),
                 RoleCount = context.Roles.Count()
             };
-            return View(model);
+            return PartialView(model);
         }
 
         [HttpGet]
