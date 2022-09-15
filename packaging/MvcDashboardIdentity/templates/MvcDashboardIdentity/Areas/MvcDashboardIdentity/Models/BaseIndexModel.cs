@@ -7,7 +7,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Models
 {
     public class BaseIndexModel<TItem>
     {
-        public TItem[]? Items { get; internal set; }
+        public TItem[] Items { get; internal set; } = null!;
 
         public int Page { get; set; } = 1;
 

@@ -12,7 +12,11 @@
     <div class="d-flex justify-content-between">
         <a href="@Url.Action("New")" class="btn btn-primary" onkeydown-click="+"><i class="spinner fas fa-plus"></i> New</a>
         <div class="flex-grow-1"></div>
-        <div class="">
+        <div>
+            <select class="form-control auto-width" asp-for="SelectedRoleName" asp-items="Model.RoleNames"><option value="">All</option></select>
+        </div>
+        <div>&nbsp;&nbsp;</div>
+        <div>
             <input type="search" class="form-control oninput-change" asp-for="Query" style="max-width: 280px;" autocomplete="off" placeholder="Search" />
         </div>
     </div>
@@ -30,7 +34,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.Items!)
+                    @foreach (var item in Model.Items)
                     {
                         <tr href="@Url.Action("Edit", new { id = item.Id })">
                             <td>

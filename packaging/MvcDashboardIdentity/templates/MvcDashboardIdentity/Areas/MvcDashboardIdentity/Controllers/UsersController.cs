@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
 {
@@ -72,7 +73,20 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
             // Retrieve data:
             var query = context.Users.AsQueryable();
             if (!String.IsNullOrWhiteSpace(model.Query))
+            {
                 query = query.Where(d => d.NormalizedUserName.Contains(model.Query) || d.NormalizedEmail.Contains(model.Query));
+            }
+            if (!String.IsNullOrWhiteSpace(model.SelectedRoleName)) 
+            {
+                var roleId = context.Roles.SingleOrDefault(r => r.Name == model.SelectedRoleName)?.Id;
+                if (roleId != null)
+                {
+                    // Retrieving all user ids having that role (not ideal, but how to do otherwise?):
+                    var userIds = context.UserRoles.Where(ur => ur.RoleId == roleId).Select(ur => ur.UserId);
+                    // Filter on user ids:
+                    query = query.Where(d => userIds.Contains(d.Id));
+                }
+            }
 
             // Build model:
             var count = query
@@ -85,6 +99,10 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
                 .ToArray();
 
             // Render view:
+            model.RoleNames = context.Roles.Select(r => r.Name)
+                .OrderBy(n => n)
+                .Select(d => new SelectListItem() { Value = d, Text = d/*, Selected = (model.SelectedRoleName == d)*/ })
+                .ToList();
             return View("Index", model);
         }
 
