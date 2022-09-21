@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-MyMvcApp-FCE2E826-C007-41C1-A3CC-61B116336239</UserSecretsId>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
+	  <UserSecretsId>aspnet-MyMvcApp-FCE2E826-C007-41C1-A3CC-61B116336239</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +13,26 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Arebis.Core\Arebis Core library\Arebis.Core.AspNet.Mvc.Localization\Arebis.Core.AspNet.Mvc.Localization.csproj" />
+    <ProjectReference Include="..\..\Arebis.Core\Arebis Core library\Arebis.Core.Localization\Arebis.Core.Localization.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="MyResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MyResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="MyResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MyResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

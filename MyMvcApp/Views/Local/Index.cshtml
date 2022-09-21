@@ -1,0 +1,49 @@
+﻿@model MyMvcApp.Models.Local.IndexModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+<form method="post">
+
+    <div asp-validation-summary="All" class="alert alert-danger alert-dismissible fade show mb-3">
+        <strong>@Localizer["Following errors have occured:"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">@Localizer["Name"]:</label>
+        <input asp-for="Name" type="text" class="form-control">
+        <span asp-validation-for="Name"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ZipCode" class="form-label">@Localizer["ZipCode"]:</label>
+        <input asp-for="ZipCode" type="text" class="form-control">
+        <span asp-validation-for="ZipCode"></span>
+    </div>
+
+    @if (!String.IsNullOrEmpty(Model.Message?.Value))
+    {
+        <div class="alert alert-info">
+            <p>@Model.Message</p>
+        </div>
+    }
+
+    @if (!String.IsNullOrEmpty(Model.HtmlMessage?.Value))
+    {
+        <div class="alert alert-warning">
+            <p>@Model.HtmlMessage</p>
+        </div>
+    }
+
+    <p>
+        @Localizer["Please validate this before end"]
+    </p>
+
+    <p>
+        @Localizer["Do you also live in {{localizer:CountryBE}} ?"]
+    </p>
+
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">@Localizer["Submit"]</button>
+    </div>
+
+</form>

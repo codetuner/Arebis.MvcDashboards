@@ -1,0 +1,11 @@
+﻿@page
+@model MyMvcApp.Pages.LocalPageModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+@Localizer["PageHead"]
+
+<p>
+    @Localizer["This is a string in a localized page"]
+</p>
+
+@Localizer["PageFoot"]

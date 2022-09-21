@@ -1,0 +1,77 @@
+[
+  {
+    "Pattern": "^'(.*)' and '(.*)' do not match\\.$",
+    "LocalizationKey": "'{0}' and '{1}' do not match.",
+    "ParamLocalization": [ false, false ]
+  },
+  {
+    "Pattern": "^The (.*) field is not a valid credit card number\\.$",
+    "LocalizationKey": "The {0} field is not a valid credit card number.",
+    "ParamLocalization": [ true ]
+  },
+  {
+    "Pattern": "^(.*) is not valid\\.$",
+    "LocalizationKey": "{0} is not valid.",
+    "ParamLocalization": [ false ]
+  },
+  {
+    "Pattern": "^The (.*) field is not a valid e-mail address\\.$",
+    "LocalizationKey": "The {0} field is not a valid e-mail address.",
+    "ParamLocalization": [ true ]
+  },
+  {
+    "Pattern": "^The (.*) field only accepts files with the following extensions: (.*)$",
+    "LocalizationKey": "The {0} field only accepts files with the following extensions: {1}",
+    "ParamLocalization": [ true, false ]
+  },
+  {
+    "Pattern": "^The field (.*) must be a string or array type with a maximum length of '(.*)'\\.$",
+    "LocalizationKey": "The field {0} must be a string or array type with a maximum length of '{1}'.",
+    "ParamLocalization": [ true, false ]
+  },
+  {
+    "Pattern": "^The field (.*) must be a string or array type with a minimum length of '(.*)'\\.$",
+    "LocalizationKey": "The field {0} must be a string or array type with a minimum length of '{1}'.",
+    "ParamLocalization": [ true, false ]
+  },
+  {
+    "Pattern": "^The (.*) field is not a valid phone number\\.$",
+    "LocalizationKey": "The {0} field is not a valid phone number.",
+    "ParamLocalization": [ true ]
+  },
+  {
+    "Pattern": "^The field (.*) must be between (.*) and (.*)\\.$",
+    "LocalizationKey": "The field {0} must be between {1} and {2}.",
+    "ParamLocalization": [ true, false, false ]
+  },
+  {
+    "Pattern": "^The field (.*) must match the regular expression '(.*)'\\.$",
+    "LocalizationKey": "The field {0} must match the regular expression '{1}'.",
+    "ParamLocalization": [ true, false ]
+  },
+  {
+    "Pattern": "^The (.*) field is required\\.$",
+    "LocalizationKey": "The {0} field is required.",
+    "ParamLocalization": [ true ]
+  },
+  {
+    "Pattern": "^The field (.*) must be a string with a maximum length of (.*)\\.$",
+    "LocalizationKey": "The field {0} must be a string with a maximum length of {1}.",
+    "ParamLocalization": [ true, false ]
+  },
+  {
+    "Pattern": "^The field (.*) must be a string with a minimum length of (.*) and a maximum length of (.*)\\.$",
+    "LocalizationKey": "The field {0} must be a string with a minimum length of {1} and a maximum length of {2}.",
+    "ParamLocalization": [ true, false, false ]
+  },
+  {
+    "Pattern": "^The (.*) field is not a valid fully-qualified http, https, or ftp URL\\.$",
+    "LocalizationKey": "The {0} field is not a valid fully-qualified http, https, or ftp URL.",
+    "ParamLocalization": [ true ]
+  },
+  {
+    "Pattern": "^The field (.*) is invalid\\.$",
+    "LocalizationKey": "The field {0} is invalid.",
+    "ParamLocalization": [ true ]
+  }
+]

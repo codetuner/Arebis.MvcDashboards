@@ -1,0 +1,32 @@
+﻿@model MyMvcApp.Models.Local.IndexModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+<form method="post">
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" type="text" class="form-control">
+        <span asp-validation-for="Name"></span>
+        <div class="text-muted">[Display(Name="Name")], [Required(ErrorMessage = "Sorry! The {0} is required...")]</div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ZipCode" class="form-label"></label>
+        <input asp-for="ZipCode" type="text" class="form-control" value="abc">
+        <span asp-validation-for="ZipCode"></span>
+        <div class="text-muted">[Display(Name = "ZipCode")]</div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Age" class="form-label"></label>
+        <input asp-for="Age" type="text" class="form-control" value="300">
+        <span asp-validation-for="Age"></span>
+        <div class="text-muted">[Required], [Range(0, 150)]</div>
+    </div>
+
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+
+</form>
+

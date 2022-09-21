@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -20,10 +21,19 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="MvcDashboardLocalize" asp-controller="Home" asp-action="Index">LOC</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Local" asp-action="Index">Local</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Local" asp-action="Da">Da</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/LocalPage?culture=fr">Page</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
@@ -32,13 +42,17 @@
         </nav>
     </header>
     <div class="container">
+        @Localizer["PageHead"]
+
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
+            @Localizer["PageFoot"]
             &copy; 2022 - MyMvcApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
