@@ -135,7 +135,7 @@
                         </li>
                     }
                 </ul>
-                <form class="d-flex" action="/MvcDashboardIdentity/Users" method="get">
+                <form class="d-flex" asp-area="MvcDashboardIdentity" asp-controller="Users" asp-action="Index" method="get">
                     <input class="form-control me-2 onfocus-select" type="search" placeholder="/ Search User" aria-label="Search" name="Query">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                     <span onkeydown-click="/" onclick-focus="<FORM|>INPUT"></span>
