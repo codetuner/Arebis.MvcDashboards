@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "codetuner",
+    "classifications": ["Web", "MVC", "Dashboard", "Localization"],
+    "identity": "Arebis.MvcDashboardLocalization",
+    "name": "ASP.NET MVC Dashboard Localization",
+    "shortName": "MvcDashboardLocalization",
+    "tags": {
+        "language": "C#",
+        "type": "item"
+    },
+    "sourceName": "MyMvcApp", // Will replace the string 'MyMvcApp' with the value provided via -n.
+    "preferNameDirectory": "true"
+}
