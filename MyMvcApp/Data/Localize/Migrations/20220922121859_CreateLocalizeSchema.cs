@@ -37,7 +37,7 @@ namespace MyMvcApp.Data.Localize.Migrations
                     Name = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
                     MimeType = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     ForPath = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
-                    ParameterNames = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    ArgumentNames = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
                     ValuesToReview = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },

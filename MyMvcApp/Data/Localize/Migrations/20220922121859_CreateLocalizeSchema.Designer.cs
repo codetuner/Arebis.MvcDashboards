@@ -11,7 +11,7 @@ using MyMvcApp.Data.Localize;
 namespace MyMvcApp.Data.Localize.Migrations
 {
     [DbContext(typeof(LocalizeDbContext))]
-    [Migration("20220908161024_CreateLocalizeSchema")]
+    [Migration("20220922121859_CreateLocalizeSchema")]
     partial class CreateLocalizeSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,6 +53,10 @@ namespace MyMvcApp.Data.Localize.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("ArgumentNames")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
                     b.Property<int>("DomainId")
                         .HasColumnType("int");
 
@@ -72,10 +76,6 @@ namespace MyMvcApp.Data.Localize.Migrations
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ParameterNames")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<string>("ValuesToReview")
                         .HasMaxLength(2000)

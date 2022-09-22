@@ -8,16 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Arebis.Core.AspNet.Mvc.Localization" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.8" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Arebis.Core\Arebis Core library\Arebis.Core.AspNet.Mvc.Localization\Arebis.Core.AspNet.Mvc.Localization.csproj" />
-    <ProjectReference Include="..\..\Arebis.Core\Arebis Core library\Arebis.Core.Localization\Arebis.Core.Localization.csproj" />
   </ItemGroup>
 
   <ItemGroup>

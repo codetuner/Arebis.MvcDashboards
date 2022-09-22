@@ -35,7 +35,7 @@ namespace MyMvcApp.Data.Localize
 
             modelBuilder
                 .Entity<Key>()
-                .Property(e => e.ParameterNames)
+                .Property(e => e.ArgumentNames)
                 .HasConversion(
                     a => (a == null || a.Length == 0) ? null : String.Join(StringSeparator[0], a),
                     s => (s == null) ? null : s.Split(StringSeparator),

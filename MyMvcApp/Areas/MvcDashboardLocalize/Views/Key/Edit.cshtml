@@ -59,9 +59,9 @@
     </div>
 
     <div class="mb-3">
-        <label for="@Html.IdFor(m => m.ParameterNames)" class="form-label">Parameter names (comma-separated list):</label>
-        <input asp-for="ParameterNames" type="text" class="form-control" />
-        <span asp-validation-for="ParameterNames" class="text-danger"></span>
+        <label for="@Html.IdFor(m => m.ArgumentNames)" class="form-label">Argument names (comma-separated list):</label>
+        <input asp-for="ArgumentNames" type="text" class="form-control" />
+        <span asp-validation-for="ArgumentNames" class="text-danger"></span>
     </div>
 
     @for (int i = 0; i < Model.Values.Count; i++)
@@ -117,7 +117,7 @@
             <p>
                 Automatically translate based on
                 <select asp-for="SourceCulture" asp-items="@(new SelectList(Model.Values.Select(v => v.Culture)))" class="form-control" style="width: 10ch; display: inline"></select>
-                <button type="submit" class="btn btn-secondary" asp-action="AutoTranslate" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-check"></i> Translate</button>
+                <button type="submit" class="btn btn-secondary" asp-action="AutoTranslate" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-globe"></i> Translate</button>
             </p>
             <p>
                 Note: only cultures with no value and not marked reviewed will get a value, provided the translation service supports the culture.
@@ -134,12 +134,15 @@
     <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-check"></i> Save</button>
     <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true" onkeydown-click="Ctrl+S"><i class="spinner fas fa-check"></i> Apply</button>
     <a href="history:back" class="btn btn-secondary"><i class="fas fa-angle-left"></i> Back</a>
-    <div class="form-check mt-2">
-        <input class="form-check-input" type="checkbox" asp-for="SaveAsCopy" ifchecked-uncheck=".reviewed-chk">
-        <label class="form-check-label" asp-for="SaveAsCopy">
-            As copy
-        </label>
-    </div>
+    @if (Model.Item.Id != 0)
+    { 
+        <div class="form-check mt-2">
+            <input class="form-check-input" type="checkbox" asp-for="SaveAsCopy" ifchecked-uncheck=".reviewed-chk">
+            <label class="form-check-label" asp-for="SaveAsCopy">
+                As copy
+            </label>
+        </div>
+    }
 
 </form>
 

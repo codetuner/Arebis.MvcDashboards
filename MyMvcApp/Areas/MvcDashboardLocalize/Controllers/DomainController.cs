@@ -40,7 +40,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
         {
             model.MaxPage = 1;
             model.Items = context.LocalizeDomains
-                .OrderBy(i => i.Name)
+                .OrderBy(i => i.Name).ThenBy(i => i.Id)
                 .ToArray();
 
             return View("Index", model);
@@ -52,8 +52,10 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 
         public IActionResult New([FromServices] IOptions<RequestLocalizationOptions> requestLocalizationOptions)
         {
-            var model = new EditModel();
-            model.Item = new Domain();
+            var model = new EditModel
+            {
+                Item = new Domain()
+            };
             if (requestLocalizationOptions.Value.SupportedUICultures != null)
                 model.Cultures = String.Join(',', requestLocalizationOptions.Value.SupportedUICultures.Select(c => c.TwoLetterISOLanguageName).Distinct());
 
@@ -78,7 +80,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
             if (model.Cultures != null)
             {
                 var cultures = model.Cultures.Split(',').Select(s => s.Trim()).Where(s => s.Length > 0).ToArray();
-                if (cultures.Distinct().Count() != cultures.Count())
+                if (cultures.Distinct().Count() != cultures.Length)
                 {
                     ModelState.AddModelError("Cultures", "Value should not contain duplicates!");
                 }
@@ -107,7 +109,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, "Unexpected error saving domain {0}", id);
+                    logger.LogError(ex, "Unexpected error saving domain {domainid}", id);
                     ModelState.AddModelError("", "An unexpected error occured.");
                     ViewBag.Exception = ex;
                 }
@@ -131,7 +133,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Unexpected error deleting domain {0}", id);
+                logger.LogError(ex, "Unexpected error deleting domain {domainid}", id);
                 ModelState.AddModelError("", "An unexpected error occured.");
                 ViewBag.Exception = ex;
             }

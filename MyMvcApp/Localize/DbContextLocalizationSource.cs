@@ -19,8 +19,7 @@ namespace MyMvcApp.Localize
     /// </summary>
     public class DbContextLocalizationSource : ILocalizationSource
     {
-        private static readonly Regex argSubstitutionRegex = new Regex("\\{\\{(.*?)(:.*?)?\\}\\}", RegexOptions.Compiled);
-        private static readonly Regex extendedSubstitutionRegex = new Regex("\\{\\{[a-zA-Z].*?\\}\\}", RegexOptions.Compiled);
+        private static readonly Regex argSubstitutionRegex = new("\\{\\{(.*?)(:.*?)?\\}\\}", RegexOptions.Compiled);
 
         private readonly IServiceProvider serviceProvider;
         private readonly IConfiguration configuration;
@@ -67,10 +66,10 @@ namespace MyMvcApp.Localize
                                 // Skip non-reviewed values if review is required:
                                 if (this.options.UseOnlyReviewedLocalizationValues && !value.Reviewed) continue;
 
-                                //var valstr = resource.Values[value.Culture] = SubstituteArguments(value.Value, key.ParameterNames) ?? String.Empty;
-                                //resource.SubstitutionFields = ExtendSubstitutionFields(resource.SubstitutionFields, valstr);
+                                // Substitute named arguments into positional arguments and collect extra substitution fields;
+                                // Set resources value for culture:
                                 var substf = resource.SubstitutionFields;
-                                resource.Values[value.Culture] = SubstituteArgs(value.Value, key.ParameterNames, ref substf) ?? String.Empty;
+                                resource.Values[value.Culture] = SubstituteArgs(value.Value, key.ArgumentNames, ref substf) ?? String.Empty;
                                 resource.SubstitutionFields = substf;
                             }
                         }
@@ -79,43 +78,42 @@ namespace MyMvcApp.Localize
                     // Create keys from queries:
                     foreach (var query in context.LocalizeQueries.Where(q => q.DomainId == domain.Id))
                     {
-                        using (var conn = new SqlConnection(configuration.GetConnectionString(query.ConnectionName)))
-                        using (var cmd = conn.CreateCommand())
+                        using var conn = new SqlConnection(configuration.GetConnectionString(query.ConnectionName));
+                        using var cmd = conn.CreateCommand();
+
+                        // Replace "{cultures}" in SQL command (replace single quotes to prevent SQL injection):
+                        cmd.CommandText = query.Sql
+                            .Replace("{cultures}", String.Join("','", domain.Cultures.Select(c => c.Replace('\'', '*'))));
+
+                        if (conn.State == System.Data.ConnectionState.Closed) conn.Open();
+
+                        var queryResources = new Dictionary<string, Dictionary<string, string>>();
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            // Replace "{cultures}" in SQL command (replace single quotes to prevent SQL injection):
-                            cmd.CommandText = query.Sql
-                                .Replace("{cultures}", String.Join("','", domain.Cultures.Select(c => c.Replace('\'', '*'))));
-
-                            if (conn.State == System.Data.ConnectionState.Closed) conn.Open();
-
-                            var queryResources = new Dictionary<string, Dictionary<string, string>>();
-                            using (var reader = cmd.ExecuteReader())
+                            var keyCount = (reader.GetColumnSchema().Count - 1) / 2;
+                            while (reader.Read())
                             {
-                                var keyCount = (reader.GetColumnSchema().Count - 1) / 2;
-                                while (reader.Read())
+                                var culture = reader.GetString(0);
+                                if (domain.Cultures.Contains(culture))
                                 {
-                                    var culture = reader.GetString(0);
-                                    if (domain.Cultures.Contains(culture))
+                                    for (int c = 0; c < keyCount; c++)
                                     {
-                                        for (int c = 0; c < keyCount; c++)
-                                        {
-                                            var key = reader.GetString(c * 2 + 1);
-                                            var value = reader.GetString(c * 2 + 2);
+                                        var key = reader.GetString(c * 2 + 1);
+                                        var value = reader.GetString(c * 2 + 2);
 
-                                            if (!queryResources.TryGetValue(key, out var dict))
-                                            {
-                                                dict = queryResources[key] = new Dictionary<string, string>();
-                                            }
-                                            dict[culture] = value;
+                                        if (!queryResources.TryGetValue(key, out var dict))
+                                        {
+                                            dict = queryResources[key] = new Dictionary<string, string>();
                                         }
+                                        dict[culture] = value;
                                     }
                                 }
                             }
+                        }
 
-                            foreach (var pair in queryResources)
-                            {
-                                result.AddResource(pair.Key, new LocalizationResource() { Values = pair.Value }, false);
-                            }
+                        foreach (var pair in queryResources)
+                        {
+                            result.AddResource(pair.Key, new LocalizationResource() { Values = pair.Value }, false);
                         }
                     }
                 }
@@ -125,43 +123,7 @@ namespace MyMvcApp.Localize
             return result;
         }
 
-        ///// <summary>
-        ///// Replaces named arguments by positional arguments in the given string.
-        ///// </summary>
-        //private string? SubstituteArguments(string? str, string[]? argumentNames)
-        //{
-        //    if (str == null) return null;
-        //    if (argumentNames == null) return str;
-
-        //    for (int i = 0; i < argumentNames.Length; i++)
-        //    {
-        //        str = str.Replace("{" + argumentNames[i] + "}", "{" + i + "}");
-        //        str = str.Replace("{" + argumentNames[i] + ":", "{" + i + ":");
-        //    }
-
-        //    return str;
-        //}
-
-        ///// <summary>
-        ///// Search for extended substitution fields (as "{data:age}").
-        ///// </summary>
-        //private HashSet<string>? ExtendSubstitutionFields(HashSet<string>? substitutionFields, string? value)
-        //{
-        //    if (value == null) return substitutionFields;
-        //    if (value.Length < 8) return substitutionFields;
-
-        //    var matches = extendedSubstitutionRegex.Matches(value).Cast<Match>();
-        //    if (!matches.Any()) return substitutionFields;
-
-        //    substitutionFields ??= new HashSet<string>();
-        //    foreach (Match match in matches)
-        //    {
-        //        substitutionFields.Add(match.Value);
-        //    }
-        //    return substitutionFields;
-        //}
-
-        private string? SubstituteArgs(string? str, string[]? argumentNames, ref HashSet<string>? substitutionFields)
+        private static string? SubstituteArgs(string? str, string[]? argumentNames, ref HashSet<string>? substitutionFields)
         {
             if (String.IsNullOrWhiteSpace(str)) return str;
             var result = str;

@@ -8,7 +8,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Models.Key
 {
     public class EditModel : BaseEditModel<Data.Localize.Key>
     {
-        public string? ParameterNames { get; set; }
+        public string? ArgumentNames { get; set; }
 
         public List<KeyValue> Values { get; set; } = new();
 

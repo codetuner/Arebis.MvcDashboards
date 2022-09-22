@@ -2,4 +2,81 @@
     ViewBag.Title = "Get Started";
 }
 
-<h1>...</h1>
+<h1>Getting Started</h1>
+
+<p>The MvcDashboardLocalization component allows for managing localization data for your (web) applications.</p>
+
+<h2>Domains</h2>
+
+<p>Domains define sets of localization data that is highly related. It regroups localization keys and queries.</p>
+<p>Applications can combine multiple domains to get their localization data. It is therefore possible to define "base" domains with basic localization data (common words and phrases as "OK", "Cancel", "Do you want to delete {0} ?", etc).</p>
+<p>Other domains may be application specific and define localization data for one application only.</p>
+
+<h3>Creating Domains</h3>
+
+<p>To create a new domain, go to the <a href="../Domain">Domains overview</a> and click the <em>New</em> link. Enter the name of the new domain and the list (comma-separated) of cultures provided by this domain (i.e. "en, en-GB, fr, fr-CA, sp"). The first culture will be considered the <em>default </em>culture. And press Save.</p>
+
+<h3>Managing domains</h3>
+
+<p>From the <a href="../Domain">Domains overview</a>, you can edit domains (rename or update set of cultures).</p>
+<p>To delete domains, choose Edit, then press the Delete button.<br /><strong>Caution</strong>: deleting a domain deletes all associated keys and queries!</p>
+
+<h3>Export &amp; Import</h3>
+
+<p>Domains can be exported to serve as backup, to send to translators, to import in another application,...</p>
+<p>Domains are exported into JSON files and include all associated keys and queries.</p>
+
+<h2>Localization Keys</h2>
+
+<p>Localization keys are defined in the <a href="../Key">Keys overview</a>.</p>
+
+<h3>Creating Keys</h3>
+
+<p>To create a new key go to the <a href="../Key">Keys overview</a> and press the [+<strong>New</strong>] button.</p>
+<p>Choose the domain of the key, enter the name of the key and choose for Plain Text or HTML.</p>
+<p>If the resource key values are for a specific path, enter the path. For most keys, leave path empty.</p>
+<p>If your resource uses arguments, either use positional arguments as "<code>{0}</code>" and "<code>{1:#,##0.00}</code>" and leave the Argument Names field empty, or use named arguments as "<code>{{Label}}</code>" and "<code>{{Price:#,##0.00}}</code>" and place the argument names in positional order, comma separated, in the Argument Names field (i.e. "Label, Price").</p>
+<p><strong>Notice</strong>: while positional arguments take single curly braces ("<code>{0}</code>"), named arguments take double curly braces ("<code>{{Name}}</code>").</p>
+<p>For each culture, enter the translation of the key. If the translation is reviewed, check the Is Reviewed checkbox.</p>
+<p>If a translation service is installed, you can use the [<strong>Translate</strong>] button to automatically complete the empty values.</p>
+<p>Press the Apply or Save button to create the key.</p>
+
+<h3>Copying Keys</h3>
+
+<p>To create a copy of a key, open the key, check the <em>Save as copy</em> checkbox on the bottom (this will also remove all reviewed flags), edit the key as you probably do not want an exact copy, then press Save or Apply to save the current key as a new key.</p>
+
+<h3>Special Values</h3>
+
+<p>Key values can contain references to arguments either by using positional arguments (with single curly braces as in "<code>{0}</code>") or named arguments (with double curly braces as in "<code>{{Name}}</code>") provided the names are declared in positional order in the <em>Argument names</em> field.</p>
+<p>In addition, key values can refer to:</p>
+<ul>
+    <li>The current UI culture or culture, using "<code>{{uiculture:name}}</code>"or"<code>{{culture:name}}</code>" respectively.<br />The UI culture defines the language of the localization, the culture defines the formatting. Usually, both are equal.<br /><br /></li>
+    <li>Another localization key, using "<code>{{localizer:&lt;keyname&gt;}}</code>". This allows for nested localization keys.<br /><br /></li>
+    <li>The Model of the view, using "<code>{{model:&lt;modelproperty&gt;[:&lt;format&gt;]}}</code>". The modelproperty can be a path. Format is optional. See following examples:<br /><code>{{model:Label}}</code><br /><code>{{model:Product.Label}}</code><br /><code>{{model:Product.Price:#,##0.00}}</code><br /><br /></li>
+    <li>The ViewData of the view, using "<code>{{view:&lt;viewproperty&gt;[:&lt;format&gt;]}}</code>". The viewproperty can be a path. Format is optional. See following examples:<br /><code>{{view:Label}}</code><br /><code>{{view:Product.Label}}</code><br /><code>{{view:Product.Price:#,##0.00}}</code></li>
+</ul>
+
+<h2>Localization Queries</h2>
+
+<p>Localization Queries allow for bulk generation of Localization Keys based on database queries.</p>
+<p><strong>Caution</strong>: Localization Queries should only be used to create keys for limited amounts of static data.</p>
+
+<h3>Creating Queries</h3>
+
+<p>To create a new query go to the <a href="../Query">Queries overview</a> and press the [+<strong>New</strong>] button.</p>
+<p>Choose a domain, enter a name of the query and enter a connection name.</p>
+<p><strong>Note</strong>: the connection name must match the name of a <a href="https://www.connectionstrings.com/store-and-read-connection-string-in-appsettings-json/" target="_blank" rel="noopener">connection string defined in your application</a>.</p>
+<p>Enter the SQL command, and save.</p>
+<p>The SQL query should return 3, 5, 7,... columns. The first column is supposed to contain the language or culture code. Subsequent column pairs return the name of the resource string and its value.</p>
+<p>A query example is given in the query edit screen.</p>
+
+<h2>Publishing localization</h2>
+
+<p>While Localization Keys and Queries are created and updated, the application hosting the MvcDashboardLocalization is not updated.</p>
+<p>To refresh the localization of the hosting application, go to the MvcDashboardLocalization homepage and press the [<strong>Publish</strong>] button.</p>
+
+<h2>Keyboard navigation</h2>
+
+<p>Paged lists can be navigated using the&nbsp;<kbd>&larr;</kbd>&nbsp;and&nbsp;<kbd>&rarr;</kbd>&nbsp;keys.</p>
+<p>The [+ New] button can be triggered by the&nbsp;<kbd>+</kbd>&nbsp;key.</p>
+<p>&nbsp;</p>

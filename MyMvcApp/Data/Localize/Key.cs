@@ -54,10 +54,10 @@ namespace MyMvcApp.Data.Localize
         public virtual string? ForPath { get; set; }
 
         /// <summary>
-        /// List of parameter names.
+        /// List of argument names.
         /// </summary>
         [MaxLength(2000)]
-        public virtual string[]? ParameterNames { get; set; }
+        public virtual string[]? ArgumentNames { get; set; }
 
         /// <summary>
         /// Localized values for this key.

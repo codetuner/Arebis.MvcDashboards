@@ -48,7 +48,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
                 .Include(i => i.Domain)
                 .Where(i => i.DomainId == model.DomainId || model.DomainId == null)
                 .Where(i => noQuery || i.Name!.Contains(model.Query ?? "") || i.ForPath!.Contains(model.Query ?? "") || i.Values!.Any(v => v.Value!.Contains(model.Query ?? "")))
-                .OrderBy(model.Order ?? "Name ASC, ForPath ASC")
+                .OrderBy(model.Order ?? "Name ASC, ForPath ASC, DomainId ASC")
                 .Skip((model.Page - 1) * model.PageSize)
                 .Take(model.PageSize)
                 .ToArrayAsync();
@@ -85,7 +85,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
             if (item == null) return new NotFoundResult();
 
             var model = new EditModel() { Item = item };
-            model.ParameterNames = String.Join(", ", model.Item.ParameterNames ?? Array.Empty<string>());
+            model.ArgumentNames = String.Join(", ", model.Item.ArgumentNames ?? Array.Empty<string>());
             model.Values = model.Item.Values!.ToList();
 
             return await EditView(model);
@@ -202,9 +202,9 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 
                     var domain = await context.LocalizeDomains.FindAsync(model.Item!.DomainId);
 
-                    model.Item.ParameterNames = string.IsNullOrWhiteSpace(model.ParameterNames)
+                    model.Item.ArgumentNames = string.IsNullOrWhiteSpace(model.ArgumentNames)
                         ? null
-                        : model.ParameterNames.Split(',').Select(s => s.Trim()).Where(s => s.Length > 0).ToArray();
+                        : model.ArgumentNames.Split(',').Select(s => s.Trim()).Where(s => s.Length > 0).ToArray();
                     model.Item.Values = model.Values.Where(v => v.Reviewed || v.Value != null).ToList();
                     foreach (var value in model.Values.Where(v => !v.Reviewed && v.Value == null && v.Id != default)) context.Remove(value);
                     model.Item.ValuesToReview = (domain?.Cultures ?? Array.Empty<string>()).Except(model.Item.Values.Where(v => v.Reviewed).Select(v => v.Culture)).ToArray();
