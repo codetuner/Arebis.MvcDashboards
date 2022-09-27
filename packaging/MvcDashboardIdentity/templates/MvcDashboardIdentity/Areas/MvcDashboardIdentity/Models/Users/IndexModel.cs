@@ -9,8 +9,8 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Models.Users
 {
     public class IndexModel : BaseIndexModel<IdentityUser>
     {
-        public List<SelectListItem> RoleNames { get; internal set; }
+        public List<SelectListItem> RoleNames { get; internal set; } = null!;
         
-        public string SelectedRoleName { get; set; }
+        public string? SelectedRoleName { get; set; }
     }
 }
