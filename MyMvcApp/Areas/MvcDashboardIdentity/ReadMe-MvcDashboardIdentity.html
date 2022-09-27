@@ -39,7 +39,7 @@ membership, etc.
 
 <h3>Add support for role-based identity</h3>
 
-<p>Add role-based identity by adding the following (highlighted) line of code in the identity service configuration (in Startup.cs):</p>
+<p>Add role-based identity by adding the following (highlighted) line of code in the identity service configuration (in Startup.cs or Program.cs):</p>
 
 <pre>
 builder.Services.AddDefaultIdentity&lt;IdentityUser&gt;(options =&gt; options.SignIn.RequireConfirmedAccount = true)
@@ -75,7 +75,7 @@ app.MapRazorPages();
 
 <p>As to not come unsecure out of the box, the area is secured to be accessible only by users in the "Administrator" or "IdentityAdministrator" role.</p>
 
-<p>Either create any of those roles and assign it to your user account, change the MvcDashboardIdentity code to rely on other roles.</p>
+<p>Either create any of those roles and assign it to your user account, or change the MvcDashboardIdentity code to rely on other roles.</p>
 
 <p>For the latter, edit the <code>Areas\MvcDashboardIdentity\Controllers\BaseController.cs</code> file, and set whatever role(s) you want to secure the Identity dashboard with:</p>
 
