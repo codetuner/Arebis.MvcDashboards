@@ -7,7 +7,7 @@
 XCOPY /S /Y "%~dp0MyMvcApp\Areas\MvcDashboardLocalize" "%~dp0packaging\MvcDashboardLocalize\templates\MvcDashboardLocalize\Areas\MvcDashboardLocalize\"
 XCOPY /S /Y "%~dp0MyMvcApp\Data\Localize" "%~dp0packaging\MvcDashboardLocalize\templates\MvcDashboardLocalize\Data\Localize\"
 XCOPY /S /Y "%~dp0MyMvcApp\Localize" "%~dp0packaging\MvcDashboardLocalize\templates\MvcDashboardLocalize\Localize\"
-XCOPY /S /Y "%~dp0MyMvcApp\ModelStateLocalization.json" "%~dp0packaging\MvcDashboardLocalize\templates\MvcDashboardLocalize\ModelStateLocalization.json"
+COPY /Y "%~dp0MyMvcApp\ModelStateLocalization.json" "%~dp0packaging\MvcDashboardLocalize\templates\MvcDashboardLocalize\ModelStateLocalization.json"
 ECHO.
 ECHO Edit the template file then save and close to proceed.
 NOTEPAD "%~dp0packaging\MvcDashboardLocalize\templates\MvcDashboardLocalize\.template.config\template.json"

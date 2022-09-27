@@ -22,9 +22,4 @@
     <Compile Remove="**\*" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Arebis.Core.AspNet.Mvc.Localization" Version="1.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.9" />
-  </ItemGroup>
-
 </Project>
