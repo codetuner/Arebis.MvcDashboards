@@ -17,7 +17,6 @@ using System.IO;
 
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {
-    [Authorize(Roles = "Administrator,LocalizeAdministrator")]
     public class DomainController : BaseController
     {
         #region Construction

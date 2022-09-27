@@ -2,9 +2,9 @@
     "$schema": "http://json.schemastore.org/template",
     "author": "codetuner",
     "classifications": ["Web", "MVC", "Dashboard", "Localization"],
-    "identity": "Arebis.MvcDashboardLocalization",
-    "name": "ASP.NET MVC Dashboard Localization",
-    "shortName": "MvcDashboardLocalization",
+    "identity": "Arebis.MvcDashboardLocalize",
+    "name": "ASP.NET MVC Dashboard Localize",
+    "shortName": "MvcDashboardLocalize",
     "tags": {
         "language": "C#",
         "type": "item"

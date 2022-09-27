@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {
-    [Authorize(Roles = "Administrator,LocalizeAdministrator,LocalizeTranslator")]
     public class HomeController : BaseController
     {
         [HttpGet]
@@ -27,7 +26,6 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrator,LocalizeAdministrator")]
         public IActionResult ReloadFromSource([FromServices] ILocalizationResourceProvider resourceProvider)
         {
             resourceProvider.Refresh();

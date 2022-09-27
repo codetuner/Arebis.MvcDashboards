@@ -3,8 +3,8 @@
   <PropertyGroup>
     <PackageType>Template</PackageType>
     <PackageVersion>1.0.0</PackageVersion>
-    <PackageId>Arebis.MvcDashboardLocalization</PackageId>
-    <Title>ASP.NET MVC Dasboard Localization</Title>
+    <PackageId>Arebis.MvcDashboardLocalize</PackageId>
+    <Title>ASP.NET MVC Dasboard Localize</Title>
     <Authors>codetuner</Authors>
     <Description>An ASP.NET MVC Dashboard area to manage database stored localization data.</Description>
     <PackageTags>dotnet-new;templates;mvc;dashboard;localization</PackageTags>
@@ -20,6 +20,11 @@
   <ItemGroup>
     <Content Include="templates\**\*" Exclude="templates\**\bin\**;templates\**\obj\**" />
     <Compile Remove="**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Arebis.Core.AspNet.Mvc.Localization" Version="1.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.9" />
   </ItemGroup>
 
 </Project>

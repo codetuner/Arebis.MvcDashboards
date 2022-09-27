@@ -33,6 +33,11 @@ namespace MyMvcApp.Localize
         }
 
         public LocalizationResourceSet GetResourceSet()
+        { 
+            return this.GetResourceSet(this.options.Domains, this.options.UseOnlyReviewedLocalizationValues);
+        }
+
+        public LocalizationResourceSet GetResourceSet(string[] domains, bool useOnlyReviewedLocalizationValues = true)
         {
             var result = new LocalizationResourceSet();
 
@@ -40,32 +45,37 @@ namespace MyMvcApp.Localize
             using (var context = scope.ServiceProvider.GetRequiredService<LocalizeDbContext>())
             {
                 // Load all domains in reverse order:
-                foreach (var domainName in options.Domains.Reverse())
+                foreach (var domainName in domains.Reverse())
                 {
                     var domain = context.LocalizeDomains.SingleOrDefault(d => d.Name == domainName);
                     if (domain == null) continue;
                     if (domain.Cultures == null) continue;
                     if (domain.Cultures.Length == 0) continue;
 
-                    // Read cultures:
-                    foreach (var culture in domain.Cultures) result.Cultures.Add(culture);
-                    result.DefaultCulture ??= domain.Cultures[0];
+                    // Read cultures from last (first in reverse order) domain only:
+                    if (result.DefaultCulture == null)
+                    {
+                        foreach (var culture in domain.Cultures) result.Cultures.Add(culture);
+                        result.DefaultCulture = domain.Cultures[0];
+                    }
 
                     // Create keys from keys:
                     foreach (var key in context.LocalizeKeys.Include(k => k.Values).Where(k => k.DomainId == domain.Id).OrderByDescending(k => k.ForPath!.Length))
                     {
-                        // Skip key if none of the values is validated while review is required:
-                        if (this.options.UseOnlyReviewedLocalizationValues && !key.Values!.Any(v => v.Reviewed)) continue;
+                        // Only consider values within cultures of domain and result, reviewed if required:
+                        var values = key.Values!
+                            .Where(v => v.Reviewed || !useOnlyReviewedLocalizationValues)
+                            .Where(v => domain.Cultures.Contains(v.Culture))
+                            .Where(v => result.Cultures.Contains(v.Culture))
+                            .ToList();
+                        if (values == null || values.Count == 0) continue;
 
                         // Build and add resource:
-                        var resource = new LocalizationResource() { ForPath = key.ForPath };
+                        var resource = new LocalizationResource() { ForPath = key.ForPath?.ToLowerInvariant() };
                         if (result.AddResource(key.Name!, resource, false))
                         {
-                            foreach (var value in key.Values!)
+                            foreach (var value in values)
                             {
-                                // Skip non-reviewed values if review is required:
-                                if (this.options.UseOnlyReviewedLocalizationValues && !value.Reviewed) continue;
-
                                 // Substitute named arguments into positional arguments and collect extra substitution fields;
                                 // Set resources value for culture:
                                 var substf = resource.SubstitutionFields;

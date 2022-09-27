@@ -29,10 +29,16 @@ builder.Services.AddDbContext<MyMvcApp.Data.Localize.LocalizeDbContext>(/*contex
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddLocalizationFromSource(builder.Configuration, options => {
-    //options.CacheFileName = "LocalizationCache.json";
-    options.AllowLocalizeFormat = true;
-    options.Domains = new string[] { "Base", "Asp.NET", "Website" };
+    options.AllowLocalizeFormat = false;
+    options.CacheFileName = "LocalizationCache.json";
+    options.Domains = new string[] { "Base", "Asp.NET", "Test", "Website" };
+//    options.Domains = new string[] { "Test", "TestApp" };
+    //options.RouteDataStringKey = "culture";
+    //options.UIRouteDataStringKey = "uiculture";
+    options.UseOnlyReviewedLocalizationValues = false;
 });
+
+
 
 builder.Services.AddModelBindingLocalizationFromSource();
 
@@ -56,6 +62,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews()
+//    .AddDataAnnotationsLocalization()
 #region Localization
     .AddDataAnnotationsLocalizationFromSource()
 #endregion

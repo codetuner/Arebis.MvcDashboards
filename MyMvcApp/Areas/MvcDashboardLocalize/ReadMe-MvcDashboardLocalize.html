@@ -45,150 +45,340 @@
 
     <h2>Setup</h2>
 
-    <p>After installing the dashboard area, follow these steps:</p>
+    <p>The MvcDashboardLocalize component is not only a dashboard component, but also a database-driven localization system.</p>
+    <p>You can choose to install the whole solution: dashboard and localization of the current app. Or you can setup the dashboard apart from the app to be localized.</p>
 
-    <p>**** TO REVIEW WHAT FOLLOWS ***</p>
-
-
-    <p>**** ALSO TALK ABOUT BinaryFormatter *****</p>
-
-    <h3>CompiledDataFileName setting</h3>
-
-    <p>
-        The <code>CompiledDataFileName</code> setting declares a file path/name to which to store 'compiled' localization data. Using this file has two benefits:
-    </p>
+    <p>We will describe 4 common installations:</p>
     <ol>
-        <li>Faster loading of localization data after an application restart: it's faster to reconstruct the localization data from a binary format serialized file than it is from various database queries.</li>
-        <li>Better control over when to 'publish' localization data: using a data file means localization data is retrieved from database only on explicit request and not when the application restarts.</li>
+        <li value="1">
+            <b>Full installation: dashboard + localized app</b><br />
+            This is the most simple setup: add the MvcDashboardLocalize component to the application or website to be localized.
+        </li>
+        <li value="2">
+            <b>Dashboard only</b><br />
+            By installing the dashboard on a separate app/website, you can manage the localization of one or more apps from a separate dashboard instance and you do not need to host a localization dashboard in every app.
+        </li>
+        <li value="3">
+            <b>Localized app without dashboard, reading localization from database</b><br />
+            An app to be localized can access the database to read its localization information. The localization dashboard is hosted elsewhere.
+        </li>
+        <li value="4">
+            <b>Localized app without dashboard, reading localization from a cache file</b><br />
+            An app to be localized can als receive cache files in which case it does not even need access to the localization database.
+        </li>
     </ol>
 
-    <p>
-        The setting can be declared in the <code>appsettings.json</code> file, as follows:
-    </p>
+    <p>In the following paragraphs we describe the different steps for a full setup, but also explain when this part is required</p>
 
-<pre>"Localization": {
-    "CompiledDataFileName": "LocalizationData.bin"
-}</pre>
+    <h3>Create Database Tables</h3>
 
-    <p>
-        Or in the Startup class,
-    </p>
+    <p><i>This step is required for installation 1, 2 and 3. Though it only needs to be done once per database, independent on the number of applications accessing the database.</i></p>
 
-<pre>services.AddArebisLocalization(Configuration, options =&gt; {
-    options.CompiledDataFileName = "LocalizationData.bin";
-    options.Domains = new string[] { "Base", "Trading", "TradingWebApp" };
-});</pre>
+    <p>Tables have to be created to store the localization data. Creation of the tables is done by executing a migration:</p>
 
-    <p>
-        However, Microsoft decided to discourage the use of BinaryFormatter for security reasons.
-        The argument is rightfully that binary serialization of data that is not trusted, can be dangerous. For this reason, you should ensure that the compiled data file is stored on a secured, trustworthy location. With the same security level as the compiled code of your application.<br />
-        If done so, there should be no real concern about using binary serialization, and the benefit of performance (both on speed of processing as on memory consumption of the deserialization process) are a good argument in favor of using this type of serialization.
-    </p>
-
-    <p>
-        The choice is up to you. If you do use the <code>CompiledDataFileName</code> setting, you should also enable binary serialization using the following configuration in ASP.NET project files:
-    </p>
-
-<pre>&lt;PropertyGroup&gt;
-    &lt;TargetFramework&gt;net5.0&lt;/TargetFramework&gt;
-    &lt;!-- Warning: Setting the following switch is *NOT* recommended in web apps. --&gt;
-    &lt;EnableUnsafeBinaryFormatterSerialization&gt;true&lt;/EnableUnsafeBinaryFormatterSerialization&gt;
-&lt;/PropertyGroup&gt;</pre>
-
-    <p>
-        If you do not use the <code>CompiledDataFileName</code> setting, localization data will be retrieved from database on every startup of the application and on explicit request.
-    </p>
-
-    <p>For more information, see: <a href="https://docs.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/5.0/binaryformatter-serialization-obsolete">BinaryFormatter serialization methods are obsolete and prohibited in ASP.NET apps</a>.</p>
-
-    <p>**** *****</p>
-
-    <h3>Register ContentDbContext</h3>
-
-    <p>To register the ContentDbContext, add the following line of code to the ConfigureServices method of the Startup class of your project:</p>
-<pre>
-<b><span class="new-code">services.AddDbContext&lt;Data.Content.ContentDbContext&gt;(options =&gt;
-    options.UseSqlServer(
-        Configuration.GetConnectionString("DefaultConnection")));</span></b>
-</pre>
-
-    <p>If you do not yet have a <code>"DefaultConnection"</code>, or whish to use a different connection, do not forget to register the connection in the ConnectionStrings section of your appsettings.js file.</p>
-
-    <h3>Add routing for the MvcDashboardContent area and for content rendering</h3>
-
-    <p>
-        Configure the following routes in the Configure method of your Startup class:
-    </p>
+    <p>Call the following command from the Visual Studio Package Manager Console to create the <code>localize</code> schema in your database:</p>
 
 <pre>
-app.UseEndpoints(endpoints =>
-{
-<b><span class="new-code">    endpoints.MapAreaControllerRoute(null, "MvcDashboardContent", "MvcDashboardContent/{controller=Home}/{action=Index}/{id?}");</span></b>
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
-    endpoints.MapRazorPages();
-<b><span class="new-code">    endpoints.MapControllerRoute(
-        name: "content",
-        pattern: "{**path}",
-        defaults: new { controller = "Content", action = "Render" });</span></b>
-});
+PM&gt; <b>Update-Database -Context "LocalizeDbContext"</b>
 </pre>
 
-    <p>The first registration (using MapAreaControllerRoute) will register the MvcDashbboardContent area and make the content manager dashboard available on the <code>/MvcDashboardContent</code> URL.</p>
-
-    <p>The last registration (using MapControllerRoute) <b>must be the very last endpoint</b> you register, as it will catch all remaining requests and send them to the ContentController which will try to render them based on the created documents.</p>
-
-    <p>It is up to you to modify the pattern by adding a culture segment if you are using the <code>RouteDataRequestCultureProvider</code>, or a route prefix if you whish so.</p>
-
-    <h3>Update Database</h3>
-
-    <p>Before running the application, make sure the database structure is extended with the <code>content</code> schema.</p>
-
-    <p>Call the following command from the Visual Studio Package Manager Console to create the <code>content</code> schema in your database:</p>
-
-<pre>
-PM&gt; <b>Update-Database -Context "ContentDbContext"</b>
-</pre>
-
-    <h2>Security</h2>
-
-    <p>The MvcDashboardContent is secured with role-based security. Following roles are supported:</p>
+    <p>Following tables will be created in the database:</p>
 
     <ul>
-        <li>
-            <b>Administrator</b><br />
-
-
-
-            A global administrator role that has full access.
-        </li>
-        <li>
-            <b>ContentAdministrator</b><br />
-
-
-
-            A content administrator role that has full access.
-        </li>
-        <li>
-            <b>ContentEditor</b><br />
-
-
-
-            A content editor role that can create, review and publish content, but cannot create or change document types nor change path security settings.
-        </li>
-        <li>
-            <b>ContentAuthor</b><br />
-
-
-
-            A content author role that can create and edit unpublished documents, as well as request publication, but cannot actually publish. Document types and path security settings are also unavailable to this role.
-        </li>
+        <li><b>[localize].[Domain]</b> (Id, Name, Cultures)</li>
+        <li><b>[localize].[Key]</b> (Id, DomainId, Name, MimeType, ForPath, ArgumentNames, ValuesToReview, Notes)</li>
+        <li><b>[localize].[KeyValue]</b> (Id, KeyId, Culture, Value, Reviewed)</li>
+        <li><b>[localize].[Query]</b> (Id, DomainId, Name, ConnectionName, Sql)</li>
     </ul>
 
-    <p>Note that the MvcDashboardContent only uses role-based security. As a consequence, an author that can edit documents, can edit all of them, not only the documents he created.</p>
+    <h3>Add routing for the MvcDashboardLocalize area</h3>
 
-    <p>It is up to you to assign the correct roles to the users. If you are using ASP.NET Core Identities, you can do so using the Arebis MvcDashboardIdentity.</p>
+    <p><i>This step is required for installation 1 and 2 as it is only required for the dashboard.</i></p>
+
+    <p>
+        The Arebis MvcDashboardLocalize component is implemented as an area. Therefore area routing must be defined. If this is not yet done in your project (if you do not use areas yet or did not define a default route for the areas), add the following (highlighted) code <i>before</i> the "default" route declaration:
+    </p>
+
+<pre>
+<b><span class="new-code">app.MapControllerRoute(
+    name: "area",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");</span></b>
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
+</pre>
+
+    <p>Find more about areas and area configuration here: <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/areas" target="_blank">https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/areas</a>.</p>
+
+    <h3>Access the Localization Dashboard</h3>
+
+    <p><i>This step is required for installation 1 and 2 only as it applies to the dashboard.</i></p>
+
+    <p>As to not come unsecure out of the box, the area is secured to be accessible only by users in the "Administrator" or "LocalizeAdministrator" role.</p>
+
+    <p>Either create any of those roles and assign it to your user account, or change the MvcDashboardLocalize code to rely on other roles.</p>
+
+    <p>For the latter, edit the <code>Areas\MvcDashboardLocalize\Controllers\BaseController.cs</code> file, and set whatever role(s) you want to secure the Localize dashboard with:</p>
+
+<pre>
+[Area("MvcDashboardIdentity")]
+<b>[Authorize(Roles = "<span class="highlight">Administrator,LocalizeAdministrator</span>")]</b>
+public abstract class BaseController : Controller
+{
+    ...
+</pre>
+
+    <h3>Configure application services</h3>
+
+    <p>Following code must be added to the Program.cs (or <code>ConfigureServices</code> method in Startup.cs) class to configure the localization services:</p>
+
+    <ol>
+        <li value="1">
+            Define the DbContext for localization data:<br />
+            <i>This is required for installations 1, 2 and 3.</i>
+        </li>
+    </ol>
+
+<pre><span class="new-code">builder.Services.AddDbContext&lt;<i>YourWebApp</i>.Data.Localize.LocalizeDbContext&gt;(optionsAction: options =&gt;
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));</span></pre>
+
+    <p><i><code>YourWebApp</code> should be replaced by the root namespace of the web project.</i></p>
+
+    <ol>
+        <li value="2">
+            Configure the localization source as being a LocalizeDbContext:<br />
+            <i>This is required for installations 1 and 3.</i>
+        </li>
+    </ol>
+
+<pre><span class="new-code">builder.Services.AddTransient&lt;ILocalizationSource, DbContextLocalizationSource&gt;();</span></pre>
+
+    <ol>
+        <li value="3">
+            Add localization services to the application:<br />
+            <i>This is required for installations 1 and 3.</i>
+        </li>
+    </ol>
+
+    <p>Either define the options in code and add the following code to the services configuration:</p>
+
+<pre><span class="new-code">builder.Services.AddLocalizationFromSource(builder.Configuration, options =&gt; {
+    options.AllowLocalizeFormat = false;
+    options.CacheFileName = <i>"LocalizationCache.json"</i>;
+    options.Domains = new string[] { <i>"BaseDomain", "IntermediateDomain", ..., "ApplicationDomain"</i> };
+    options.RouteDataStringKey = "culture";
+    options.UIRouteDataStringKey = "uiculture";
+    options.UseOnlyReviewedLocalizationValues = true;
+});</span></pre>
+
+    <p>Or define the options in <b>appsettings.json</b> and use the following minimal services setup:</p>
+
+<pre><span class="new-code">builder.Services.AddLocalizationFromSource();</span></pre>
+
+    <p>If a call to <b>services.AddLocalization()</b> is present, it should be removed as <b>AddLocalizationFromSource()</b> replaces it.</p>
+
+    <p>The <b>appsettings.json</b> file would then contain the settings as follows:</p>
+
+<pre>{
+<span class="new-code">  "Localization": {
+    "AllowLocalizeFormat":  false,
+    "CacheFileName": "<i>LocalizationCache.json</i>",
+    "Domains": [<i>"BaseDomain", "IntermediateDomain", .., "ApplicationDomain"</i>],
+    "RouteDataStringKey": "culture",
+    "UIRouteDataStringKey": "uiculture",
+    "UseOnlyReviewedLocalizationValues": false,
+  }</span>
+}</pre>
+
+    <p>The options are the following:</p>
+
+    <dl>
+        <dt><b>AllowLocalizeFormat</b></dt>
+        <dd>
+            Whether to support "__LocalizeFormat" query string parameter.<br />
+            If set to true, adding <code>?__LocalizeFormat=$[{0}]</code> to an URL on the site will replace all localized strings by the key (name) of the localized string surrounded by '$[' and ']'.
+            You can provide any localize format wherein "{0}" stands for the key of the localized string.<br />
+            If set to false (default), this feature is not enabled and adding <code>?__LocalizeFormat=$[{0}]</code> to an URL will have no effect.<br />
+            <i>Optional for installations 1, 3 and 4.</i>
+        </dd>
+        <dt><b>CacheFileName</b></dt>
+        <dd>
+            This is the name of a file that is created whenever database localization is read out. On subsequent application restarts, localization data is then
+            retrieved from this file to avoid expensive database access.<br />
+            If null, database will be accessed to load localization data on every application restart or localization publication.<br />
+            <i>Required for installation 4.</i><br />
+            <i>Strongly adviced in installations 1 and 3.</i><br />
+        </dd>
+        <dt><b>Domains</b></dt>
+        <dd>
+            The domains of localization to use for the localization of the current application. These domains are created with the localization dashboard.
+            Domains are listed in order where later domains can override localization data of previous domains. The last domain is considered the application domain and defines the available cultures.
+            The first culture of the last domain is considered the default culture.<br />
+            <i>Required for installations 1 and 3.</i><br />
+        </dd>
+        <dt><b>RouteDataStringKey</b></dt>
+        <dd>
+            When using <b>RouteDataRequestCultureProvider</b>, allows to overwrite "culture" key name.<br />
+            <i>Optional for installations 1, 2 and 3. Usually not set.</i><br />
+        </dd>
+        <dt><b>UIRouteDataStringKey</b></dt>
+        <dd>
+            When using <b>RouteDataRequestCultureProvider</b>, allows to overwrite "uiculture" key name.<br />
+            <i>Optional for installations 1, 2 and 3. Usually not set.</i><br />
+        </dd>
+        <dt><b>UseOnlyReviewedLocalizationValues</b></dt>
+        <dd>
+            Whether to localize the application using only translations marked as reviewed, or use all available translations.<br />
+            <i>By default true (us only reviewed translations). Optional for installations 1, 2 and 3.</i><br />
+        </dd>
+    </dl>
+
+    <h3>Additional Localization Services Setup (optional)</h3>
+
+    <i>Optional for installations 1, 3 and 4.</i>
+
+    <p>ModelBinding Localization will allow localization of model binding error messages such as the "<i>The value ... is invalid.</i>" a user gets when typing a word in a HTML field bound to an integer model property in an ASP.NET Core MVC setup.</p>
+
+    <p>To install it, add the following code to the application configuration code before calling AddMvc() or AddControllersWithViews():</p>
+
+<pre><span class="new-code">builder.Services.AddModelBindingLocalizationFromSource();</span></pre>
+
+    <p>To add localization for data annotation attributes (such as the [Display] attribute and the validation attributes provided they have an ErrorMessage property value), add a call to <b>AddDataAnnotationsLocalizationFromSource()</b>:</p>
+
+    <p>If a call to <b>AddDataAnnotationsLocalization()</b> is present, remove it as the call to <b>AddDataAnnotationsLocalizationFromSource()</b> replaces it.</p>
+
+    <p>If a call to <b>AddViewLocalization()</b> is present, it should also be removed.</p>
+
+<pre>builder.Services.AddControllersWithViews()
+    <span class="new-code">.AddDataAnnotationsLocalizationFromSource()</span>;</pre>
+
+    <p>To localize remaining ModelState error messages, you can add a <b>ModelStateLocalizationFilter</b> to the controllers.</p>
+
+    <p>And to provide access to Model and ViewData from within localization keys, install a <b>ControllerResultLocalizationFilter</b>.</p>
+
+    <p>Both filters can be installed with the following code:</p>
+
+<pre><span class="new-code">builder.Services.AddControllers(config =&gt;
+{
+    config.Filters.Add&lt;ModelStateLocalizationFilter&gt;();
+    config.Filters.Add&lt;ControllerResultLocalizationFilter&gt;();
+});</span></pre>
+
+    <h3>Translation Services</h3>
+
+    <p>The MvcDashboardLocalize component comes with a Bing, a DeepL and a Google translation service integration to assist in the creation of localized data.</p>
+
+    <p>The services are implemented in the /Localize folder of the project, together with the common interface definition they share: ITranslationService.</p>
+
+    <p>Each of these services requires you to create an account on their platform and generate an API key.</p>
+
+    <h4>Bing Translation Service Setup</h4>
+
+    <p>Install the Bing translation service with the following code:</p>
+
+<pre><span class="new-code">builder.Services.AddTransient&lt;ITranslationService, BingTranslationService&gt;();</span></pre>
+
+    <p>In addition the API key, or subscription key, must be made available, together with the <a href="https://learn.microsoft.com/en-us/azure/media-services/latest/azure-regions-code-names">region</a>, ideally in User Secrets. For instance (non-operational example key):</p>
+
+<pre>{
+<span class="new-code">    "BingApi": {
+        "SubscriptionKey": "0a123bc45678d90efa12345bc6789d0e",
+        "Region": "eastus"
+    }</span>
+}</pre>
+
+    <p>For more information, see: <a href="http://api.microsofttranslator.com">http://api.microsofttranslator.com</a>.</p>
+
+    <h4>DeepL Translation Service Setup</h4>
+
+    <p>Install the DeepL translation service with the following code:</p>
+
+<pre><span class="new-code">builder.Services.AddTransient&lt;ITranslationService, DeepLTranslationService&gt;();</span></pre>
+
+    <p>An API key must be made available, preferably via User Secrets, as in here (non-operational example key):</p>
+
+<pre>{
+<span class="new-code">    "DeepLApi": {
+        "ApiKey": "DeepL-Auth-Key ab12345c-678d-90e1-fa23-b456cd7890ef:fx"
+    }</span>
+}</pre>
+
+    <p>Note that the API key should start with "DeepL-Auth-Key " and typically ends with ":fx".</p>
+
+    <p>For more information, see: <a href="https://www.deepl.com/en/docs-api">https://www.deepl.com/en/docs-api</a>.</p>
+
+    <h4>Google Translation Service Setup</h4>
+
+    <p>Install the Google translation service with the following code:</p>
+
+<pre><span class="new-code">builder.Services.AddTransient&lt;ITranslationService, GoogleTranslationService&gt;();</span></pre>
+
+    <p>An API key must be made available, preferably via User Secrets, as in here (non-operational example key):</p>
+
+<pre>{
+<span class="new-code">    "GoogleApi": {
+        "ApiKey": "AbcDEfGhij01KLmNop23QrS-t4U56Vw7XYz8a90"
+    }
+</span>}</pre>
+
+    <p>For more information, see: <a href="https://cloud.google.com/translate">https://cloud.google.com/translate</a>.</p>
+
+    <h3>Request Localization</h3>
+
+    <p><i>This step is required for installation 1, 3 and 4.</i></p>
+
+    <p>With this, the request localization middleware still need to be in place. Do not forget to call the <b>app.UseRequestLocalization()</b> method as you would for any localizable application.</p>
+
+    <p>Read more about localization on: <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization?view=aspnetcore-6.0">https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization</a>.</p>
+
+
+    <h3>Project Cleanup</h3>
+
+    <p>If using installation mode 1 (dashboard on localized application), all parts added by the MvcDashboardLocalize component are required.</p>
+
+    <p>If using installation mode 2 (dashboard only), you should also leave all parts added by the MvcDashboardLocalize component in place.</p>
+
+    <p>If using installation mode 3 or 4 (no dashboard), you can remove the following elements:</p>
+
+    <ul>
+        <li><b>/Areas/MvcDashboardLocalize</b> (folder)</li>
+        <li><b>/Localize/BingTranslationService.cs</b> (file)</li>
+        <li><b>/Localize/DeepLTranslationService.cs</b> (file)</li>
+        <li><b>/Localize/GoogleTranslationService.cs</b> (file)</li>
+        <li><b>/Localize/ITranslationService.cs</b> (file)</li>
+    </ul>
+
+    <p>If using installation mode 4 (no dashboard and no database), you can also remove the following elements:</p>
+
+    <ul>
+        <li><b>/Data/Localize</b> (folder)</li>
+        <li><b>/Localize/DbContextLocalizationSource.cs</b> (file)</li>
+    </ul>
+
+    <h2>Localizing Apps</h2>
+
+    <p>When the setup process is done, run the application and access the localization dashboard usually on <a href="///MvcDashboardLocalize/">/MvcDashboardLocalize/</a>, though if using <b>RouteDataRequestCultureProvider</b>, a culture path may be required).</p>
+
+    <h2>About the cache file</h2>
+
+    <p>Within the MvcDashboardLocalize component, the localization cache file is important as it allows the application to read all localization data without performing expensive database queries.</p>
+
+    <p>When no cache file is available, the component will automatically access the database and create a cache file for next restarts.</p>
+
+    <p>Not that the first localized request of an application triggers the loading of <i>all</i> localization data in memory. The cache file is only used to speed up the processing of this <i>first</i> request.</p>
+
+    <p>As a consequence, localization data updates in the database are not visible in the application until:</p>
+    <ul>
+        <li>The [Publish] button is used in the dashboard (provided the dashboard is hosted in the localized application);</li>
+        <li>The cache file is deleted and the application restarted.</li>
+    </ul>
+
+
+    <p>&nbsp;</p>
 
     <hr />
 
