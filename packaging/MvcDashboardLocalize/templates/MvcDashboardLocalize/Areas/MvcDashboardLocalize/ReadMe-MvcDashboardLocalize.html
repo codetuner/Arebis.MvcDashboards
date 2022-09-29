@@ -269,14 +269,11 @@ public abstract class BaseController : Controller
 
     <p>To localize remaining ModelState error messages, you can add a <b>ModelStateLocalizationFilter</b> to the controllers.</p>
 
-    <p>And to provide access to Model and ViewData from within localization keys, install a <b>ControllerResultLocalizationFilter</b>.</p>
-
-    <p>Both filters can be installed with the following code:</p>
+    <p>Install the filter with the following code:</p>
 
 <pre><span class="new-code">builder.Services.AddControllers(config =&gt;
 {
     config.Filters.Add&lt;ModelStateLocalizationFilter&gt;();
-    config.Filters.Add&lt;ControllerResultLocalizationFilter&gt;();
 });</span></pre>
 
     <h3>Translation Services</h3>

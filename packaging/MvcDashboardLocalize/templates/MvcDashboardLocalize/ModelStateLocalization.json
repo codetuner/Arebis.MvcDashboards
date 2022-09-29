@@ -1,6 +1,15 @@
-/* ModelStateLocalization.json : defines ModelState error message patterns to be localized.
-** This file is part of the MvcDashboardLocalize component and is used by the ModelStateLocalizationFilter class.
-*/
+/**
+ * This file describes ModelState error message patterns and how to localize them.
+ * Every entry consists of a Pattern, a LocalizationKey and an optional ArgLocalization property.
+ * The pattern is a regular expression to match error messages upon.
+ * When a match is found, the LocalizationKey property indicates the localization key to use to
+ * localize this error message.
+ * If the pattern has groups, those match with positional arguments in the localization key. An
+ * ArgLocalization array must then be provided with exact as many boolean values as there are
+ * positional arguments in the LocalizationKey (or localized messages).
+ * A true as boolean value in ArgLocalization means the corresponding argument value must itself
+ * also be localized. A false meanse the argument value should not be localized.
+ */
 [
   {
     "Pattern": "^'(.*)' and '(.*)' do not match\\.$",
@@ -16,6 +25,16 @@
     "Pattern": "^(.*) is not valid\\.$",
     "LocalizationKey": "{0} is not valid.",
     "ArgLocalization": [ false ]
+  },
+  {
+    "Pattern": "^The value '(.*)' is invalid\\.$",
+    "LocalizationKey": "The value '{0}' is not valid.",
+    "ArgLocalization": [ false ]
+  },
+  {
+    "Pattern": "^The value '(.*)' is not valid for (.*)\\.$",
+    "LocalizationKey": "The value '{0}' is not valid for {1}.",
+    "ArgLocalization": [ false, true ]
   },
   {
     "Pattern": "^The (.*) field is not a valid e-mail address\\.$",
