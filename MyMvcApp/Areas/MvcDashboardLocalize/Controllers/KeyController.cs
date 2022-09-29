@@ -281,6 +281,12 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
                 }
             }
 
+            // Parse argument names for editor assistants:
+            model.Item.ArgumentNames = string.IsNullOrWhiteSpace(model.ArgumentNames)
+                ? null
+                : model.ArgumentNames.Split(',').Select(s => s.Trim()).Where(s => s.Length > 0).ToArray();
+
+            // Return the view:
             return View("Edit", model);
         }
 

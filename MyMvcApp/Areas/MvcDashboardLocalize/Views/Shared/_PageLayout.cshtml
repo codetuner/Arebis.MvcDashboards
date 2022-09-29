@@ -106,6 +106,17 @@
 
     </script>
     <script>
+        function insertArg(elementId, arg) {
+            var textarea = document.getElementById(elementId);
+            var selStart = textarea.selectionStart;
+            var selEnd = textarea.selectionEnd;
+            var text = textarea.value;
+            if (text.charAt(selEnd - 1) === ' ') selEnd--;
+            text = text.slice(0, selStart) + arg + text.slice(selEnd);
+            textarea.value = text;
+            textarea.selectionEnd = textarea.selectionStart + arg.length;
+            textarea.focus();
+        }
         function insertTag(elementId, prefix, postfix) {
             var textarea = document.getElementById(elementId);
             var selStart = textarea.selectionStart;

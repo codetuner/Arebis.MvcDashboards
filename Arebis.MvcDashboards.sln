@@ -5,6 +5,10 @@ VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyMvcApp", "MyMvcApp\MyMvcApp.csproj", "{49AB123F-C51B-40B1-9485-61D505E8985D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arebis.Core.Localization", "..\Arebis.Core\Arebis.Core.Localization\Arebis.Core.Localization.csproj", "{724B8E38-0B53-4B7D-9366-509758A4CFD0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arebis.Core.AspNet.Mvc.Localization", "..\Arebis.Core\Arebis.Core.AspNet.Mvc.Localization\Arebis.Core.AspNet.Mvc.Localization.csproj", "{DE358B4D-4FCD-4DAD-B7B8-C62A83E48BDC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{49AB123F-C51B-40B1-9485-61D505E8985D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49AB123F-C51B-40B1-9485-61D505E8985D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49AB123F-C51B-40B1-9485-61D505E8985D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{724B8E38-0B53-4B7D-9366-509758A4CFD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{724B8E38-0B53-4B7D-9366-509758A4CFD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{724B8E38-0B53-4B7D-9366-509758A4CFD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{724B8E38-0B53-4B7D-9366-509758A4CFD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE358B4D-4FCD-4DAD-B7B8-C62A83E48BDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE358B4D-4FCD-4DAD-B7B8-C62A83E48BDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE358B4D-4FCD-4DAD-B7B8-C62A83E48BDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE358B4D-4FCD-4DAD-B7B8-C62A83E48BDC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

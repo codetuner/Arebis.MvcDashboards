@@ -46,7 +46,6 @@ builder.Services.AddModelBindingLocalizationFromSource();
 builder.Services.AddControllers(config =>
 {
     config.Filters.Add<ModelStateLocalizationFilter>();
-    config.Filters.Add<ControllerResultLocalizationFilter>();
 });
 
 builder.Services.AddTransient<ILocalizationSource, DbContextLocalizationSource>();

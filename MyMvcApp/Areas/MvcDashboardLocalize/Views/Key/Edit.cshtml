@@ -27,8 +27,8 @@
             <div>
                 @foreach (var val in Model.Values)
                 {
-                    <i id="cult-rev-@(val.Culture)" class="far fa-check-square" onclick-click="<DIV|>A"></i>
-                    <i id="cult-tor-@(val.Culture)" class="far fa-square" onclick-click="<DIV|>A"></i>
+                    <i id="cult-rev-@(val.Culture)" class="fas fa-check" onclick-click="<DIV|>A"></i>
+                    <i id="cult-tor-@(val.Culture)" class="fas fa-check" onclick-click="<DIV|>A" style="color: #d0d0d0;"></i>
                     <a href="null" onclick-scrollintoview="#cult-@(val.Culture)" class="onunloadchanged-allow" style="margin-right: 1ch;" tabindex="-1">@(val.Culture)</a>
                 }
             </div>
@@ -60,7 +60,7 @@
 
     <div class="mb-3">
         <label for="@Html.IdFor(m => m.ArgumentNames)" class="form-label">Argument names (comma-separated list):</label>
-        <input asp-for="ArgumentNames" type="text" class="form-control" />
+        <input asp-for="ArgumentNames" type="text" class="form-control onchange-submit" />
         <span asp-validation-for="ArgumentNames" class="text-danger"></span>
     </div>
 
@@ -78,17 +78,32 @@
                 {
                     <span class="float-end">
                         <span id="@Html.IdFor(m => m.Values[i].Value)_tb" class="d-none d-sm-none d-md-inline">
-                            <button type="button" class="btn btn-light btn-sm" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<h1>', '</h1>');">&lt;H1&gt;</button>
-                            <button type="button" class="btn btn-light btn-sm" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<h2>', '</h2>');">&lt;H2&gt;</button>
-                            <button type="button" class="btn btn-light btn-sm" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<h3>', '</h3>');">&lt;H3&gt;</button>
-                            <button type="button" class="btn btn-light btn-sm" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<p>', '</p>');">&lt;P&gt;</button>
-                            <button type="button" class="btn btn-light btn-sm" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<div>', '</div>');">&lt;DIV&gt;</button>
-                            <button type="button" class="btn btn-light btn-sm" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<b>', '</b>');">&lt;b&gt;</button>
-                            <button type="button" class="btn btn-light btn-sm" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<i>', '</i>');">&lt;i&gt;</button>
-                            <button type="button" class="btn btn-light btn-sm" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<a href=\'\' target=\'_blank\'>', '</a>');">&lt;a&gt;</button>
+                            @foreach (var arg in Model.Item.ArgumentNames ?? Array.Empty<string>())
+                            {
+                                <button type="button" class="btn btn-light btn-sm p-0" onclick="insertArg('@(Html.IdFor(m => m.Values[i].Value))', '{{@(arg)}}');">{{@(arg)}}</button>
+                            }
+                            <button type="button" class="btn btn-light btn-sm p-0" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<h1>', '</h1>');">&lt;H1&gt;</button>
+                            <button type="button" class="btn btn-light btn-sm p-0" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<h2>', '</h2>');">&lt;H2&gt;</button>
+                            <button type="button" class="btn btn-light btn-sm p-0" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<h3>', '</h3>');">&lt;H3&gt;</button>
+                            <button type="button" class="btn btn-light btn-sm p-0" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<p>', '</p>');">&lt;P&gt;</button>
+                            <button type="button" class="btn btn-light btn-sm p-0" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<div>', '</div>');">&lt;DIV&gt;</button>
+                            <button type="button" class="btn btn-light btn-sm p-0" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<b>', '</b>');">&lt;b&gt;</button>
+                            <button type="button" class="btn btn-light btn-sm p-0" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<i>', '</i>');">&lt;i&gt;</button>
+                            <button type="button" class="btn btn-light btn-sm p-0" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<a href=\'\' target=\'_blank\'>', '</a>');">&lt;a&gt;</button>
                             |
                         </span>
-                        <button type="submit" class="btn btn-light btn-sm" asp-action="Preview" asp-route-id="@Model.Item.Id" asp-route-previewculture="@Model.Values[i].Culture" target="#preview-modal-body">Preview</button>
+                        <button type="submit" class="btn btn-light btn-sm p-0" asp-action="Preview" asp-route-id="@Model.Item.Id" asp-route-previewculture="@Model.Values[i].Culture" target="#preview-modal-body">Preview</button>
+                    </span>
+                }
+                else if (Model.Item.ArgumentNames?.Any() ?? false)
+                {
+                    <span class="float-end">
+                        <span id="@Html.IdFor(m => m.Values[i].Value)_tb" class="d-none d-sm-none d-md-inline">
+                            @foreach(var arg in Model.Item.ArgumentNames ?? Array.Empty<string>())
+                            {
+                                <button type="button" class="btn btn-light btn-sm p-0" onclick="insertArg('@(Html.IdFor(m => m.Values[i].Value))', '{{@(arg)}}');">{{@(arg)}}</button>
+                            }
+                        </span>
                     </span>
                 }
                 <label>
@@ -153,7 +168,7 @@
                 <h5 class="modal-title">Preview</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div id="preview-modal-body" class="modal-body">
+            <div id="preview-modal-body" class="modal-body" style="min-height: 200px;">
                 <h1 class="text-center">
                     <i class="fas fa-spinner fa-spin"></i>
                 </h1>

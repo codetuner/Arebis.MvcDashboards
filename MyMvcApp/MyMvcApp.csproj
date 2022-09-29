@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Arebis.Core.AspNet.Mvc.Localization" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.9" />
@@ -17,6 +16,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Arebis.Core\Arebis.Core.AspNet.Mvc.Localization\Arebis.Core.AspNet.Mvc.Localization.csproj" />
+    <ProjectReference Include="..\..\Arebis.Core\Arebis.Core.Localization\Arebis.Core.Localization.csproj" />
   </ItemGroup>
 
   <ItemGroup>
