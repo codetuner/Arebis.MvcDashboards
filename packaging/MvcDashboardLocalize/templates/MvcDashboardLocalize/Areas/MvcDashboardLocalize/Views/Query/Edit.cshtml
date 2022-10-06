@@ -88,7 +88,7 @@
     WHERE
        LanguageCode IN ('{cultures}')</pre>
                 <p>
-                    This could for instance result in following rows, defining the <b>ProdLabel1</b>, <b>ProdLabel2</b>, <b>ProdDescription1</b> and <b>ProdDescription2</b> resource keys:
+                    This could for instance result in following rows, defining the <b>ProdLabel1</b>, <b>ProdLabel2</b>, <b>ProdDescription1</b> and <b>ProdDescription2</b> resource keys in two languages:
                 </p>
                 <table class="table table-bordered table-sm">
                     <thead>
@@ -109,11 +109,25 @@
                             <td>A 2-wheel vehicle.</td>
                         </tr>
                         <tr>
+                            <td>fr</td>
+                            <td>ProdLabel1</td>
+                            <td>Vélo</td>
+                            <td>ProdDescription1</td>
+                            <td>Un véhicule à 2 roues.</td>
+                        </tr>
+                        <tr>
                             <td>en</td>
                             <td>ProdLabel2</td>
                             <td>Car</td>
                             <td>ProdDescription2</td>
                             <td>A 4-wheel vehicle.</td>
+                        </tr>
+                        <tr>
+                            <td>fr</td>
+                            <td>ProdLabel2</td>
+                            <td>Voiture</td>
+                            <td>ProdDescription2</td>
+                            <td>Un véhicule à 4 roues.</td>
                         </tr>
                     </tbody>
                 </table>
