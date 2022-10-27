@@ -131,6 +131,19 @@
             textarea.focus();
         }
     </script>
+    <script>
+        $(function () {
+            $(document).on("focusout", ".x-onfocusout-validatehtml", function () {
+                if (!$(this).is("[readonly]")) {
+                    var d = document.createElement('div');
+                    d.innerHTML = $(this).val();
+                    if (d.innerHTML != $(this).val()) {
+                        $(this).val(d.innerHTML);
+                    }
+                }
+            });
+        });
+    </script>
     @RenderSection("Scripts", required: false)
 </head>
 <body>
