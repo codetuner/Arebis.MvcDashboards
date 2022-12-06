@@ -72,7 +72,7 @@
                 <input type="hidden" asp-for="Values[i].Culture" />
                 <h5 class="card-title">@Model.Values[i].Culture</h5>
                 <div class="grow-wrap" style="max-height: 12em">
-                    <textarea asp-for="Values[i].Value" class="form-control" rows="1" style="max-height: 12em"></textarea>
+                    <textarea asp-for="Values[i].Value" class="form-control @(Model.Item.MimeType == "text/html" ? "x-onfocusout-validatehtml" : null)" rows="1" style="max-height: 12em"></textarea>
                 </div>
                 @if (Model.Item.MimeType == "text/html")
                 {
