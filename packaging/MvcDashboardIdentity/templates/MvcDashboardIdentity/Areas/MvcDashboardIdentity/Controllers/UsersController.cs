@@ -137,7 +137,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
         public async Task<IActionResult> Edit(string id)
         {
             // Retrieve data:
-            var user = await userManager.FindByIdAsync(id);
+            var user = (await userManager.FindByIdAsync(id)) ?? new IdentityUser() { Id = "", ConcurrencyStamp = "" };
 
             // Build model:
             var model = new EditModel
