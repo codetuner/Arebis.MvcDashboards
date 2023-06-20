@@ -137,7 +137,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
         public async Task<IActionResult> Edit(string id)
         {
             // Retrieve data:
-            var user = (await userManager.FindByIdAsync(id)) ?? new IdentityUser() { Id = "", ConcurrencyStamp = "" };
+            var user = (await userManager.FindByIdAsync(id)) ?? new IdentityUser() { Id = "NEW", ConcurrencyStamp = "" };
 
             // Build model:
             var model = new EditModel
@@ -299,7 +299,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
         {
             IdentityResult result;
             IdentityUser storedUser;
-            if (user.Id == null)
+            if (user.Id == "NEW")
             {
                 // Create user object:
                 user.Id = Guid.NewGuid().ToString();

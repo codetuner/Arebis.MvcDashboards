@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
 {
     [Area("MvcDashboardIdentity")]
-    [Authorize(Roles = "Administrator,IdentityAdministrator")] // Comment this line to disable security
+    [Authorize(Roles = "Administrator,IdentityAdministrator")] // Commenting out this line disables security
     public abstract class BaseController : Controller
     {
         [HttpGet]

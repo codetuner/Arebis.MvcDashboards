@@ -81,17 +81,37 @@ app.MapRazorPages();
 
 <pre>
 [Area("MvcDashboardIdentity")]
-<b>[Authorize(Roles = "<span class="highlight">Administrator,IdentityAdministrator</span>")]<span style="color: #00a000"> // Comment this line to disable security</span></b>
+<b>[Authorize(Roles = "<span class="highlight">Administrator,IdentityAdministrator</span>")]<span style="color: #00a000"> // Commenting out this line disables security</span></b>
 public abstract class BaseController : Controller
 {
     ...
 </pre>
 
-<p>To create the roles and assign them to your user account, either update data in the database directly, or temporarily disable security on the MvcDashboardIdentity component so
-   you can use the component to create the required roles and assign them to user accounts. You can easily disable security on the MvcDashboardIdentity component by putting the
-    <code>[Authorize(Roles = "Administrator,IdentityAdministrator")]</code> attribute shown in the above code extract in comments. Don't forget to uncomment afterwards.</p>
+<p>
+    To provide your initial account access to the dashboard, you can create the Administrator role and make an existing user member of this role using following database script (substitute the USERNAME):
+</p>
+<pre>
+<span style="color: #00a000">-- Create 'Administrator' role:</span>
+INSERT INTO [dbo].[AspNetRoles] ([Id], [Name], [NormalizedName]) VALUES (NEWID(), 'Administrator', 'ADMINISTRATOR')
 
-<p>To access the MvcDashboardIdentity area, run your website and navigate to ~<span style="color: mediumblue; text-decoration: underline">/MvcDashboardIdentity</span>.</p>
+<span style="color: #00a000">-- Add given user to the 'Administrator' role:</span>
+INSERT INTO [dbo].[AspNetUserRoles] ([UserId], [RoleId])
+SELECT (SELECT [Id] FROM [dbo].[AspNetUsers] WHERE [UserName] = '<b><span class="highlight">USERNAME</span></b>'), (SELECT [Id] FROM [dbo].[AspNetRoles] WHERE [Name] = 'Administrator')
+</pre>
+
+
+
+<p>
+    Alternatively you can temporarily disable security on the MvcDashboardIdentity component so you can use the component to create
+    the required roles and assign them to user accounts.
+</p>
+<p>
+    You can disable security on the MvcDashboardIdentity component by putting the
+    <code>[Authorize(Roles = "Administrator,IdentityAdministrator")]</code> attribute shown in the above code extract in comments. Don't forget to uncomment afterwards!
+</p>
+<p>
+    To access the MvcDashboardIdentity area, run your website and navigate to ~<span style="color: mediumblue; text-decoration: underline">/MvcDashboardIdentity</span>.
+</p>
 
 <p>&nbsp;</p>
 <hr/>
