@@ -1,0 +1,260 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MvcDashboardTasks - @(ViewBag.Title)</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sircl@2.3.2/sircl.css" />
+    <style>
+
+        BODY {
+            background-color: #f8f8f0;
+        }
+
+        .card {
+            background-color: #fafaf8;
+        }
+
+        #body-content {
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            padding-top: 38px;
+            padding-bottom: 28px;
+        }
+
+        h2 {
+            padding-top: 36px;
+            padding-bottom: 24px;
+        }
+
+        .auto-width {
+            width: auto;
+        }
+
+        .x-no-wrap {
+            white-space: nowrap;
+        }
+
+        .x-text-dimmed {
+            color: #a0a0a0 !important;
+        }
+
+        *[href] {
+            cursor: pointer;
+        }
+
+        .pagination .page-item {
+            min-width: 48px;
+            text-align: right;
+        }
+
+            .pagination .page-item input[type=radio] {
+                display: none;
+            }
+
+        .overlay {
+            background: rgba(0,0,0,0.33);
+            position: absolute;
+            padding: 0;
+            margin: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: .25rem;
+        }
+
+        .validation-summary-valid {
+            display: none;
+        }
+
+        .x-btn-inline {
+            padding: 0 0 4px 0;
+        }
+
+        BODY .whileloading-show {
+            display: none;
+        }
+
+        BODY .whileloading-hide {
+            display: inline-block; /* See https://stackoverflow.com/a/17403359 */
+        }
+
+        BODY.body-loading .whileloading-show {
+            display: inline-block; /* See https://stackoverflow.com/a/17403359 */
+        }
+
+        BODY.body-loading .whileloading-hide {
+            display: none;
+        }
+
+        .navbar .active {
+            background-color: dimgray;
+            border-radius: var(--bs-border-radius);
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.2/sircl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.2/sircl-extended.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.2/sircl-changeactions.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.2/sircl-bootstrap5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.2/sircl-toastr.js"></script>
+    <script type="text/javascript">
+
+        var appId = "MvcDashboardTasks";
+
+        sircl.mainTargetSelector$ = "#body-content";
+
+        sircl.addRequestHandler("onError", function (req) {
+            if (req.method == "get") {
+                location.href = req.action;
+            } else {
+                alert("An error occured with the request.");
+                this.next(req);
+            }
+        });
+
+    </script>
+    <script>
+
+        // Set Toastr options:
+        toastr.options = {
+            "positionClass": "toast-bottom-right",
+        }
+
+        // Auto-refresh Tasks index:
+        $(function () {
+            setInterval(function () {
+                var archk = document.getElementById("autoRefresh");
+                if (archk != null && archk.checked) {
+                    var form = document.getElementById("taskIndexForm");
+                    if (form != null) {
+                        //sircl.ext.submit(form); // <== checkboxes ok, but returns to first page every time
+                        sircl._loadUrl($(form), window.location, $(sircl.mainTargetSelector$), null) // <== keeps page but erases checkboxes
+                    }
+                }
+            }, 10000);
+        });
+
+        // DateTime formatting:
+        var dateAndTimeFormat = {
+            year: "2-digit",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false,
+        };
+        $$(function() {
+            $(this).find(".x-datetime-utc-local").each(function() {
+                if (this.innerText !== "") {
+                    try {
+                        var dt = new Date(this.innerText);
+                        this.innerText = Intl.DateTimeFormat('default', dateAndTimeFormat).format(dt);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+            });
+            $(this).find("INPUT[type='x-datetime-utc-local']").each(function() {
+                try {
+                    // Get date, convert to local time:
+                    var dt = new Date(this.value);
+                    dt.setMilliseconds(0);
+                    dt.setSeconds(0);
+                    dt = new Date(dt.getTime() - dt.getTimezoneOffset() * 60000);
+                    // Build hidden field to hold the UTC value and keep in sync:
+                    var local = this;
+                    var universal = document.createElement("INPUT");
+                    universal.type = "hidden";
+                    universal.name = local.name;
+                    universal.form = local.form;
+                    universal.value = local.value;
+                    local.value = dt.toISOString().replace("Z", "");
+                    local.type = 'datetime-local';
+                    local.addEventListener("change", function () {
+                        var dt = new Date(local.value);
+                        dt = new Date(dt.getTime());
+                        universal.value = dt.toISOString();
+                    });
+                    local.parentNode.insertBefore(universal, this);
+                    local.name = null;
+                } catch (error) {
+                    console.error(error);
+                }
+            });
+        });
+
+    </script>
+    @RenderSection("Scripts", required: false)
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <span>
+                <i class="whileloading-show fas fa-spinner fa-spin" style="color: limegreen; margin-right: 3px;"></i>
+                <a class="navbar-brand" asp-area="MvcDashboardTasks" asp-controller="Home" asp-action="Index">
+                    <i class="whileloading-hide fas fa-tachometer-alt"></i>&nbsp;MvcDashboardTasks
+                </a>
+                <span class="btn-group" role="group" onload-load="@Url.Action("MvcDashboardsDropdown", "Home")"></span>
+            </span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navBarMainContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navBarMainContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item" ifroute-setactive="\/Task(\/|$)">
+                        <a class="nav-link" asp-area="MvcDashboardTasks" asp-controller="Task" asp-action="Index"><i class="far fa-calendar-check"></i> Tasks</a>
+                    </li>
+                    <li class="nav-item" ifroute-setactive="\/TaskDefinition(\/|$)">
+                        <a class="nav-link" asp-area="MvcDashboardTasks" asp-controller="TaskDefinition" asp-action="Index"><i class="fas fa-calendar"></i> Definitions</a>
+                    </li>
+                </ul>
+                <form class="d-flex" asp-area="MvcDashboardTasks" asp-controller="Task" asp-action="Index" method="get">
+                    <input class="form-control me-2 onfocus-select" type="search" placeholder="/ Search" aria-label="Search" name="Query">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    <span onkeydown-click="/" onclick-focus="<FORM|>INPUT"></span>
+                </form>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/" target="_self"><i class="fas fa-sign-out-alt"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+
+        @if (typeof(MyMvcApp.Areas.MvcDashboardTasks.Controllers.BaseController).GetCustomAttributes(typeof(Microsoft.AspNetCore.Authorization.AuthorizeAttribute), true).Length == 0)
+        {
+            <div class="card text-white bg-danger m-3">
+                <div class="card-header">Security Warning</div>
+                <div class="card-body">
+                    <h5 class="card-title">Your Tasks Dashboard is unsecured</h5>
+                    <div class="card-text">
+                        <p>Uncomment the <code style="color: aqua;">[Authorize(Roles = "Administrator,TasksAdministrator")]</code> attribute on the BaseController class of the Tasks Dashboard.</p>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div id="body-content">
+            @RenderBody()
+        </div>
+
+    </div>
+
+    <p></p>
+
+</body>
+</html>

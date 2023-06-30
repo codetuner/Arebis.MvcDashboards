@@ -1,0 +1,56 @@
+﻿@model IndexModel
+@{
+    ViewBag.Title = "Task Definitions";
+}
+
+<h1>Task Definitions</h1>
+
+<form class="card p-3 bg-white onchange-submit" action="@Url.Action("Index")" method="get" history="replace" sub-target="#subTarget">
+
+    <div class="d-flex justify-content-between">
+        <a href="@Url.Action("New")" class="btn btn-primary" onkeydown-click="+"><i class="spinner fas fa-plus"></i> New</a>
+        <div class="flex-grow-1"></div>
+        <div>&nbsp;&nbsp;</div>
+        <div>
+            <input type="search" class="form-control oninput-change" asp-for="Query" style="max-width: 280px;" autocomplete="off" placeholder="Search" />
+        </div>
+    </div>
+
+    <div id="subTarget">
+
+        <div class="overlay" hidden></div>
+
+        <div class="table-responsive">
+            <table class="table table-hover mt-3">
+                <thead>
+                    <tr>
+                        <th class="d-none onchange-nosubmit"><input type="checkbox" ifchecked-check="<table|>tbody input[type=checkbox]" ifunchecked-uncheck="<table|>tbody input[type=checkbox]" /></th>
+                        <th asp-order="@Model.Order" width="5%">Id</th>
+                        <th asp-order="@Model.Order" width="45%">Name</th>
+                        <th asp-order="@Model.Order" width="40%" field-name="ImplementationClass">Implementation Class</th>
+                        <th asp-order="@Model.Order" width="10%" field-name="IsActive">Is Active</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        var tdclass = (!item.IsActive) ? "x-text-dimmed" : null;
+                        <tr href="@Url.Action("Edit", new { id = item.Id })">
+                            <td class="d-none onchange-nosubmit" onclick-propagate="off"><input type="checkbox" /></td>
+                            <td>@item.Id</td>
+                            <td class="@tdclass">
+                                <strong>@(item.Name)</strong>
+                            </td>
+                            <td class="@tdclass">@item.ImplementationClass</td>
+                            <td class="@tdclass">@Html.Raw(item.IsActive ? "<i class=\"fa fa-check\"></i>" : "")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <pagesize-select asp-for="PageSize" class="form-control auto-width float-end"></pagesize-select>
+        <pagination-nav asp-for="Page" max="Model.MaxPage" />
+
+    </div>
+
+</form>

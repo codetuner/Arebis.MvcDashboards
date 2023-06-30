@@ -1,0 +1,99 @@
+﻿@model EditModel
+@{
+    ViewBag.Title = Model.Item.Name ?? Model.Item.Definition?.Name ?? "(no name)";
+}
+
+<h1>Task @(Model.Item.Id) : <small class="text-muted">@(Model.Item.Name ?? Model.Item.Definition?.Name ?? "(no name)")</small></h1>
+
+<div>
+
+    <div>
+        <table class="table table-bordered" style="border-radius: var(--bs-border-radius)">
+            <tr>
+                <th style="text-align: right" width="10%">Name:</th>
+                <th>@(Model.Item.Name ?? Model.Item.Definition?.Name)</th>
+            </tr>
+            <tr>
+                <th style="text-align: right">Definition :</th>
+                <td><a asp-controller="TaskDefinition" asp-action="Edit" asp-route-id="@(Model.Item.DefinitionId)">@(Model.Item.Definition?.Name)</a></td>
+            </tr>
+            <tr>
+                <th style="text-align: right">Queue :</th>
+                <td>@(Model.Item.QueueName)</td>
+            </tr>
+            <tr>
+                <th style="text-align: right">Machine :</th>
+                <td>@(Model.Item.MachineName)</td>
+            </tr>
+            <tr>
+                <th style="text-align: right" valign="top">Arguments :</th>
+                <td><pre>@(Model.Item.Arguments)</pre></td>
+            </tr>
+            <tr>
+                <th style="text-align: right">Time created :</th>
+                <td class="x-datetime-utc-local">@(Model.Item.UtcTimeCreated.ToString("u"))</td>
+            </tr>
+            <tr>
+                <th style="text-align: right">Time scheduled :</th>
+                <td class="x-datetime-utc-local">@(Model.Item.UtcTimeToExecute.ToString("u"))</td>
+            </tr>
+            <tr>
+                <th style="text-align: right">Time started :</th>
+                <td class="x-datetime-utc-local">@(Model.Item.UtcTimeStarted?.ToString("u"))</td>
+            </tr>
+            <tr>
+                <th style="text-align: right">Time ended :</th>
+                <td class="x-datetime-utc-local">@(Model.Item.UtcTimeDone?.ToString("u"))</td>
+            </tr>
+            <tr>
+                <th style="text-align: right">Duration :</th>
+                <td>@(Model.Item.Duration) @Html.Raw(Model.Item.IsRunning ? "<i>running</i>" : "")</td>
+            </tr>
+            <tr>
+                <th style="text-align: right">Outcome :</th>
+                <td>
+                    @if (Model.Item.Succeeded == true)
+                    {
+                        <text><i class="fa fa-check"></i> Succeeded</text>
+                    }
+                    else if (Model.Item.Succeeded == false)
+                    {
+                        <text><i class="fas fa-times"></i> Failed</text>
+                    }
+                    else if (Model.Item.IsRunning)
+                    {
+                        <text><i class="fas fa-running"></i> Running</text>
+                    }
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    @if (Model.Item.UtcTimeDone == null && Model.Item.UtcTimeStarted.HasValue && Model.Item.UtcTimeStarted.Value.AddMinutes(5) < DateTime.UtcNow)
+    {
+        <form>
+            <div class="alert alert-warning">
+                This task is still running. If this task is hanging due to an ungracefull shutdown of the host, you can either <button class="btn btn-link x-btn-inline" formaction="@Url.Action("ForceRestart", new { id = Model.Item.Id })" formmethod="post" onclick-confirm="Are you sure you want to restart this task ?">restart</button> or <button class="btn btn-link x-btn-inline" formaction="@Url.Action("ForceAbort", new { id = Model.Item.Id })" formmethod="post" onclick-confirm="Are you sure you want to abort this task ?">abort</button> this task.
+            </div>
+        </form>
+    }
+
+    <div class="mb-3">
+        @if (Model.Item.Id != 0)
+        {
+            <a class="btn btn-outline-secondary float-end" asp-action="New" asp-route-cloneOfId="@Model.Item.Id"><i class="spinner fa fa-clone"></i> Clone</a>
+        }
+        <a href="history:back" class="btn btn-secondary"><i class="fas fa-angle-left"></i> Back</a>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Output:</label>
+        <pre id="output" class="form-control">@(Model.Item.Output)</pre>
+    </div>
+    <div class="mb-3">
+        <a class="btn btn-outline-secondary btn-sm float-end" href="javascript:navigator.clipboard.writeText(document.getElementById('output').innerText)"><i class="spinner fa fa-copy"></i> Copy</a>
+    </div>
+
+    <p>&nbsp;</p>
+
+</div>

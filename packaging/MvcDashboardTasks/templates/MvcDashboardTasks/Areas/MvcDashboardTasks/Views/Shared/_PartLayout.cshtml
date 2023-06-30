@@ -1,0 +1,5 @@
+﻿@{ 
+    this.Context.Response.Headers.Add("X-Sircl-Document-Title", "MvcDashboardTasks - " + ViewBag.Title);
+}
+<script>if (typeof appId === "undefined" || appId != "MvcDashboardTasks") { location.reload(); }</script>
+@RenderBody()

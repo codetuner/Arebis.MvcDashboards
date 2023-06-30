@@ -1,0 +1,80 @@
+﻿@model EditModel
+@{
+    ViewBag.Title = (Model.Item.Id == 0) ? "new" : Model.Item.Name ?? Model.Item.Definition?.Name ?? "(no name)";
+}
+
+<h1>Task @((Model.Item.Id == 0) ? "" : Model.Item.Id.ToString()) : <small class="text-muted">@((Model.Item.Id == 0) ? "new" : Model.Item.Name ?? Model.Item.Definition?.Name ?? "(no name)")</small></h1>
+
+<form asp-action="Submit" asp-route-id="@Model.Item.Id" method="post" onkeyenter-click="" autocomplete="off" onchange-set="HasChanges" onunloadchanged-confirm="Changes will be lost. Proceed anyway ?">
+
+    <div class="overlay" hidden></div>
+
+    <input type="hidden" asp-for="Item.Id" />
+    <input type="hidden" asp-for="Item.Version" />
+    <input type="hidden" asp-for="Item.UtcTimeCreated" />
+    <input type="hidden" asp-for="HasChanges" />
+
+    <div asp-validation-summary="All" class="alert alert-danger alert-dismissible fade show mb-3">
+        <strong>Following errors have occured:</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="mb-3">
+        <label for="@Html.IdFor(m => m.Item.DefinitionId)" class="form-label">Definition: *</label>
+        <div class="input-group">
+            <select asp-for="Item.DefinitionId" asp-items="Model.Definitions!.Select(t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = (t.Id == Model.Item.DefinitionId) })" class="form-control onchange-submit">
+                <option value="">-</option>
+            </select>
+            @if (Model.Item.DefinitionId != 0)
+            {
+                <a class="btn btn-outline-secondary" asp-controller="TaskDefinition" asp-action="Edit" asp-route-id="@(Model.Item.DefinitionId)">...</a>
+            }
+        </div>
+        <span asp-validation-for="Item.DefinitionId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="@Html.IdFor(m => m.Item.Name)" class="form-label">Name:</label>
+        <input asp-for="Item.Name" type="text" class="form-control" />
+        <span asp-validation-for="Item.Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="@Html.IdFor(m => m.Item.QueueName)" class="form-label">Queue name:</label>
+        <input asp-for="Item.QueueName" type="text" class="form-control" />
+        <span asp-validation-for="Item.QueueName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="@Html.IdFor(m => m.Item.MachineName)" class="form-label">Machine name:</label>
+        <div class="input-group">
+            <input asp-for="Item.MachineName" type="text" class="form-control" />
+            <button class="btn btn-outline-secondary" type="button" onclick="document.getElementById('@(Html.IdFor(m => m.Item.MachineName))').value = '@(Environment.MachineName)'">Current</button>
+        </div>
+        <span asp-validation-for="Item.MachineName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="@Html.IdFor(m => m.Item.Arguments)" class="form-label">Arguments: <small>1 argument per line in <i>Name=Value</i> format</small></label>
+        <textarea asp-for="Item.Arguments" class="form-control" rows="6"></textarea>
+        <span asp-validation-for="Item.Arguments" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="@Html.IdFor(m => m.Item.UtcTimeToExecute)" class="form-label">Time to execute:</label>
+        <input name="Item.UtcTimeToExecute" value="@(Model.Item.UtcTimeToExecute.ToString("u"))" type="x-datetime-utc-local" class="form-control" />
+        <span asp-validation-for="Item.UtcTimeToExecute" class="text-danger"></span>
+    </div>
+
+    @if (Model.Item.Id != 0)
+    {
+        <div class="float-end">
+            <a class="btn btn-outline-secondary" asp-action="New" asp-route-cloneOfId="@Model.Item.Id"><i class="spinner fa fa-clone"></i> Clone</a>
+            <button type="submit" class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?"><i class="spinner fas fa-trash-alt"></i> Delete</button>
+        </div>
+    }
+    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-check"></i> Save</button>
+    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true" onkeydown-click="Ctrl+S"><i class="spinner fas fa-check"></i> Apply</button>
+    <a href="history:back" class="btn btn-secondary"><i class="fas fa-angle-left"></i> Back</a>
+
+</form>
