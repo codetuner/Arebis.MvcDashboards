@@ -1,0 +1,112 @@
+﻿@model IndexModel
+@{
+    ViewBag.Title = "Tasks";
+}
+
+<h1>Tasks</h1>
+
+<form id="taskIndexForm" class="card p-3 bg-white onchange-submit" action="@Url.Action("Index")" method="get" history="replace" sub-target="#subTarget">
+
+    <div class="d-flex justify-content-between">
+        <a href="@Url.Action("New", new { definitionId = Model.DefinitionId })" class="btn btn-primary @(Model.Definitions.Any() ? "" : "disabled")" onkeydown-click="+"><i class="spinner fas fa-plus"></i> New</a>
+        <div class="flex-grow-1"></div>
+        <div>&nbsp;&nbsp;</div>
+        <div style="border: solid 1px var(--bs-border-color); border-radius: var(--bs-border-radius);">
+            <label class="btn"><input type="radio" name="StatusFilter" value="" checked="@(String.IsNullOrEmpty(Model.StatusFilter) ? "checked" : null)" /> All</label>
+            <label class="btn"><input type="radio" name="StatusFilter" value="Queued" checked="@(Model.StatusFilter == "Queued" ? "checked" : null)" /> Queued</label>
+            <label class="btn"><input type="radio" name="StatusFilter" value="Running" checked="@(Model.StatusFilter == "Running" ? "checked" : null)" /> Running</label>
+            <label class="btn"><input type="radio" name="StatusFilter" value="Succeeded" checked="@(Model.StatusFilter == "Succeeded" ? "checked" : null)" /> Succeeded</label>
+            <label class="btn"><input type="radio" name="StatusFilter" value="Failed" checked="@(Model.StatusFilter == "Failed" ? "checked" : null)" /> Failed</label>
+        </div>
+        <div>&nbsp;&nbsp;</div>
+        <div>
+            <select class="form-control auto-width" asp-for="DefinitionId" asp-items="Model.Definitions"><option value="">All</option></select>
+        </div>
+        <div>&nbsp;&nbsp;</div>
+        <div>
+            <input type="search" class="form-control oninput-change" asp-for="Query" style="max-width: 280px;" autocomplete="off" placeholder="Search" />
+        </div>
+    </div>
+
+    <div id="subTarget">
+
+        <div class="overlay" hidden></div>
+
+        <div class="table-responsive">
+            <table class="table table-hover mt-3">
+                <thead>
+                    <tr>
+                        <th class="onchange-nosubmit"><input type="checkbox" name="SelectionMaster" value="True" checked="@(Model.SelectionMaster ? "checked" : null)" onchecked-check="<table|>tbody input[type=checkbox]" onunchecked-uncheck="<table|>tbody input[type=checkbox]" /></th>
+                        <th asp-order="@Model.Order" class="x-no-wrap">Id</th>
+                        <th asp-order="@Model.Order" class="x-no-wrap" width="40%">Name</th>
+                        <th asp-order="@Model.Order" field-name="QueueName" class="x-no-wrap">Queue</th>
+                        <th asp-order="@Model.Order" field-name="MachineName" class="x-no-wrap">Machine</th>
+                        <th asp-order="@Model.Order" field-name="UtcTimeCreated">Created</th>
+                        <th asp-order="@Model.Order" field-name="UtcTimeToExecute">Scheduled</th>
+                        <th asp-order="@Model.Order" field-name="UtcTimeStarted">Started</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        var tdstyle = (item.Succeeded == true) ? ""
+                            : (item.Succeeded == false) ? "background-color: var(--bs-danger-bg-subtle)"
+                            : (item.UtcTimeStarted.HasValue) ? "background-color: var(--bs-info-bg-subtle)"
+                            : null;
+                        var tdclass= (item.UtcTimeStarted == null && !item.Definition.IsActive) ? "x-text-dimmed" : null;
+                        <tr href="@Url.Action("Edit", new { id = item.Id })">
+                            <td style="@tdstyle" class="onchange-nosubmit" onclick-propagate="off"><input type="checkbox" name="Selection" value="@item.Id" checked="@(Model.Selection != null && Model.Selection.Contains(item.Id) ? "checked" : null)" /></td>
+                            <td style="@tdstyle">@item.Id</td>
+                            <td style="@tdstyle" class="@tdclass">
+                                @if (item.Succeeded == true)
+                                {
+                                    @*<i class="fas fa-check"></i>*@
+                                    <i class="far fa-calendar-check"></i>
+                                }
+                                else if (item.Succeeded == false)
+                                {
+                                    @*<i class="fas fa-times"></i>*@
+                                    <i class="fas fa-calendar-times"></i>
+                                }
+                                else if (item.UtcTimeStarted.HasValue)
+                                {
+                                    <i class="fas fa-running"></i>
+                                    @*<i class="fas fa-calendar"></i>*@
+                                }
+                                else
+                                {
+                                    <i class="far fa-calendar"></i>
+                                }
+                                <strong>@(item.Name ?? item.Definition.Name)</strong>
+                            </td>
+                            <td style="@tdstyle" class="@tdclass x-no-wrap">@item.QueueName</td>
+                            <td style="@tdstyle" class="@tdclass x-no-wrap">@item.MachineName</td>
+                            <td style="@tdstyle" class="@tdclass x-no-wrap x-datetime-utc-local">@(item.UtcTimeCreated.ToString("u"))</td>
+                            <td style="@tdstyle" class="@tdclass x-no-wrap x-datetime-utc-local">@(item.UtcTimeToExecute.ToString("u"))</td>
+                            <td style="@tdstyle" class="@tdclass x-no-wrap x-datetime-utc-local">@(item.UtcTimeStarted.HasValue ? item.UtcTimeStarted.Value.ToString("u") : "")</td>
+                            <td style="@tdstyle">@(item.Duration?.ToString("hh\\:mm\\:ss"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <pagesize-select asp-for="PageSize" class="form-control auto-width float-end"></pagesize-select>
+        <pagination-nav asp-for="Page" max="Model.MaxPage" />
+
+        <div>
+            <span class="float-end">
+                <div class="form-check form-switch">
+                    <label class="form-check-label" for="autoRefresh">Auto-refresh</label>
+                    <input class="form-check-input" type="checkbox" id="autoRefresh" name="@(Html.NameFor(m => m.AutoRefresh))" value="True" checked="@(Model.AutoRefresh ? "checked" : null)">
+                </div>
+            </span>
+            <button class="btn btn-danger" formaction="@Url.Action("IndexDelete")" formmethod="post" enable-ifanychecked="[name=Selection]" onclick-confirm="Are you sure ?
+Note that only unstarted tasks will be deleted.">
+                <i class="spinner fas fa-trash"></i> Delete
+            </button>
+        </div>
+
+    </div>
+
+</form>

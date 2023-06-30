@@ -12,7 +12,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "fr/",
+      "launchUrl": "fr/MvcDashboardTasks/Task/",
       "applicationUrl": "https://localhost:7169;http://localhost:5169",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

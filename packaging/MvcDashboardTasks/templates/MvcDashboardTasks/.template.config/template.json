@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "codetuner",
+    "classifications": ["Web", "MVC", "Dashboard", "Tasks", "Jobs", "Scheduler"],
+    "identity": "Arebis.MvcDashboardTasks",
+    "name": "ASP.NET MVC Dashboard Tasks",
+    "shortName": "MvcDashboardTasks",
+    "tags": {
+        "language": "C#",
+        "type": "item"
+    },
+    "sourceName": "MyMvcApp", // Will replace the string 'MyMvcApp' with the value provided via -n.
+    "preferNameDirectory": "true"
+}

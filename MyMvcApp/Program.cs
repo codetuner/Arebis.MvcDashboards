@@ -95,6 +95,15 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 #endregion
 
+#region Tasks
+
+builder.Services.AddDbContext<MyMvcApp.Data.Tasks.TasksDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddHostedService<MyMvcApp.Tasks.TaskScheduler>();
+
+#endregion
 
 var app = builder.Build();
 
