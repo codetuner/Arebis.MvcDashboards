@@ -72,7 +72,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
         public async Task<IActionResult> Edit(string id = "0")
         {
             // Retrieve data:
-            var role = await roleManager.FindByIdAsync(id);
+            var role = (await roleManager.FindByIdAsync(id)) ?? new IdentityRole() { Id = "NEW" };
 
             // Build model:
             var model = new EditModel() { Item = role };
@@ -142,7 +142,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
 
         private async Task<IdentityResult?> SaveRoleAsync(IdentityRole role)
         {
-            if (role.Id == null)
+            if (role.Id == "NEW")
             {
                 role.Id = Guid.NewGuid().ToString();
                 return await roleManager.CreateAsync(role);
