@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using MyMvcApp.Data;
 using MyMvcApp.Localize;
+using MyMvcApp.Logging;
+using System.Configuration;
 using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -105,11 +107,22 @@ builder.Services.AddHostedService<MyMvcApp.Tasks.TaskScheduler>();
 
 #endregion
 
+#region Logging
+
+builder.Services.AddDbContext<MyMvcApp.Data.Logging.LoggingDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<MyMvcApp.Logging.RequestLogger>();
+
+#endregion
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 }
 else
@@ -118,6 +131,15 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+#region Logging
+
+app.UseArebisRequestLog()
+    .LogSlowRequests()
+    .LogExceptions() // Note that Exceptions are not logged when the DevelopersExceptionPage is used.
+    .LogNotFounds();
+
+#endregion
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
