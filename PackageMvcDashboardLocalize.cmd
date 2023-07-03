@@ -13,6 +13,8 @@ ECHO Edit the template file then save and close to proceed.
 NOTEPAD "%~dp0packaging\MvcDashboardLocalize\templates\MvcDashboardLocalize\.template.config\template.json"
 ECHO Edit the project file (version nr etc) then save and close to proceed.
 NOTEPAD "%~dp0packaging\MvcDashboardLocalize\templatepack.csproj"
+ECHO Edit the README file then save and close to proceed.
+NOTEPAD "%~dp0packaging\MvcDashboardLocalize\docs\README.md"
 PUSHD "%~dp0packaging\MvcDashboardLocalize"
 DOTNET pack
 ECHO.

@@ -12,6 +12,8 @@ ECHO Edit the template file then save and close to proceed.
 NOTEPAD "%~dp0packaging\MvcDashboardTasks\templates\MvcDashboardTasks\.template.config\template.json"
 ECHO Edit the project file (version nr etc) then save and close to proceed.
 NOTEPAD "%~dp0packaging\MvcDashboardTasks\templatepack.csproj"
+ECHO Edit the README file then save and close to proceed.
+NOTEPAD "%~dp0packaging\MvcDashboardTasks\docs\README.md"
 PUSHD "%~dp0packaging\MvcDashboardTasks"
 DOTNET pack
 ECHO.
