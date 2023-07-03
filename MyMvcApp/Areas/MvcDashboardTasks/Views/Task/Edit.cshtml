@@ -5,6 +5,17 @@
 
 <h1>Task @((Model.Item.Id == 0) ? "" : Model.Item.Id.ToString()) : <small class="text-muted">@((Model.Item.Id == 0) ? "new" : Model.Item.Name ?? Model.Item.Definition?.Name ?? "(no name)")</small></h1>
 
+@if (Model.Item.Definition != null && !Model.Item.Definition.IsActive)
+{
+    <div class="card text-white bg-warning mb-3">
+        <div class="card-body">
+            <div class="card-text">
+                The task definition of this task is not active. Therefore this task will not run.
+            </div>
+        </div>
+    </div>
+}
+
 <form asp-action="Submit" asp-route-id="@Model.Item.Id" method="post" onkeyenter-click="" autocomplete="off" onchange-set="HasChanges" onunloadchanged-confirm="Changes will be lost. Proceed anyway ?">
 
     <div class="overlay" hidden></div>
