@@ -1,0 +1,7 @@
+﻿@* Provide access to extension methods etc: *@
+@using MyMvcApp.Areas.MvcDashboardLogging
+@* Register default tag helpers: *@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper MyMvcApp.Areas.MvcDashboardLogging.TagHelpers.PaginationNavTagHelper, MyMvcApp
+@addTagHelper MyMvcApp.Areas.MvcDashboardLogging.TagHelpers.PageSizeSelectTagHelper, MyMvcApp
+@addTagHelper MyMvcApp.Areas.MvcDashboardLogging.TagHelpers.OrderableTableHeaderTagHelper, MyMvcApp

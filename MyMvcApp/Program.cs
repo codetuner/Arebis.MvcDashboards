@@ -136,7 +136,7 @@ else
 
 app.UseArebisRequestLog()
     .LogSlowRequests()
-    .LogExceptions() // Note that Exceptions are not logged when the DevelopersExceptionPage is used.
+    .LogExceptions()
     .LogNotFounds();
 
 #endregion

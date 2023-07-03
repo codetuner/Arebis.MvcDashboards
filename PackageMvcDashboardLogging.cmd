@@ -12,6 +12,10 @@ ECHO Edit the template file then save and close to proceed.
 NOTEPAD "%~dp0packaging\MvcDashboardLogging\templates\MvcDashboardLogging\.template.config\template.json"
 ECHO Edit the project file (version nr etc) then save and close to proceed.
 NOTEPAD "%~dp0packaging\MvcDashboardLogging\templatepack.csproj"
+
+ECHO Edit the README file then save and close to proceed.
+NOTEPAD "%~dp0packaging\MvcDashboardLogging\docs\README.md"
+
 PUSHD "%~dp0packaging\MvcDashboardLogging"
 DOTNET pack
 ECHO.
