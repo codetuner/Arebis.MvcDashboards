@@ -31,9 +31,13 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
         public IActionResult Index(IndexModel model)
         {
             // Retrieve data:
-            var query = context.RequestLogs.AsQueryable();
+            var query = context.RequestLogs
+                .AsQueryable()
+                .Where(d => model.AspectFilter == null || d.AspectName == model.AspectFilter)
+                .Where(d => model.Bookmarked == false || d.IsBookmarked == true);
             if (!String.IsNullOrWhiteSpace(model.Query))
-                query = query.Where(d => d.Message!.Contains(model.Query) || d.Url!.Contains(model.Query) || d.User!.Contains(model.Query) || d.Details!.Contains(model.Query));
+                query = query
+                    .Where(d => d.Message!.Contains(model.Query) || d.Url!.Contains(model.Query) || d.User!.Contains(model.Query) || d.Details!.Contains(model.Query));
 
             // Build model:
             var count = query
