@@ -123,6 +123,46 @@
         });
 
     </script>
+    <script>
+
+        // DateTime formatting:
+        var dateAndTimeFormat = {
+            year: "2-digit",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false,
+        };
+        $$(function () {
+            $(this).find(".x-datetime-utc").each(function () {
+                if (this.innerText !== "") {
+                    try {
+                        // Get date/time in UTC:
+                        var dt = new Date(this.innerText);
+                        // Present as UTC:
+                        this.innerText = Intl.DateTimeFormat('default', { timeZone: 'utc', ...dateAndTimeFormat }).format(dt);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+            });
+            $(this).find(".x-datetime-utc-local").each(function () {
+                if (this.innerText !== "") {
+                    try {
+                        // Get date/time in UTC:
+                        var dt = new Date(this.innerText);
+                        // Present as local time:
+                        this.innerText = Intl.DateTimeFormat('default', dateAndTimeFormat).format(dt);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+            });
+        });
+
+    </script>
     @RenderSection("Scripts", required: false)
 </head>
 <body>

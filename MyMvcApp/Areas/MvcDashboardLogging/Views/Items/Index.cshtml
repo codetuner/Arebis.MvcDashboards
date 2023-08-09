@@ -49,8 +49,8 @@
                     {
                         <tr href="@Url.Action("Edit", new { id = item.Id })" class="@(item.Aspect.HtmlClass)" style="@(item.Aspect.HtmlStyle)">
                             <td class="onchange-nosubmit" onclick-propagate="off"><input type="checkbox" name="Selection" value="@item.Id" /></td>
-                            <td>@item.Timestamp</td>
-                            <td>@item.Host</td>
+                            <td class="x-datetime-utc-local" style="white-space: nowrap">@(item.Timestamp.ToString("u"))</td>
+                            <td style="white-space: nowrap">@item.Host</td>
                             <td>
                                 @Html.Raw(item.Aspect.HtmlIcon)
                                 @if (item.Aspect == LogAspect.Error) { <b>@(item.Message ?? item.AspectName)</b> } else { <span>@(item.Message ?? item.AspectName)</span> }
