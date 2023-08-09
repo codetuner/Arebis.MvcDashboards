@@ -12,7 +12,7 @@
     <span class="float-end">
         Trace identifier: <b>@item.TraceIdentifier</b>
     </span>
-    <b>@item.Timestamp</b>
+    <b class="x-datetime-utc-local">@(item.Timestamp.ToString("u"))</b> - (<span class="x-datetime-utc">@(item.Timestamp.ToString("u"))</span> UTC)
 </div>
 <div class="mb-1">
     <font size="6">

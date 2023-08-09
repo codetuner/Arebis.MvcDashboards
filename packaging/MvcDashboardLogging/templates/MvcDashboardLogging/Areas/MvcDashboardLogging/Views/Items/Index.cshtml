@@ -9,7 +9,21 @@
 
     <div class="d-flex justify-content-between">
         <div class="flex-grow-1"></div>
-        <div class="">
+        <div style="border: solid 1px var(--bs-border-color); border-radius: var(--bs-border-radius);">
+            <label class="btn"><input type="radio" name="AspectFilter" value="" checked="@(String.IsNullOrEmpty(Model.AspectFilter) ? "checked" : null)" /> All</label>
+            <label class="btn"><input type="radio" name="AspectFilter" value="Error" checked="@(Model.AspectFilter == "Error" ? "checked" : null)" /> Error</label>
+            <label class="btn"><input type="radio" name="AspectFilter" value="Security" checked="@(Model.AspectFilter == "Security" ? "checked" : null)" /> Security</label>
+            <label class="btn"><input type="radio" name="AspectFilter" value="Attention" checked="@(Model.AspectFilter == "Attention" ? "checked" : null)" /> Attention</label>
+            <label class="btn"><input type="radio" name="AspectFilter" value="NotFound" checked="@(Model.AspectFilter == "NotFound" ? "checked" : null)" /> NotFound</label>
+            <label class="btn"><input type="radio" name="AspectFilter" value="Timing" checked="@(Model.AspectFilter == "Timing" ? "checked" : null)" /> Timing</label>
+            <label class="btn"><input type="radio" name="AspectFilter" value="Information" checked="@(Model.AspectFilter == "Information" ? "checked" : null)" /> Information</label>
+        </div>
+        <div>&nbsp;&nbsp;</div>
+        <div style="border: solid 1px var(--bs-border-color); border-radius: var(--bs-border-radius); white-space: nowrap;">
+            <label class="btn"><input type="checkbox" name="Bookmarked" value="true" checked="@((Model.Bookmarked) ? "checked" : null)" /> Bookmarked</label>
+        </div>
+        <div>&nbsp;&nbsp;</div>
+        <div>
             <input type="search" class="form-control oninput-change" asp-for="Query" style="max-width: 280px;" autocomplete="off" placeholder="Search" />
         </div>
     </div>
@@ -35,8 +49,8 @@
                     {
                         <tr href="@Url.Action("Edit", new { id = item.Id })" class="@(item.Aspect.HtmlClass)" style="@(item.Aspect.HtmlStyle)">
                             <td class="onchange-nosubmit" onclick-propagate="off"><input type="checkbox" name="Selection" value="@item.Id" /></td>
-                            <td>@item.Timestamp</td>
-                            <td>@item.Host</td>
+                            <td class="x-datetime-utc-local" style="white-space: nowrap">@(item.Timestamp.ToString("u"))</td>
+                            <td style="white-space: nowrap">@item.Host</td>
                             <td>
                                 @Html.Raw(item.Aspect.HtmlIcon)
                                 @if (item.Aspect == LogAspect.Error) { <b>@(item.Message ?? item.AspectName)</b> } else { <span>@(item.Message ?? item.AspectName)</span> }
