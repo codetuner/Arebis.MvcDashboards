@@ -18,6 +18,10 @@
                 <td><a asp-controller="TaskDefinition" asp-action="Edit" asp-route-id="@(Model.Item.DefinitionId)">@(Model.Item.Definition?.Name)</a></td>
             </tr>
             <tr>
+                <th style="text-align: right">Process Role :</th>
+                <td>@(Model.Item.Definition?.ProcessRole)</td>
+            </tr>
+            <tr>
                 <th style="text-align: right">Queue :</th>
                 <td>@(Model.Item.QueueName)</td>
             </tr>

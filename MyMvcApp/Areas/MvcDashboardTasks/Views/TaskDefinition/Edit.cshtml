@@ -24,7 +24,8 @@
     </div>
 
     <div class="mb-3">
-        <label for="@Html.IdFor(m => m.Item.Name)" class="form-label">Implementation class: *</label>
+        <label for="@Html.IdFor(m => m.Item.ImplementationClass)" class="form-label">Implementation class: *</label>
+        <i class="fas fa-info-circle float-end" data-bs-toggle="tooltip" title="Specify the full name of the class that implements this task type."></i>
         <input asp-for="Item.ImplementationClass" type="text" class="form-control" list="implementationcandidates" />
         <datalist id="implementationcandidates">
             @foreach (var item in Model.ImplementationCandidateNames)
@@ -33,6 +34,19 @@
             }
         </datalist>
         <span asp-validation-for="Item.ImplementationClass" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="@Html.IdFor(m => m.Item.ProcessRole)" class="form-label">Process role:</label>
+        <i class="fas fa-info-circle float-end" data-bs-toggle="tooltip" title="Specify the process role that that defines the implementation class and is capable of running tasks of this class. Leave empty if all process instances can run this task type."></i>
+        <input asp-for="Item.ProcessRole" type="text" class="form-control" list="processrolecandidates" />
+        <datalist id="processrolecandidates">
+            @foreach (var item in Model.ProcessRoleCandidateNames)
+            {
+                <option value="@item" />
+            }
+        </datalist>
+        <span asp-validation-for="Item.ProcessRole" class="text-danger"></span>
     </div>
 
     <div class="mb-3">

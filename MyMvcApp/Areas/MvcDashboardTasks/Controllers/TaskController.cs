@@ -65,16 +65,36 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         }
 
         public async Task<IActionResult> IndexDelete(IndexModel model)
-        { 
+        {
+            var deletedCount = 0;
+            var skippedCount = 0;
             if (model.Selection != null)
             {
                 foreach (var id in model.Selection)
                 {
                     var task = context.Tasks.Find(id);
-                    if (task != null && task.UtcTimeStarted == null) context.Tasks.Remove(task);
+                    if (task != null && task.UtcTimeStarted == null)
+                    {
+                        context.Tasks.Remove(task);
+                        deletedCount++;
+                    }
+                    else
+                    {
+                        skippedCount++;
+                    }
                 }
                 await context.SaveChangesAsync();
             }
+            
+            if (skippedCount > 0)
+            {
+                this.SetToastrMessage("warning", $"{deletedCount} task(s) deleted. Some tasks were already running or completed and could not be deleted.");
+            }
+            else if (deletedCount> 0)
+            {
+                this.SetToastrMessage("success", $"{deletedCount} task(s) deleted.");
+            }
+
 
             model.Selection = null;
             model.SelectionMaster = false;
