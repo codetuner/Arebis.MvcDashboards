@@ -1,6 +1,6 @@
 ## Introduction
 
-This component contains an ASP.NET Core MVC 6 item template consisting of:
+This component contains an ASP.NET Core MVC 7 item template consisting of:
 
 - A DbContext schema for holding scheduled task information in database,
 - A hosted (background) service to execute scheduled tasks,
@@ -12,7 +12,7 @@ To install the project item template (to be done once per developer machine):
 
     dotnet new --install Arebis.MvcDashboardTasks
 
-To add the package to an ASP.NET Core MVC 6 project, from the project folder:
+To add the package to an ASP.NET Core MVC 7 project, from the project folder:
 
     dotnet new MvcDashboardTasks
 

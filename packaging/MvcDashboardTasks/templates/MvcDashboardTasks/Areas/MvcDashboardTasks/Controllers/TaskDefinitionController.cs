@@ -164,6 +164,14 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 .OrderBy(n => n)
                 .ToList();
 
+            // Retrieve candidate process role names:
+            model.ProcessRoleCandidateNames = context.TaskDefinitions
+                .Where(d => d.ProcessRole != null)
+                .Select(d => d.ProcessRole!)
+                .Distinct()
+                .OrderBy(s => s)
+                .ToList();
+
             // Return the view:
             return View("Edit", model);
         }

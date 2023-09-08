@@ -56,7 +56,7 @@
                             : null;
                         var tdclass= (item.UtcTimeStarted == null && !item.Definition.IsActive) ? "x-text-dimmed" : null;
                         <tr href="@Url.Action("Edit", new { id = item.Id })">
-                            <td style="@tdstyle" class="onchange-nosubmit" onclick-propagate="off"><input type="checkbox" name="Selection" value="@item.Id" checked="@(Model.Selection != null && Model.Selection.Contains(item.Id) ? "checked" : null)" /></td>
+                            <td style="@tdstyle" class="onchange-nosubmit" onclick-propagate="off"><input type="checkbox" class="@(item.UtcTimeStarted == null ? "candelete" : null)" name="Selection" value="@item.Id" checked="@(Model.Selection != null && Model.Selection.Contains(item.Id) ? "checked" : null)" /></td>
                             <td style="@tdstyle">@item.Id</td>
                             <td style="@tdstyle" class="@tdclass">
                                 @if (item.Succeeded == true)
@@ -101,7 +101,7 @@
                     <input class="form-check-input" type="checkbox" id="autoRefresh" name="@(Html.NameFor(m => m.AutoRefresh))" value="True" checked="@(Model.AutoRefresh ? "checked" : null)">
                 </div>
             </span>
-            <button class="btn btn-danger" formaction="@Url.Action("IndexDelete")" formmethod="post" enable-ifanychecked="[name=Selection]" onclick-confirm="Are you sure ?
+            <button class="btn btn-danger" formaction="@Url.Action("IndexDelete")" formmethod="post" enable-ifanychecked="[name=Selection].candelete" onclick-confirm="Are you sure ?
 Note that only unstarted tasks will be deleted.">
                 <i class="spinner fas fa-trash"></i> Delete
             </button>

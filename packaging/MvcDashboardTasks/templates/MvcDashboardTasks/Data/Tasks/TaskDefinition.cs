@@ -15,6 +15,8 @@ namespace MyMvcApp.Data.Tasks
 
         [Required]
         public virtual string? ImplementationClass { get; set; }
+        
+        public virtual string? ProcessRole { get; set; }
 
         public virtual string? Arguments { get; set; }
 

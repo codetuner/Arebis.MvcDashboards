@@ -19,9 +19,9 @@ namespace MyMvcApp.Tasks
         private readonly TaskSchedulerMainLoop mainLoop;
         private Thread? mainLoopThread;
 
-        public TaskScheduler(IServiceProvider serviceProvider, ILogger<TaskScheduler> logger)
+        public TaskScheduler(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<TaskScheduler> logger)
         {
-            this.mainLoop = new TaskSchedulerMainLoop(serviceProvider, logger, mainLoopCancellationTokenSource);
+            this.mainLoop = new TaskSchedulerMainLoop(serviceProvider, configuration, logger, mainLoopCancellationTokenSource);
         }
 
         public System.Threading.Tasks.Task StartAsync(CancellationToken cancellationToken)
@@ -50,16 +50,24 @@ namespace MyMvcApp.Tasks
     public class TaskSchedulerMainLoop
     {
         private readonly IServiceProvider serviceProvider;
+        private readonly IConfiguration configuration;
         private readonly ILogger<TaskScheduler> logger;
         private readonly CancellationTokenSource mainLoopCancellationTokenSource;
         private readonly Dictionary<string, (ConcurrentQueue<int>, Thread)> queueThreads = new();
         private readonly ConcurrentDictionary<Thread, Thread> runningThreads = new();
+        private readonly string? processRole;
+        private readonly int schedulerMinimalDelayMs;
+        private readonly int schedulerExtendedDelayMs;
 
-        public TaskSchedulerMainLoop(IServiceProvider serviceProvider, ILogger<TaskScheduler> logger, CancellationTokenSource mainLoopCancellationTokenSource)
+        public TaskSchedulerMainLoop(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<TaskScheduler> logger, CancellationTokenSource mainLoopCancellationTokenSource)
         {
             this.serviceProvider = serviceProvider;
+            this.configuration = configuration;
             this.logger = logger;
             this.mainLoopCancellationTokenSource = mainLoopCancellationTokenSource;
+            this.processRole = configuration.GetValue<string?>("Tasks:ProcessRole", null);
+            this.schedulerMinimalDelayMs = configuration.GetValue<int>("Tasks:SchedulerInitialDelayMs", 2000);
+            this.schedulerExtendedDelayMs = configuration.GetValue<int>("Tasks:SchedulerExtendedDelayMs", 3000);
         }
 
         public void Run()
@@ -68,7 +76,7 @@ namespace MyMvcApp.Tasks
             while (true)
             {
                 // Wait a little before requerying the database for tasks:
-                if (mainLoopCancellationToken.WaitHandle.WaitOne(2000))
+                if (mainLoopCancellationToken.WaitHandle.WaitOne(schedulerMinimalDelayMs))
                 {
                     break;
                 }
@@ -81,6 +89,7 @@ namespace MyMvcApp.Tasks
                         var dbContext = scope.ServiceProvider.GetRequiredService<TasksDbContext>();
                         var tasks = dbContext.Tasks
                             .Include(t => t.Definition)
+                            .Where(t => t.Definition.ProcessRole == null || t.Definition.ProcessRole == processRole)
                             .Where(t => t.MachineName == null || t.MachineName == Environment.MachineName)
                             .Where(t => t.Definition.IsActive == true)
                             .Where(t => t.UtcTimeToExecute <= DateTime.UtcNow && t.UtcTimeStarted == null)
@@ -89,7 +98,7 @@ namespace MyMvcApp.Tasks
                             .ToList();
 
                         // If no tasks, take longer nap:
-                        if (!tasks.Any()) if (mainLoopCancellationToken.WaitHandle.WaitOne(3000)) break; else continue;
+                        if (!tasks.Any()) if (mainLoopCancellationToken.WaitHandle.WaitOne(schedulerExtendedDelayMs)) break; else continue;
 
                         // Post tasks on respective queues:
                         foreach (var task in tasks)
@@ -180,7 +189,8 @@ namespace MyMvcApp.Tasks
                         try
                         {
                             // Retrieve implementation type:
-                            var implementationType = Type.GetType(task.Definition.ImplementationClass)!;
+                            var implementationType = Type.GetType(task.Definition.ImplementationClass);
+                            if (implementationType == null) throw new Exception($"Could not find implementation class \"{task.Definition.ImplementationClass}\". Check class name or specify ProcessRole of the task definition.");
                             var implementation = (ITaskImplementation)ActivatorUtilities.CreateInstance(scope.ServiceProvider, implementationType)!;
 
                             // Parse arguments:
@@ -255,7 +265,7 @@ namespace MyMvcApp.Tasks
             {
                 if (strvalue == "")
                 {
-                    return new int[0];
+                    return Array.Empty<int>();
                 }
                 else
                 {
@@ -264,9 +274,9 @@ namespace MyMvcApp.Tasks
             }
             else if (propertyType == typeof(string[]))
             {
-                if (strvalue == "")
+                if (strvalue == String.Empty)
                 {
-                    return new string[0];
+                    return Array.Empty<string>();
                 }
                 else
                 {

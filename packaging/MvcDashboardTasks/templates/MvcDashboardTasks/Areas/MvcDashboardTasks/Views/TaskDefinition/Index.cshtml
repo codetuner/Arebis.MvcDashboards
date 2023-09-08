@@ -26,8 +26,9 @@
                     <tr>
                         <th class="d-none onchange-nosubmit"><input type="checkbox" ifchecked-check="<table|>tbody input[type=checkbox]" ifunchecked-uncheck="<table|>tbody input[type=checkbox]" /></th>
                         <th asp-order="@Model.Order" width="5%">Id</th>
-                        <th asp-order="@Model.Order" width="45%">Name</th>
-                        <th asp-order="@Model.Order" width="40%" field-name="ImplementationClass">Implementation Class</th>
+                        <th asp-order="@Model.Order" width="35%">Name</th>
+                        <th asp-order="@Model.Order" width="25%" field-name="ProcessRole">Process Role</th>
+                        <th asp-order="@Model.Order" width="25%" field-name="ImplementationClass">Implementation Class</th>
                         <th asp-order="@Model.Order" width="10%" field-name="IsActive">Is Active</th>
                     </tr>
                 </thead>
@@ -41,6 +42,7 @@
                             <td class="@tdclass">
                                 <strong>@(item.Name)</strong>
                             </td>
+                            <td class="@tdclass">@item.ProcessRole</td>
                             <td class="@tdclass">@item.ImplementationClass</td>
                             <td class="@tdclass">@Html.Raw(item.IsActive ? "<i class=\"fa fa-check\"></i>" : "")</td>
                         </tr>
