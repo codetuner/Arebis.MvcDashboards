@@ -265,7 +265,7 @@ namespace MyMvcApp.Tasks
             {
                 if (strvalue == "")
                 {
-                    return new int[0];
+                    return Array.Empty<int>();
                 }
                 else
                 {
@@ -274,9 +274,9 @@ namespace MyMvcApp.Tasks
             }
             else if (propertyType == typeof(string[]))
             {
-                if (strvalue == "")
+                if (strvalue == String.Empty)
                 {
-                    return new string[0];
+                    return Array.Empty<string>();
                 }
                 else
                 {

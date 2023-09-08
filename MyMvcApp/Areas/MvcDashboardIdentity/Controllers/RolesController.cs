@@ -31,7 +31,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
             var query = roleManager.Roles.AsQueryable();
             if (!String.IsNullOrWhiteSpace(model.Query))
                 query = query
-                    .Where(d => d.NormalizedName.Contains(model.Query));
+                    .Where(d => d.NormalizedName!.Contains(model.Query));
 
             // Build model:
             var count = query
@@ -102,7 +102,8 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteRequest(string id)
         {
-            var role = await roleManager.FindByIdAsync(id);
+            var role = await roleManager.FindByIdAsync(id)
+                ?? throw new NullReferenceException($"Failed to find role with Id {id}.");
             return View("DeleteRequest", new DeleteRequestModel() { Item = role });
         }
 
@@ -149,7 +150,8 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
             }
             else
             {
-                var storedRole = await roleManager.FindByIdAsync(role.Id);
+                var storedRole = await roleManager.FindByIdAsync(role.Id)
+                    ?? throw new NullReferenceException($"Failed to find role with id {role.Id}.");
                 if (storedRole.Name == role.Name) return null;
 
                 storedRole.Name = role.Name;
