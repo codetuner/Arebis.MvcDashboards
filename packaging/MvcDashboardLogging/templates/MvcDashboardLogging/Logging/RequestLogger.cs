@@ -59,13 +59,13 @@ namespace MyMvcApp.Logging
                 this.record.Request["Scheme"] = httpContext.Request.Scheme;
                 foreach (var pair in httpContext.Request.Headers)
                 {
-                    this.record.Request["Header: " + pair.Key] = pair.Value;
+                    this.record.Request["Header: " + pair.Key] = pair.Value!;
                 }
                 if (httpContext.Request.HasFormContentType)
                 {
                     foreach (var pair in httpContext.Request.Form)
                     {
-                        this.record.Request["Form: " + pair.Key] = pair.Value;
+                        this.record.Request["Form: " + pair.Key] = pair.Value!;
                     }
                 }
 

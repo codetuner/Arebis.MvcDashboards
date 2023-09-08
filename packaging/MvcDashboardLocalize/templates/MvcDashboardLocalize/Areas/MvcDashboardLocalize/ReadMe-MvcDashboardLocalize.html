@@ -117,7 +117,7 @@ app.MapRazorPages();
     <p>For the latter, edit the <code>Areas\MvcDashboardLocalize\Controllers\BaseController.cs</code> file, and set whatever role(s) you want to secure the Localize dashboard with:</p>
 
 <pre>
-[Area("MvcDashboardIdentity")]
+[Area("MvcDashboardLocalize")]
 <b>[Authorize(Roles = "<span class="highlight">Administrator,LocalizeAdministrator</span>")]</b>
 public abstract class BaseController : Controller
 {
