@@ -74,7 +74,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
             var query = context.Users.AsQueryable();
             if (!String.IsNullOrWhiteSpace(model.Query))
             {
-                query = query.Where(d => d.NormalizedUserName.Contains(model.Query) || d.NormalizedEmail.Contains(model.Query));
+                query = query.Where(d => d.NormalizedUserName!.Contains(model.Query) || d.NormalizedEmail!.Contains(model.Query));
             }
             if (!String.IsNullOrWhiteSpace(model.SelectedRoleName)) 
             {
@@ -112,7 +112,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
             var query = context.Users.AsQueryable();
             var fullCount = query.Count();
             if (!String.IsNullOrWhiteSpace(q))
-                query = query.Where(d => d.NormalizedUserName.Contains(q) || d.NormalizedEmail.Contains(q));
+                query = query.Where(d => d.NormalizedUserName!.Contains(q) || d.NormalizedEmail!.Contains(q));
 
             // Build CSV:
             var sb = new StringBuilder();
@@ -149,7 +149,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
                 SupportsUserClaims = userManager.SupportsUserClaim
             };
             if (model.SupportsUserRoles)
-                model.UserRoleNames = context.Roles.Where(r => context.UserRoles.Where(ur => ur.UserId == id).Select(ur => ur.RoleId).Contains(r.Id)).Select(r => r.Name).ToList();
+                model.UserRoleNames = context.Roles.Where(r => context.UserRoles.Where(ur => ur.UserId == id).Select(ur => ur.RoleId).Contains(r.Id)).Select(r => r.Name!).ToList();
             if (model.SupportsUserClaims)
                 model.UserClaims = context.UserClaims.Where(c => c.UserId == id).ToList();
 
@@ -313,18 +313,20 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
                 }
                 if (!result.Succeeded)
                 {
-                    user.Id = null;
+                    user.Id = null!;
                     return result;
                 }
 
                 // Retrieve stored user:
-                storedUser = await userManager.FindByNameAsync(user.UserName);
+                storedUser = await userManager.FindByNameAsync(user.UserName!)
+                    ?? throw new NullReferenceException("Failed to create user.");
             }
             else
             {
                 // Update user object:
-                storedUser = await userManager.FindByIdAsync(user.Id);
-                storedUser.UserName = user.UserName;
+                storedUser = await userManager.FindByIdAsync(user.Id)
+                    ?? throw new NullReferenceException("No user found with given user.Id!");
+                storedUser.UserName = user.UserName!;
                 storedUser.Email = user.Email;
                 storedUser.EmailConfirmed = user.EmailConfirmed;
                 storedUser.PhoneNumber = user.PhoneNumber;
@@ -354,7 +356,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
                 // Remove claims without value:
                 userClaims = userClaims.Where(c => !String.IsNullOrWhiteSpace(c.ClaimValue)).ToList();
                 // Synchronise with stored claims:
-                var storedUserRoleNames = context.Roles.Where(r => context.UserRoles.Where(ur => ur.UserId == storedUser.Id).Select(ur => ur.RoleId).Contains(r.Id)).Select(r => r.Name).ToList();
+                var storedUserRoleNames = context.Roles.Where(r => context.UserRoles.Where(ur => ur.UserId == storedUser!.Id).Select(ur => ur.RoleId).Contains(r.Id)).Select(r => r.Name!).ToList();
                 var roleNamesToKeep = new List<string>();
                 foreach (var name in userRoleNames)
                 {
@@ -384,20 +386,20 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
                     var updatedclaim = userClaims.Single(c => c.Id == sameclaim.Id);
                     if (updatedclaim.ClaimValue != sameclaim.ClaimValue)
                     {
-                        result = await userManager.RemoveClaimAsync(storedUser, new Claim(sameclaim.ClaimType, sameclaim.ClaimValue));
+                        result = await userManager.RemoveClaimAsync(storedUser, new Claim(sameclaim.ClaimType!, sameclaim.ClaimValue!));
                         if (!result.Succeeded) return result;
-                        result = await userManager.AddClaimAsync(storedUser, new Claim(updatedclaim.ClaimType, updatedclaim.ClaimValue));
+                        result = await userManager.AddClaimAsync(storedUser, new Claim(updatedclaim.ClaimType!, updatedclaim.ClaimValue!));
                         if (!result.Succeeded) return result;
                     }
                 }
                 foreach (var oldclaim in storedClaims.Where(c => !userClaims.Select(cs => cs.Id).Contains(c.Id)))
                 {
-                    result = await userManager.RemoveClaimAsync(storedUser, new Claim(oldclaim.ClaimType, oldclaim.ClaimValue));
+                    result = await userManager.RemoveClaimAsync(storedUser, new Claim(oldclaim.ClaimType!, oldclaim.ClaimValue!));
                     if (!result.Succeeded) return result;
                 }
                 foreach (var newclaim in userClaims.Where(c => !storedClaims.Select(cs => cs.Id).Contains(c.Id)))
                 {
-                    result = await userManager.AddClaimAsync(storedUser, new Claim(newclaim.ClaimType, newclaim.ClaimValue));
+                    result = await userManager.AddClaimAsync(storedUser, new Claim(newclaim.ClaimType!, newclaim.ClaimValue!));
                     if (!result.Succeeded) return result;
                 }
             }
