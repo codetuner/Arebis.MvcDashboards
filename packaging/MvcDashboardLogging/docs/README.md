@@ -10,7 +10,7 @@ This component contains an ASP.NET Core MVC 7 item template consisting of:
 
 To install the project item template (to be done once per developer machine):
 
-    dotnet new --install Arebis.MvcDashboardLogging
+    dotnet new install Arebis.MvcDashboardLogging
 
 To add the package to an ASP.NET Core MVC 7 project, from the project folder:
 

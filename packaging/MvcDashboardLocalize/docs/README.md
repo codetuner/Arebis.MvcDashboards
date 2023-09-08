@@ -12,7 +12,7 @@ To get started, follow these videos:
 
 To install the project item template (to be done once per developer machine):
 
-    dotnet new --install Arebis.MvcDashboardLocalize
+    dotnet new install Arebis.MvcDashboardLocalize
 
 To add the dashboard to an ASP.NET Core MVC 7 project, from the project folder:
 

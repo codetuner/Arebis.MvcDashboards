@@ -10,7 +10,7 @@ For setup and usage instructions, see:
 
 To install the project item template (to be done once per developer machine):
 
-    dotnet new --install Arebis.MvcDashboardIdentity
+    dotnet new install Arebis.MvcDashboardIdentity
 
 To add the dashboard to an ASP.NET Core MVC 7 project, from the project folder:
 
