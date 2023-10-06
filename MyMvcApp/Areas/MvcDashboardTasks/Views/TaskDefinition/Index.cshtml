@@ -10,6 +10,13 @@
     <div class="d-flex justify-content-between">
         <a href="@Url.Action("New")" class="btn btn-primary" onkeydown-click="+"><i class="spinner fas fa-plus"></i> New</a>
         <div class="flex-grow-1"></div>
+        @if (Model.ProcessRoles.Count > 0)
+        {
+            <div>&nbsp;&nbsp;</div>
+            <div>
+                <select class="form-control auto-width" asp-for="ProcessRole" asp-items="Model.ProcessRoles"><option value="">All roles</option></select>
+            </div>
+        }
         <div>&nbsp;&nbsp;</div>
         <div>
             <input type="search" class="form-control oninput-change" asp-for="Query" style="max-width: 280px;" autocomplete="off" placeholder="Search" />

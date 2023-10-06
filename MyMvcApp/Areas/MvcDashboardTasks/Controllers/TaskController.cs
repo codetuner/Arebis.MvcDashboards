@@ -16,6 +16,8 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
 {
     public class TaskController : BaseController
     {
+        internal static List<SelectListItem>? ProcessRoles = null;
+
         #region Construction
 
         private readonly TasksDbContext context;
@@ -37,6 +39,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
             var noQuery = String.IsNullOrWhiteSpace(model.Query);
             var count = await context.Tasks
                 .Where(i => i.DefinitionId == model.DefinitionId || model.DefinitionId == null)
+                .Where(i => i.Definition.ProcessRole == model.ProcessRole || model.ProcessRole == null)
                 .Where(i => noQuery || i.Name!.Contains(model.Query ?? "") || i.Definition.Name!.Contains(model.Query ?? "") || i.QueueName == model.Query || i.MachineName == model.Query)
                 .Where(i => model.StatusFilter != "Queued" || (i.UtcTimeDone == null) && (i.Definition.IsActive || i.UtcTimeStarted != null))
                 .Where(i => model.StatusFilter != "Running" || (i.UtcTimeDone == null && i.UtcTimeStarted != null))
@@ -47,6 +50,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
             model.Items = await context.Tasks
                 .Include(i => i.Definition)
                 .Where(i => i.DefinitionId == model.DefinitionId || model.DefinitionId == null)
+                .Where(i => i.Definition.ProcessRole == model.ProcessRole || model.ProcessRole == null)
                 .Where(i => noQuery || i.Name!.Contains(model.Query ?? "") || i.Definition.Name!.Contains(model.Query ?? "") || i.QueueName == model.Query || i.MachineName == model.Query)
                 .Where(i => model.StatusFilter != "Queued" || (i.UtcTimeDone == null) && (i.Definition.IsActive || i.UtcTimeStarted != null))
                 .Where(i => model.StatusFilter != "Running" || (i.UtcTimeDone == null && i.UtcTimeStarted != null))
@@ -60,6 +64,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 .OrderBy(d => d.Name).ThenBy(d => d.Id)
                 .Select(d => new SelectListItem() { Value = d.Id.ToString(), Text = d.Name, Selected = (model.DefinitionId == d.Id) })
                 .ToListAsync();
+            model.ProcessRoles = (TaskController.ProcessRoles ??= await context.TaskDefinitions.Where(d => d.ProcessRole != null).Select(d => d.ProcessRole!).Distinct().OrderBy(r => r).Select(r => new SelectListItem() { Value = r, Text = r, Selected = (model.ProcessRole == r) }).ToListAsync());
 
             return View("Index", model);
         }
