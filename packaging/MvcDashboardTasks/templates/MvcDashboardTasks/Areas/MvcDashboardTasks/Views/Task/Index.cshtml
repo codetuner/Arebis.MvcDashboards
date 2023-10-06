@@ -20,8 +20,15 @@
         </div>
         <div>&nbsp;&nbsp;</div>
         <div>
-            <select class="form-control auto-width" asp-for="DefinitionId" asp-items="Model.Definitions"><option value="">All</option></select>
+            <select class="form-control auto-width" asp-for="DefinitionId" asp-items="Model.Definitions"><option value="">All definitions</option></select>
         </div>
+        @if (Model.ProcessRoles.Count > 0)
+        {
+            <div>&nbsp;&nbsp;</div>
+            <div>
+                <select class="form-control auto-width" asp-for="ProcessRole" asp-items="Model.ProcessRoles"><option value="">All roles</option></select>
+            </div>
+        }
         <div>&nbsp;&nbsp;</div>
         <div>
             <input type="search" class="form-control oninput-change" asp-for="Query" style="max-width: 280px;" autocomplete="off" placeholder="Search" />

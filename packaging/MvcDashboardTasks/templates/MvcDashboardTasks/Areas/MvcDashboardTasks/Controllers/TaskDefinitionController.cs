@@ -38,15 +38,19 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         {
             var noQuery = String.IsNullOrWhiteSpace(model.Query);
             var count = await context.TaskDefinitions
+                .Where(i => i.ProcessRole == model.ProcessRole || model.ProcessRole == null)
                 .Where(i => noQuery || i.Name!.Contains(model.Query ?? ""))
                 .CountAsync();
             model.MaxPage = (count + model.PageSize - 1) / model.PageSize;
             model.Items = await context.TaskDefinitions
+                .Where(i => i.ProcessRole == model.ProcessRole || model.ProcessRole == null)
                 .Where(i => noQuery || i.Name!.Contains(model.Query ?? ""))
                 .OrderBy(model.Order ?? "Name ASC, Id ASC")
                 .Skip((model.Page - 1) * model.PageSize)
                 .Take(model.PageSize)
                 .ToArrayAsync();
+
+            model.ProcessRoles = (TaskController.ProcessRoles ??= await context.TaskDefinitions.Where(d => d.ProcessRole != null).Select(d => d.ProcessRole!).Distinct().OrderBy(r => r).Select(r => new SelectListItem() { Value = r, Text = r, Selected = (model.ProcessRole == r) }).ToListAsync());
 
             return View("Index", model);
         }
@@ -97,6 +101,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 {
                     context.Update(model.Item);
                     await context.SaveChangesAsync();
+                    TaskController.ProcessRoles = null; // Flush cached data
                     if (!apply)
                     {
                         return Back(false);
@@ -141,6 +146,8 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 {
                     context.Remove(item);
                     await context.SaveChangesAsync();
+                    TaskController.ProcessRoles = null; // Flush cached data
+
                     this.SetToastrMessage("success", "Task definition deleted");
                 }
                 return Back(false);

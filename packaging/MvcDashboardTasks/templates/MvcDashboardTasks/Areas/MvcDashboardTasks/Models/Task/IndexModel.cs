@@ -5,6 +5,8 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Models.Task
     public class IndexModel : BaseIndexModel<Data.Tasks.Task>
     {
         public int? DefinitionId { get; set; }
+        
+        public string? ProcessRole { get; set; }
 
         public string? StatusFilter { get; set; }
 
@@ -15,5 +17,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Models.Task
         public bool AutoRefresh { get; set; }
 
         public List<SelectListItem> Definitions { get; internal set; } = null!;
+
+        public List<SelectListItem> ProcessRoles { get; internal set; } = null!;
     }
 }

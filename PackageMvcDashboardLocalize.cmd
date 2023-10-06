@@ -23,3 +23,4 @@ DIR bin\Debug\*.nupkg /b /s
 ECHO.
 POPD
 PAUSE
+EXPLORER /root,"%~dp0packaging\MvcDashboardLocalize\bin"
