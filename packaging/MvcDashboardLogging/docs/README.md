@@ -33,6 +33,7 @@ Once the package added to your project, add following service registrations in P
 Next, register the request logging middleware with the following command:
 
     app.UseArebisRequestLog()
+        .ApplyDoNotLogRule()
         .LogSlowRequests()
         .LogExceptions()
         .LogNotFounds();

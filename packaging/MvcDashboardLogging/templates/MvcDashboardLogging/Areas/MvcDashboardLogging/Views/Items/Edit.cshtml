@@ -4,8 +4,11 @@
     var item = Model.Item;
 }
 
-<div class="mt-3 mb-3 align-content-end">
+<div class="mt-3 mb-3">
     <a href="history:back" class="btn btn-secondary"><i class="fas fa-angle-left"></i> Back</a>
+    <div class="float-end">
+        <a class="btn-link link-secondary" href="@Url.Action("CreateIgnoreRule", null, new { Model.Item.Id })">Create ignore rule</a>
+    </div>
 </div>
 
 <div class="mt-4 mb-1">
@@ -25,7 +28,7 @@
 </div>
 <div class="mb-3">
     <span class="float-end">
-        <b>@item.DurationMs</b> ms
+        <b>@item.DurationMs.ToString("#,##0")</b> ms
     </span>
     @if (item.StatusCode >= 500)
     {<span class="badge rounded-pill bg-danger">@item.StatusCode</span>}
@@ -36,6 +39,16 @@ else
     <small>@item.Method</small>
     <b><a href="@item.Url" target="_blank">@item.Url</a></b>
 </div>
+
+@if (!String.IsNullOrEmpty(item.Type))
+{
+    <div class="card mb-3">
+        <div class="card-body">
+            <strong>@item.Type</strong>
+        </div>
+    </div>
+}
+
 
 @if (!String.IsNullOrWhiteSpace(item.Details))
 {
@@ -67,7 +80,6 @@ else
             </div>
         </div>
     </div>
-
 }
 
 <div class="card mb-3">

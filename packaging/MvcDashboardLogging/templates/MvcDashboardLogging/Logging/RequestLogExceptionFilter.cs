@@ -24,7 +24,7 @@ namespace MyMvcApp.Logging
             {
                 if (requestLogger.StoreLog == null) requestLogger.StoreLog = true;
                 var aspect = (ex is SecurityException) ? LogAspect.Security : LogAspect.Error;
-                requestLogger.SetMessage(aspect.Name, true, ex.Message);
+                requestLogger.SetException(aspect.Name, true, ex);
                 requestLogger.WriteLine(ex.ToString());
                 WriteExceptionData(requestLogger, "Ex", ex);
             }

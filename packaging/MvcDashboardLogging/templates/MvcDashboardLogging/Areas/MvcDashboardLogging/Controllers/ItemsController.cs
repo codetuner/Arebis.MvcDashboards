@@ -34,7 +34,7 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
             var query = context.RequestLogs
                 .AsQueryable()
                 .Where(d => model.AspectFilter == null || d.AspectName == model.AspectFilter)
-                .Where(d => model.Bookmarked == false || d.IsBookmarked == true);
+                .Where(d => model.BookmarkedFilter == false || d.IsBookmarked == true);
             if (!String.IsNullOrWhiteSpace(model.Query))
                 query = query
                     .Where(d => d.Message!.Contains(model.Query) || d.Url!.Contains(model.Query) || d.User!.Contains(model.Query) || d.Details!.Contains(model.Query));
@@ -101,6 +101,56 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
                 context.SaveChanges();
             }
             return PartialView("Bookmark", log);
+        }
+
+        #endregion
+
+        #region Logging rules
+
+        public IActionResult CreateIgnoreRule(int id)
+        {
+            var log = context.RequestLogs.Find(id);
+            if (log != null)
+            {
+                var matchingRules = context.LogActionRules
+                    .Where(r => r.Action == Logging.LogAction.DoNotLog && r.Url == log.Url && r.StatusCode == log.StatusCode && r.AspectName == log.AspectName && r.Method == log.Method && r.Type == log.Type)
+                    .ToList();
+
+                if (matchingRules.Any(r => r.IsActive == true))
+                {
+                    this.SetToastrMessage("info", "There is already a matching rule. The server may need to be restarted for the rule to be applied.");
+                }
+                else if (matchingRules.Any(r => r.IsActive == false))
+                {
+                    foreach(var rule in matchingRules)
+                    {
+                        rule.IsActive = true;
+                    }
+                    this.SetToastrMessage("success", "A rule existed and has now been activated.");
+                }
+                else
+                {
+                    context.Add(new LogActionRule()
+                    {
+                        Action = Logging.LogAction.DoNotLog,
+                        Method = log.Method,
+                        StatusCode = log.StatusCode,
+                        AspectName = log.AspectName,
+                        Type = log.Type,
+                        Url = log.Url,
+                        IsActive = true
+                    });
+                    this.SetToastrMessage("success", "A rule has been created to ignore similar logs in the future.");
+                }
+
+                context.SaveChanges();
+            }
+            else
+            {
+                this.SetToastrMessage("error", "Failed to create rule: missing template log.");
+            }
+
+            return NoContent();
         }
 
         #endregion

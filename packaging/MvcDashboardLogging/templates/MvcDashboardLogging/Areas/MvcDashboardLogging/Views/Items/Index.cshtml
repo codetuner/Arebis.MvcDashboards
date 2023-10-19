@@ -20,7 +20,7 @@
         </div>
         <div>&nbsp;&nbsp;</div>
         <div style="border: solid 1px var(--bs-border-color); border-radius: var(--bs-border-radius); white-space: nowrap;">
-            <label class="btn"><input type="checkbox" name="Bookmarked" value="true" checked="@((Model.Bookmarked) ? "checked" : null)" /> Bookmarked</label>
+            <label class="btn"><input type="checkbox" name="BookmarkedFilter" value="true" checked="@((Model.BookmarkedFilter) ? "checked" : null)" /> Bookmarked</label>
         </div>
         <div>&nbsp;&nbsp;</div>
         <div>
@@ -36,12 +36,12 @@
                 <thead>
                     <tr>
                         <th class="onchange-nosubmit"><input type="checkbox" ifchecked-check="<table|>tbody input[type=checkbox]" ifunchecked-uncheck="<table|>tbody input[type=checkbox]" /></th>
-                        <th asp-order="@Model.Order">Timestamp</th>
-                        <th asp-order="@Model.Order">Host</th>
-                        <th asp-order="@Model.Order">Message</th>
-                        <th asp-order="@Model.Order">URL</th>
-                        <th asp-order="@Model.Order" field-name="DurationMs">Duration</th>
-                        <th asp-order="@Model.Order" field-name="IsBookmarked">BM</th>
+                        <th style="white-space: nowrap" asp-order="@Model.Order">Timestamp</th>
+                        <th style="white-space: nowrap" asp-order="@Model.Order">Host</th>
+                        <th style="white-space: nowrap" asp-order="@Model.Order">Message</th>
+                        <th style="white-space: nowrap" asp-order="@Model.Order">URL</th>
+                        <th style="white-space: nowrap" asp-order="@Model.Order" field-name="DurationMs">Duration</th>
+                        <th style="white-space: nowrap" asp-order="@Model.Order" field-name="IsBookmarked">BM</th>
                     </tr>
                 </thead>
                 <tbody>
