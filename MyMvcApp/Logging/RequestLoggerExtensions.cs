@@ -13,6 +13,12 @@ namespace MyMvcApp.Logging
             return new LoggingBuilder(builder.UseMiddleware<RequestLogMiddleware>());
         }
 
+        public static LoggingBuilder ApplyDoNotLogRule(this LoggingBuilder builder)
+        {
+            builder.Application.UseMiddleware<RequestDoNotLogRuleFilter>();
+            return builder;
+        }
+
         public static LoggingBuilder LogSlowRequests(this LoggingBuilder builder)
         {
             builder.Application.UseMiddleware<RequestLogDurationFilter>();

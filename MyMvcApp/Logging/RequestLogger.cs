@@ -88,6 +88,22 @@ namespace MyMvcApp.Logging
             return this.record.AspectName;
         }
 
+        public new string? GetType()
+        {
+            return this.record.Type;
+        }
+
+        public RequestLogger SetException(string aspectName, bool @override, Exception ex)
+        {
+            if ((doNotLog == false) && (this.record.AspectName == null || @override == true))
+            {
+                this.record.Type = ex.GetType().FullName;
+                this.record.Message = ex.Message;
+                this.record.AspectName = aspectName;
+            }
+            return this;
+        }
+
         public RequestLogger SetMessage(string aspectName, bool @override, string? message)
         {
             if ((doNotLog == false) && (this.record.AspectName == null || @override == true))

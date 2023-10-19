@@ -14,7 +14,7 @@ namespace MyMvcApp.Logging
         {
             _next = next;
         }
-        
+
         public async Task InvokeAsync(HttpContext context, RequestLogger requestLogger)
         {
             PreInvoke(context, requestLogger);

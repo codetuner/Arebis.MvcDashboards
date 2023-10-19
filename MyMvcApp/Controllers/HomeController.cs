@@ -28,5 +28,19 @@ namespace MyMvcApp.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public IActionResult Fail()
+        {
+            var ex = new ApplicationException("This is a failing call.");
+            ex.Data["Source"] = "Fail action of HomeController.";
+            ex.Data["TickCount"] = Environment.TickCount;
+            throw ex;
+        }
+
+        public IActionResult Slow()
+        {
+            Thread.Sleep(5000);
+            return RedirectToAction("Index");
+        }
     }
 }

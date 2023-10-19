@@ -1,10 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="MyMvcApp.Data.Logging.RequestLog">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Position X="0.5" Y="0.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAADAAAABAABAEAAAAACAAAABAAAiBAAKQAAIAAEAAA=</HashCode>
+      <HashCode>AAADAAAABAABAEAAAAAmAAAABAAAiBAAKQAAIAAEAAA=</HashCode>
       <FileName>Data\Logging\RequestLog.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyMvcApp.Data.Logging.LogActionRule">
+    <Position X="3" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAEAAEAAgAAAABQAACAAAKQAAAAAAAAQ=</HashCode>
+      <FileName>Data\Logging\LogActionRule.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

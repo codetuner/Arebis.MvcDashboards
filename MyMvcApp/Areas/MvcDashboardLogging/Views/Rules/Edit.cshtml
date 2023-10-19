@@ -1,0 +1,166 @@
+﻿@model EditModel
+@{
+    ViewBag.Title = (Model.Item.Id == 0) ? "new" : $"Rule {Model.Item.Id}";
+}
+
+<h1>Rule @((Model.Item.Id == 0) ? "" : Model.Item.Id.ToString()) : <small class="text-muted">@((Model.Item.Id == 0) ? "new" : null)</small></h1>
+
+<form asp-action="Submit" asp-route-id="@Model.Item.Id" method="post" onkeyenter-click="" autocomplete="off" onchange-set="HasChanges" onunloadchanged-confirm="Changes will be lost. Proceed anyway ?">
+
+    <div class="overlay" hidden></div>
+
+    <input type="hidden" asp-for="Item.Id" />
+    <input type="hidden" asp-for="HasChanges" />
+
+    <div asp-validation-summary="All" class="alert alert-danger alert-dismissible fade show mb-3">
+        <strong>Following errors have occured:</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <fieldset>
+        <legend>Do Action</legend>
+
+        <div class="mb-3">
+            <label for="@Html.IdFor(m => m.Item.Action)" class="form-label">Action: *</label>
+            <select asp-for="Item.Action" asp-items="Enum.GetValues(typeof(LogAction)).OfType<LogAction>().Select(v => new SelectListItem() { Value = v.ToString(), Text = v.ToString(), Selected = (v == Model.Item.Action) })" class="form-control">
+            </select>
+            <span asp-validation-for="Item.Action" class="text-danger"></span>
+        </div>
+
+        @*<div class="mb-3">
+        <label for="@Html.IdFor(m => m.Item.ActionData)" class="form-label">Optional action data:</label>
+        <textarea asp-for="Item.ActionData" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Item.ActionData" class="text-danger"></span>
+        </div>*@
+        @Html.HiddenFor(m => m.Item.ActionData)
+
+        <div class="mb-3 form-check form-switch">
+            <input asp-for="Item.IsActive" type="checkbox" class="form-check-input">
+            <label asp-for="Item.IsActive" class="form-check-label">Active</label>
+        </div>
+
+    </fieldset>
+
+    <fieldset>
+        <legend>For Requests</legend>
+
+        <div class="mb-3">
+            <label for="@Html.IdFor(m => m.Item.AspectName)" class="form-label">Aspect:</label>
+            <div style="border: solid 1px var(--bs-border-color); border-radius: var(--bs-border-radius); padding: 4px 8px 4px 8px;">
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="@Html.NameFor(m => m.Item.AspectName)" value="" checked="@(String.IsNullOrEmpty(Model.Item.AspectName) ? "checked" : null)"> Any
+                    </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="@Html.NameFor(m => m.Item.AspectName)" value="Information" checked="@(Model.Item.AspectName == "Information" ? "checked" : null)"> Information
+                    </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="@Html.NameFor(m => m.Item.AspectName)" value="Attention" checked="@(Model.Item.AspectName == "Attention" ? "checked" : null)"> Attention
+                    </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="@Html.NameFor(m => m.Item.AspectName)" value="Timing" checked="@(Model.Item.AspectName == "Timing" ? "checked" : null)"> Timing
+                    </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="@Html.NameFor(m => m.Item.AspectName)" value="Security" checked="@(Model.Item.AspectName == "Security" ? "checked" : null)"> Security
+                    </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="@Html.NameFor(m => m.Item.AspectName)" value="NotFound" checked="@(Model.Item.AspectName == "NotFound" ? "checked" : null)"> NotFound
+                    </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="@Html.NameFor(m => m.Item.AspectName)" value="Error" checked="@(Model.Item.AspectName == "Error" ? "checked" : null)"> Error
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="@Html.IdFor(m => m.Item.Method)" class="form-label">Method:</label>
+            <input asp-for="Item.Method" type="text" class="form-control" list="MethodList" />
+            <datalist id="MethodList">
+                <option value="GET" />
+                <option value="POST" />
+                <option value="PUT" />
+                <option value="DELETE" />
+                <option value="HEAD" />
+            </datalist>
+            <span asp-validation-for="Item.Method" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label for="@Html.IdFor(m => m.Item.Url)" class="form-label">URL: *</label>
+            <input asp-for="Item.Url" type="text" class="form-control" placeholder="Part of the URL to match, or '*' to match any URL" />
+            <span asp-validation-for="Item.Url" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <span class="float-end"><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status" target="_blank">List of HTTP status codes</a></span>
+            <label for="@Html.IdFor(m => m.Item.StatusCode)" class="form-label">
+                Response status code:
+            </label>
+            <input asp-for="Item.StatusCode" type="text" class="form-control" list="StatusCodeList" />
+            <datalist id="StatusCodeList">
+                <option value="200" />
+                <option value="201" />
+                <option value="202" />
+                <option value="203" />
+                <option value="204" />
+                <option value="206" />
+                <option value="400" />
+                <option value="401" />
+                <option value="403" />
+                <option value="404" />
+                <option value="405" />
+                <option value="406" />
+                <option value="408" />
+                <option value="418" />
+                <option value="500" />
+                <option value="501" />
+                <option value="503" />
+            </datalist>
+            <span asp-validation-for="Item.StatusCode" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label for="@Html.IdFor(m => m.Item.Type)" class="form-label">Type:</label>
+            <input asp-for="Item.Type" type="text" class="form-control" />
+            <span asp-validation-for="Item.Type" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label for="@Html.IdFor(m => m.Item.Host)" class="form-label">Host:</label>
+            <div class="input-group">
+                <input asp-for="Item.Host" type="text" class="form-control" />
+                <button class="btn btn-outline-secondary" type="button" onclick="document.getElementById('@(Html.IdFor(m => m.Item.Host))').value = '@(Environment.MachineName)'">Current</button>
+            </div>
+            <span asp-validation-for="Item.Host" class="text-danger"></span>
+        </div>
+
+    </fieldset>
+
+    @if (Model.Item.Id != 0)
+    {
+        <div class="float-end">
+            <a class="btn btn-outline-secondary" asp-action="New" asp-route-cloneOfId="@Model.Item.Id"><i class="spinner fa fa-clone"></i> Clone</a>
+            <button type="submit" class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?"><i class="spinner fas fa-trash-alt"></i> Delete</button>
+        </div>
+    }
+    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-check"></i> Save</button>
+    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true" onkeydown-click="Ctrl+S"><i class="spinner fas fa-check"></i> Apply</button>
+    <a href="history:back" class="btn btn-secondary"><i class="fas fa-angle-left"></i> Back</a>
+
+</form>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>

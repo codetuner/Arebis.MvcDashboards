@@ -135,6 +135,7 @@ else
 #region Logging
 
 app.UseArebisRequestLog()
+    .ApplyDoNotLogRule()
     .LogSlowRequests()
     .LogExceptions()
     .LogNotFounds();

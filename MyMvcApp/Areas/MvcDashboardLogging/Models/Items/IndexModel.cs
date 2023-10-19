@@ -10,6 +10,6 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Models.Items
     { 
         public string? AspectFilter { get; set; }
 
-        public bool Bookmarked { get; set; }
+        public bool BookmarkedFilter { get; set; }
     }
 }

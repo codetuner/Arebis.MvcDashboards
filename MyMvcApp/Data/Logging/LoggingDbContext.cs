@@ -45,6 +45,8 @@ namespace MyMvcApp.Data.Logging
             );
         }
 
+        public DbSet<LogActionRule> LogActionRules => Set<LogActionRule>();
+
         public DbSet<RequestLog> RequestLogs => Set<RequestLog>();
     }
 }
