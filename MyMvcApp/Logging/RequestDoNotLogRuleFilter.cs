@@ -36,7 +36,7 @@ namespace MyMvcApp.Logging
 
             var request = context.Request;
             var response = context.Response;
-            if (doNotLogRules.Any(r => r.Matches(request, response, requestLogger.GetAspectName(), requestLogger.GetType())))
+            if (doNotLogRules.Any(r => r.Matches(request, response, requestLogger.GetApplicationName(), requestLogger.GetAspectName(), requestLogger.GetType())))
             {
                 requestLogger.DoNotLog();
             }

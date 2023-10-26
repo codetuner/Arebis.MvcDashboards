@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sircl@2.3.2/sircl.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sircl@2.3.5/sircl.css" />
     <style>
 
         BODY {
@@ -105,12 +105,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.2/sircl.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.2/sircl-extended.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.2/sircl-changeactions.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.2/sircl-bootstrap5.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.2/sircl-toastr.js"></script>
-    @*<script src="https://cdn.jsdelivr.net/npm/sircl@2.3.2/sircl-debugging.js"></script>*@
+    <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.5/sircl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.5/sircl-extended.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.5/sircl-changeactions.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.5/sircl-bootstrap5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.5/sircl-toastr.js"></script>
+    @* <script src="https://cdn.jsdelivr.net/npm/sircl@2.3.5/sircl-debugging.js"></script> *@
     <script type="text/javascript">
 
         var appId = "MvcDashboardLogging";
@@ -174,6 +174,67 @@
             });
         });
 
+    </script>
+    <script>
+        $(function () {
+            /// <* x-onchange-sync="selector"> On change, synchronises it's value with the controls matching the given selector.
+            /// Usefull for instance when 2 or more controls show a same field where depending on responsive view, only one of
+            /// them is visible at the time.
+            $(document).on("change", "*[x-onchange-sync]", function () {
+                console.log(this);
+                // Retrieve current value:
+                var value = null;
+                if (this.tagName == "INPUT" && this.getAttribute('type') == 'checkbox') {
+                    value = (this.checked) ? this.value : null;
+                } else if (this.tagName == "INPUT" && this.getAttribute('type') == 'radio') {
+                    if (this.checked) {
+                        value = this.value;
+                    } else {
+                        return; // Ignore unchecked radio's
+                    }
+                } else {
+                    value = $(this).val();
+                }
+                // Set value on synched controls:
+                sircl.ext.$select($(this), $(this).attr("x-onchange-sync")).each(function () {
+                    if (this.tagName == "INPUT" && this.getAttribute('type') == 'checkbox') {
+                        if ((!this.checked && this.value == value) || (this.checked && this.value != value)) {
+                            this.checked = !this.checked;
+                            $(this).change();
+                        }
+                    } else if (this.tagName == "INPUT" && this.getAttribute('type') == 'radio') {
+                        if (!this.checked && this.value == value) {
+                            this.checked = !this.checked;
+                            $(this).change();
+                        }
+                    } else {
+                        if (value != $(this).val()) { 
+                            $(this).val(value);
+                            $(this).change();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $$(function () {
+            $(this).find("#logsChart").each(function () {
+                // Remove canvas and build a new one:
+                var oldCanvas = this;
+                var canvasContainer = oldCanvas.parentNode;
+                oldCanvas.remove();
+                var newCanvas = document.createElement("canvas");
+                newCanvas.id = "logsChart";
+                newCanvas.height = 75;
+                canvasContainer.appendChild(newCanvas);
+                // Build graph:
+                new Chart(
+                    newCanvas,
+                    config
+                );
+            });
+        });
     </script>
     @RenderSection("Scripts", required: false)
 </head>

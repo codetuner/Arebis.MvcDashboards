@@ -12,8 +12,8 @@ else
 }
 
 
-<div>
-<canvas id="logsChart" height="75"></canvas>
+<div id="logsChartContainer">
+<canvas id="logsChart"></canvas>
 </div>
 
 <script>
@@ -52,12 +52,5 @@ else
             }
         }
     };
-
-    $$(function() {
-        new Chart(
-            document.getElementById('logsChart'),
-            config
-        );
-    });
 
 </script>

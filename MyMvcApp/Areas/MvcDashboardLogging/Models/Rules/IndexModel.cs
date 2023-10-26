@@ -9,6 +9,8 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Models.Rules
 {
     public class IndexModel : BaseIndexModel<LogActionRule>
     {
+        public string? ApplicationFilter { get; set; }
+
         public string? AspectFilter { get; set; }
 
         public LogAction? ActionFilter { get; set; }

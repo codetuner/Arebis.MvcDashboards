@@ -3,7 +3,9 @@ using Microsoft.Extensions.Configuration;
 using MyMvcApp.Data.Logging;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,11 +18,13 @@ namespace MyMvcApp.Logging
         private Stopwatch? stopwatch;
         private StringBuilder detailsBuilder = new();
         private bool doNotLog = false;
+        private readonly string? applicationName;
 
         public RequestLogger(IConfiguration configuration, LoggingDbContext context)
         {
             this.Context = context;
             this.Configuration = configuration;
+            this.applicationName = Configuration.GetValue<string?>("LoggingApplicationName", Configuration.GetValue<string>("ApplicationName"));
         }
 
         public LoggingDbContext Context { get; private set; }
@@ -52,8 +56,9 @@ namespace MyMvcApp.Logging
                 this.record.TraceIdentifier = httpContext.TraceIdentifier;
 
                 // Add request information:
+                this.record.ApplicationName = GetApplicationName();
                 this.record.Method = httpContext.Request.Method;
-                this.record.Url = httpContext.Request.Path;
+                this.record.Url = TrimLength(httpContext.Request.Path.ToString(), 2000);
                 this.record.User = httpContext.User?.Identity?.Name;
                 this.record.Request["QueryString"] = httpContext.Request.QueryString.Value ?? String.Empty;
                 this.record.Request["Scheme"] = httpContext.Request.Scheme;
@@ -76,6 +81,13 @@ namespace MyMvcApp.Logging
                 this.Context.RequestLogs.Add(this.record);
                 this.Context.SaveChanges();
             }
+        }
+
+        [return: NotNullIfNotNull(nameof(str))]
+        private static string? TrimLength(string? str, int len)
+        {
+            if (str == null) return null;
+            return (str.Length <= len) ? str : str[..len];
         }
 
         public void DoNotLog()
@@ -137,6 +149,11 @@ namespace MyMvcApp.Logging
                 this.record.Data[key] = value;
             }
             return this;
+        }
+
+        public string? GetApplicationName()
+        {
+            return this.applicationName;
         }
     }
 }

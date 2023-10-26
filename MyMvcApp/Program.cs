@@ -117,6 +117,13 @@ builder.Services.AddScoped<MyMvcApp.Logging.RequestLogger>();
 
 #endregion
 
+#region Output caching
+
+// Is not set by default; need to call AddOuptutCache() on services, and UseOutputCache on app (after calling UseRouting):
+builder.Services.AddOutputCache();
+
+#endregion
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -146,6 +153,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+#region Output caching
+
+// Is not set by default; need to call AddOuptutCache() on services, and UseOutputCache on app (after calling UseRouting):
+app.UseOutputCache();
+
+#endregion
 
 app.UseAuthentication();
 app.UseAuthorization();

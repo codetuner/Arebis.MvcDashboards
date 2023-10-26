@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using MyMvcApp.Areas.MvcDashboardLogging.Models.Items;
 using MyMvcApp.Data;
 using MyMvcApp.Data.Logging;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,9 +20,12 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
 
         private readonly LoggingDbContext context;
 
-        public ItemsController(LoggingDbContext context)
+        private readonly IConfiguration configuration;
+
+        public ItemsController(LoggingDbContext context, IConfiguration configuration)
         {
             this.context = context;
+            this.configuration = configuration;
         }
 
         #endregion
@@ -33,6 +38,7 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
             // Retrieve data:
             var query = context.RequestLogs
                 .AsQueryable()
+                .Where(d => model.ApplicationFilter == null || d.ApplicationName == model.ApplicationFilter)
                 .Where(d => model.AspectFilter == null || d.AspectName == model.AspectFilter)
                 .Where(d => model.BookmarkedFilter == false || d.IsBookmarked == true);
             if (!String.IsNullOrWhiteSpace(model.Query))
@@ -51,6 +57,16 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
 
             // Render view:
             return View("Index", model);
+        }
+
+        [OutputCache(Duration = 300)]
+        public IActionResult ApplicationNameOptions(string? selected)
+        {
+            var model = new ApplicationNameOptionsModel();
+            model.Options = context.RequestLogs.Where(l => l.ApplicationName != null).Select(l => l.ApplicationName).Distinct().ToList();
+            model.SelectedOption = selected;
+
+            return View(model);
         }
 
         #endregion

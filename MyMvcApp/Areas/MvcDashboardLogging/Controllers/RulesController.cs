@@ -36,6 +36,7 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
             // Retrieve data:
             var query = context.LogActionRules
                 .AsQueryable()
+                .Where(d => model.ApplicationFilter == null || d.ApplicationName == model.ApplicationFilter)
                 .Where(d => model.AspectFilter == null || d.AspectName == model.AspectFilter)
                 .Where(d => model.ActionFilter == null || d.Action == model.ActionFilter)
                 .Where(d => model.ActiveFilter == false || d.IsActive == true);
@@ -79,6 +80,7 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
                     Item = new LogActionRule()
                     {
                         Action = original.Action,
+                        ApplicationName = original.ApplicationName,
                         ActionData = original.ActionData,
                         AspectName = original.AspectName,
                         IsActive=original.IsActive,

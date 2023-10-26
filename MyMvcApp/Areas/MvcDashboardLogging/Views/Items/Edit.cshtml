@@ -5,7 +5,7 @@
 }
 
 <div class="mt-3 mb-3">
-    <a href="history:back" class="btn btn-secondary"><i class="fas fa-angle-left"></i> Back</a>
+    <a href="history:back" class="btn btn-secondary onback-allowclose" onkeydown-click="ArrowLeft"><i class="fas fa-angle-left"></i> Back</a>
     <div class="float-end">
         <a class="btn-link link-secondary" href="@Url.Action("CreateIgnoreRule", null, new { Model.Item.Id })">Create ignore rule</a>
     </div>
@@ -22,11 +22,11 @@
         <span class="float-end">
             <partial name="Bookmark" model="item" />
         </span>
-        @Html.Raw(item.Aspect.HtmlIcon)
+        @Html.Raw(item.Aspect?.HtmlIcon)
         <b>@(item.Message ?? item.AspectName)</b>
     </font>
 </div>
-<div class="mb-3">
+<div class="mb-1">
     <span class="float-end">
         <b>@item.DurationMs.ToString("#,##0")</b> ms
     </span>
@@ -38,6 +38,12 @@ else
 {<span class="badge rounded-pill bg-success">@item.StatusCode</span>}
     <small>@item.Method</small>
     <b><a href="@item.Url" target="_blank">@item.Url</a></b>
+</div>
+<div class="mb-1">
+    Application Name: <b>@item.ApplicationName</b>
+</div>
+<div class="mb-3">
+    Host Name: <b>@item.Host</b>
 </div>
 
 @if (!String.IsNullOrEmpty(item.Type))
@@ -102,5 +108,5 @@ else
 </div>
 
 <div class="mb-3">
-    <a href="history:back" class="btn btn-secondary"><i class="fas fa-angle-left"></i> Back</a>
+    <a href="history:back" class="btn btn-secondary onback-allowclose"><i class="fas fa-angle-left"></i> Back</a>
 </div>
