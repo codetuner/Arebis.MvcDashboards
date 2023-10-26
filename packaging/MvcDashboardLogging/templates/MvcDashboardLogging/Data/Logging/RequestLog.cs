@@ -36,6 +36,12 @@ namespace MyMvcApp.Data.Logging
         public virtual long DurationMs { get; set; }
 
         /// <summary>
+        /// Name of the application following the "ApplicationName" or "LoggingApplicationName" setting.
+        /// </summary>
+        [MaxLength(200)]
+        public virtual string? ApplicationName { get; set; }
+
+        /// <summary>
         /// Name of the log aspect.
         /// </summary>
         public virtual string? AspectName { get; set; }

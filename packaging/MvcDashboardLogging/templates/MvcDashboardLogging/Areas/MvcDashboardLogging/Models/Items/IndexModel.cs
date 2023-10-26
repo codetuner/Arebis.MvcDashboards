@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 namespace MyMvcApp.Areas.MvcDashboardLogging.Models.Items
 {
     public class IndexModel : BaseIndexModel<RequestLog>
-    { 
+    {
+        public string? ApplicationFilter { get; set; }
+        
         public string? AspectFilter { get; set; }
 
         public bool BookmarkedFilter { get; set; }

@@ -1,0 +1,13 @@
+﻿@model ApplicationNameOptionsModel
+<option value="">All apps</option>
+@foreach (var option in Model.Options.OrderBy(o => o))
+{
+    if (option == Model.SelectedOption)
+    {
+        <option value="@option" selected="selected">@option</option>
+    }
+    else
+    {
+        <option value="@option">@option</option>
+    }
+}

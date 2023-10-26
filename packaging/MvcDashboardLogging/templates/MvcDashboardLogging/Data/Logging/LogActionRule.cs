@@ -17,6 +17,11 @@ namespace MyMvcApp.Data.Logging
         public virtual int Id { get; set; }
 
         /// <summary>
+        /// Name of the application this rule checks for.
+        /// </summary>
+        public virtual string? ApplicationName { get; set; }
+
+        /// <summary>
         /// Name of the log aspect this rule checks for.
         /// </summary>
         public virtual string? AspectName { get; set; }
@@ -84,13 +89,14 @@ namespace MyMvcApp.Data.Logging
         /// <summary>
         /// Whether the rule matches the given request/response objects.
         /// </summary>
-        public bool Matches(HttpRequest request, HttpResponse response, string? aspectName, string? type)
+        public bool Matches(HttpRequest request, HttpResponse response, string? applicationName, string? aspectName, string? type)
         {
             if (!this.IsActive) return false;
             if (this.Url != null && this.Url != "*" && !request.Path.ToString().Contains(this.Url, StringComparison.OrdinalIgnoreCase)) return false;
             if (this.Method is not null && !this.Method.Equals(request.Method, StringComparison.OrdinalIgnoreCase)) return false;
             if (this.AspectName is not null && !this.AspectName.Equals(aspectName, StringComparison.OrdinalIgnoreCase)) return false;
             if (this.StatusCode.HasValue && this.StatusCode != response.StatusCode) return false;
+            if (this.ApplicationName is not null && !this.ApplicationName.Equals(applicationName, StringComparison.OrdinalIgnoreCase)) return false;
             if (this.Host is not null && !this.Host.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase)) return false;
             if (this.Type is not null && !this.Type.Equals(type, StringComparison.OrdinalIgnoreCase)) return false;
             return true;

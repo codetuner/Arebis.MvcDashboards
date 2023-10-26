@@ -10,10 +10,19 @@
     <div class="d-flex justify-content-between">
         <a href="@Url.Action("New")" class="btn btn-primary" onkeydown-click="+"><i class="spinner fas fa-plus"></i> New</a>
         <div class="flex-grow-1"></div>
+        <div>
+            <select class="form-control auto-width" asp-for="ApplicationFilter" onload-load="@Url.Action("ApplicationNameOptions", "Items", new { Selected = Model.ApplicationFilter })">
+                <option value="">All apps</option>
+                @if (!String.IsNullOrEmpty(Model.ApplicationFilter))
+                {
+                    <option value="@Model.ApplicationFilter">@Model.ApplicationFilter</option>
+                }
+            </select>
+        </div>
         <div>&nbsp;&nbsp;</div>
         <div>
             <select class="form-control" name="AspectFilter">
-                <option value="">All</option>
+                <option value="">All types</option>
                 <option value="Error" selected="@(Model.AspectFilter == "Error" ? "selected" : null)">Error</option>
                 <option value="Security" selected="@(Model.AspectFilter == "Security" ? "selected" : null)">Security</option>
                 <option value="Attention" selected="@(Model.AspectFilter == "Attention" ? "selected" : null)">Attention</option>
@@ -40,14 +49,15 @@
                 <thead>
                     <tr>
                         <th class="onchange-nosubmit"><input type="checkbox" ifchecked-check="<table|>tbody input[type=checkbox]" ifunchecked-uncheck="<table|>tbody input[type=checkbox]" /></th>
-                        <th asp-order="@Model.Order">Id</th>
-                        <th asp-order="@Model.Order">Action</th>
-                        <th asp-order="@Model.Order">Aspect</th>
-                        <th asp-order="@Model.Order">Method</th>
-                        <th asp-order="@Model.Order" field-name="Url">URL</th>
-                        <th asp-order="@Model.Order">StatusCode</th>
-                        <th asp-order="@Model.Order">Type</th>
-                        <th asp-order="@Model.Order">Host</th>
+                        <th style="white-space: nowrap" asp-order="@Model.Order">Id</th>
+                        <th style="white-space: nowrap" asp-order="@Model.Order">Action</th>
+                        <th style="white-space: nowrap" asp-order="@Model.Order" field-name="ApplicationName">Application</th>
+                        <th style="white-space: nowrap" asp-order="@Model.Order">Aspect</th>
+                        <th style="white-space: nowrap" asp-order="@Model.Order">Method</th>
+                        <th style="white-space: nowrap" asp-order="@Model.Order" field-name="Url">URL</th>
+                        <th style="white-space: nowrap" asp-order="@Model.Order">StatusCode</th>
+                        <th style="white-space: nowrap" asp-order="@Model.Order">Type</th>
+                        <th style="white-space: nowrap" asp-order="@Model.Order">Host</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,6 +67,7 @@
                             <td class="onchange-nosubmit" onclick-propagate="off"><input type="checkbox" name="Selection" value="@item.Id" /></td>
                             <td align="right">@item.Id</td>
                             <td><strong>@item.Action</strong></td>
+                            <td><strong>@item.ApplicationName</strong></td>
                             <td>
                                 @if (item.Aspect != null)
                                 {
