@@ -194,6 +194,48 @@
         });
 
     </script>
+    <script>
+        $(function () {
+            /// <* x-onchange-sync="selector"> On change, synchronises it's value with the controls matching the given selector.
+            /// Usefull for instance when 2 or more controls show a same field where depending on responsive view, only one of
+            /// them is visible at the time.
+            $(document).on("change", "*[x-onchange-sync]", function () {
+                console.log(this);
+                // Retrieve current value:
+                var value = null;
+                if (this.tagName == "INPUT" && this.getAttribute('type') == 'checkbox') {
+                    value = (this.checked) ? this.value : null;
+                } else if (this.tagName == "INPUT" && this.getAttribute('type') == 'radio') {
+                    if (this.checked) {
+                        value = this.value;
+                    } else {
+                        return; // Ignore unchecked radio's
+                    }
+                } else {
+                    value = $(this).val();
+                }
+                // Set value on synched controls:
+                sircl.ext.$select($(this), $(this).attr("x-onchange-sync")).each(function () {
+                    if (this.tagName == "INPUT" && this.getAttribute('type') == 'checkbox') {
+                        if ((!this.checked && this.value == value) || (this.checked && this.value != value)) {
+                            this.checked = !this.checked;
+                            $(this).change();
+                        }
+                    } else if (this.tagName == "INPUT" && this.getAttribute('type') == 'radio') {
+                        if (!this.checked && this.value == value) {
+                            this.checked = !this.checked;
+                            $(this).change();
+                        }
+                    } else {
+                        if (value != $(this).val()) {
+                            $(this).val(value);
+                            $(this).change();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
     @RenderSection("Scripts", required: false)
 </head>
 <body>
