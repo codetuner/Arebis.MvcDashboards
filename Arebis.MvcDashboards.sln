@@ -9,6 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arebis.Core.Localization", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arebis.Core.AspNet.Mvc.Localization", "..\Arebis.Core\Arebis.Core.AspNet.Mvc.Localization\Arebis.Core.AspNet.Mvc.Localization.csproj", "{DE358B4D-4FCD-4DAD-B7B8-C62A83E48BDC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{194E6DEB-145D-44F3-8479-F909B8C075E4}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
