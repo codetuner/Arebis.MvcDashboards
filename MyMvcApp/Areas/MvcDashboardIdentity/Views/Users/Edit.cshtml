@@ -82,10 +82,10 @@
                 <fieldset>
                     <legend>Roles</legend>
 
-                    @foreach (var item in Model.Roles!.OrderBy(r => r.Name))
+                    @foreach (var item in Model.Roles!.Where(r => !String.IsNullOrWhiteSpace(r.Name)).OrderBy(r => r.Name))
                     {
                         <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="@(Html.IdFor(m=> m.UserRoleNames))_@(item.Id)" name="@Html.NameFor(m => m.UserRoleNames)" value="@(item.Name)" checked="@(Model.UserRoleNames.Contains(item.Name) ? "checked" : null)">
+                            <input type="checkbox" class="form-check-input" id="@(Html.IdFor(m=> m.UserRoleNames))_@(item.Id)" name="@Html.NameFor(m => m.UserRoleNames)" value="@(item.Name)" checked="@(Model.UserRoleNames.Contains(item.Name!) ? "checked" : null)">
                             <label class="form-check-label" for="@(Html.IdFor(m=> m.UserRoleNames))_@(item.Id)">@item.Name</label>
                         </div>
                     }

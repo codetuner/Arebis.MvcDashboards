@@ -179,11 +179,11 @@ app.UseRequestLocalization(rloptions!.Value);
 
 app.MapControllerRoute(
     name: "area",
-    pattern: "{culture:regex(^[a-z][a-z](\\-[A-Z][A-Z])?$)=en}/{area:exists}/{controller=Home}/{action=Index}/{id?}");
+    pattern: "{culture:regex(^[a-z][a-z](\\-[A-Z][A-Z]){{0,1}}$)=en}/{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{culture:regex(^[a-z][a-z](\\-[A-Z][A-Z])?$)=en}/{controller=Home}/{action=Index}/{id?}");
+    pattern: "{culture:regex(^[a-z][a-z](\\-[A-Z][A-Z]){{0,1}}$)=en}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 

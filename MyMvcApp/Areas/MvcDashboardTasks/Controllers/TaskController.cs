@@ -206,7 +206,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 SetToastrMessage("error", "Failed to save the task.<br/>See validation messages for more information.");
             }
 
-            Response.Headers.Add("X-Sircl-History-Replace", Url.Action("Edit", new { id = model.Item!.Id }));
+            Response.Headers["X-Sircl-History-Replace"] = Url.Action("Edit", new { id = model.Item!.Id });
             return await EditView(model);
         }
 

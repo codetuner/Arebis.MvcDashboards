@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MyMvcApp.Data.Localize;
 
 namespace MyMvcApp.Data.Tasks
 {

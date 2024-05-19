@@ -1,12 +1,9 @@
-﻿using Arebis.Core.AspNet.Mvc.Localization;
-using Arebis.Core.Localization;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
 using MyMvcApp.Areas.MvcDashboardTasks.Models.Home;
-using MyMvcApp.Data.Localize;
 using MyMvcApp.Data.Tasks;
 using System;
 using System.Collections.Generic;

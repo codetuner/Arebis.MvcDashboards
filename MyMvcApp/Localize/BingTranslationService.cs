@@ -101,7 +101,7 @@ namespace MyMvcApp.Localize
                         }
                         else
                         {
-                            var ex = new InvalidOperationException("BingTranslateService call failed.");
+                            var ex = new InvalidOperationException($"BingTranslateService call failed: {response.ReasonPhrase}.");
                             ex.Data["StatusCodeName"] = response.StatusCode;
                             ex.Data["StatusCode"] = (int)response.StatusCode;
                             ex.Data["StatusMessage"] = response.ReasonPhrase;

@@ -1,5 +1,4 @@
-﻿using MyMvcApp.Data.Localize;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyMvcApp.Data.Tasks
