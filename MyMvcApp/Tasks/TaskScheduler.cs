@@ -197,10 +197,7 @@ namespace MyMvcApp.Tasks
                                 {
                                     if (arguments.TryGetValue(attr.Name ?? prop.Name, out string? strvalue))
                                     {
-                                        if (strvalue != null)
-                                        {
-                                            prop.SetValue(implementation, ConvertValue(strvalue, prop.PropertyType));
-                                        }
+                                        prop.SetValue(implementation, ConvertValue(strvalue, prop.PropertyType));
                                     }
                                 }
                             }
@@ -252,37 +249,50 @@ namespace MyMvcApp.Tasks
             }
         }
 
-        private static object? ConvertValue(string strvalue, Type propertyType)
+        private static object? ConvertValue(string? strvalue, Type propertyType)
         {
-            if (propertyType == typeof(int[]))
+            if (String.IsNullOrEmpty(strvalue))
             {
-                if (strvalue == "")
-                {
+                if (propertyType == typeof(int[]))
                     return Array.Empty<int>();
-                }
+                else if (propertyType == typeof(string[]))
+                    return Array.Empty<string>();
+                else if (propertyType == typeof(TimeSpan))
+                    return TimeSpan.Zero;
                 else
-                {
-                    return strvalue.Split(',').Select(s => Int32.Parse(s)).ToArray();
-                }
+                    return null;
+            }
+            else if (propertyType == typeof(int[]))
+            {
+                return strvalue.Split(',').Select(s => Int32.Parse(s)).ToArray();
             }
             else if (propertyType == typeof(string[]))
             {
-                if (strvalue == String.Empty)
-                {
-                    return Array.Empty<string>();
-                }
-                else
-                {
-                    return strvalue.Split(',');
-                }
+                return strvalue.Split(',');
             }
-            else if (propertyType == typeof(TimeSpan?))
+            else if (propertyType == typeof(TimeSpan) || (propertyType == typeof(TimeSpan?)))
             {
                 return TimeSpan.Parse(strvalue);
             }
-            else if (propertyType == typeof(Int32?))
+            else if (propertyType == typeof(Int32) || propertyType == typeof(Int32?))
             {
                 return Int32.Parse(strvalue);
+            }
+            else if (propertyType == typeof(DateTime) || propertyType == typeof(DateTime?))
+            {
+                return DateTime.Parse(strvalue);
+            }
+            else if (propertyType == typeof(DateTimeOffset) || propertyType == typeof(DateTimeOffset?))
+            {
+                return DateTimeOffset.Parse(strvalue);
+            }
+            else if (propertyType == typeof(DateOnly) || propertyType == typeof(DateOnly?))
+            {
+                return DateOnly.Parse(strvalue);
+            }
+            else if (propertyType == typeof(TimeOnly) || propertyType == typeof(TimeOnly?))
+            {
+                return TimeOnly.Parse(strvalue);
             }
             else
             {
