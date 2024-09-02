@@ -84,6 +84,50 @@
             border-radius: var(--bs-border-radius);
         }
 
+        .environment-banner {
+            display: none;
+        }
+
+        .environment-nonprod {
+        
+            .environment-banner {
+                display: block;
+                left: 0;
+                right: 0;
+                top: 0;
+                height: 36px;
+                overflow: clip;
+                position: fixed;
+                font-weight: bold;
+                background-color: yellow;
+                border-bottom: solid 1px #d8d8d8;
+                padding: .4em 1em;
+                text-align: center;
+                z-index: 9999;
+            }
+            
+            > nav.navbar {
+                top: 36px;
+            }
+            
+            > .container-fluid {
+                margin-top: calc(28px + 36px);
+            }
+            
+            .modal-dialog {
+                margin-top: calc(28px + 36px);
+            }
+        
+            .offcanvas-end, .offcanvas-start, .offcanvas-top {
+                top: 36px;
+            }
+        
+            /* form TinyMCE input FullScreen: */
+            .tox-fullscreen {
+                padding-top: 36px;
+            }
+        }
+
         *[href] {
             cursor: pointer;
         }
@@ -106,7 +150,11 @@
     </script>
     @RenderSection("Scripts", required: false)
 </head>
-<body>
+<body class="@(hostEnvironment.EnvironmentName != "Production" ? "environment-nonprod " : "")environment-@hostEnvironment.EnvironmentName.ToLowerInvariant()">
+
+    <div class="environment-banner environment-banner-@hostEnvironment.EnvironmentName.ToLowerInvariant()">
+        You are on the @hostEnvironment.EnvironmentName environment !
+    </div>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
