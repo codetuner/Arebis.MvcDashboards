@@ -296,7 +296,7 @@ namespace MyMvcApp.Tasks
             }
             else
             {
-                return Convert.ChangeType(strvalue, propertyType, CultureInfo.InvariantCulture);
+                return Convert.ChangeType(strvalue, Nullable.GetUnderlyingType(propertyType) ?? propertyType, CultureInfo.InvariantCulture);
             }
         }
 
