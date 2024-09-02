@@ -85,7 +85,7 @@
     <div class="mb-3">
         @if (Model.Item.Id != 0)
         {
-            <a class="btn btn-outline-secondary float-end" asp-action="New" asp-route-cloneOfId="@Model.Item.Id"><i class="spinner fa fa-clone"></i> Clone</a>
+            <a class="btn btn-outline-secondary float-end" asp-action="New" asp-route-cloneOfId="@Model.Item.Id" history="replace"><i class="spinner fa fa-clone"></i> Clone</a>
         }
         <a href="history:back" class="btn btn-secondary"><i class="fas fa-angle-left"></i> Back</a>
     </div>

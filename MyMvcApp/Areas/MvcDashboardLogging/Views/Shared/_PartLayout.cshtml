@@ -1,5 +1,10 @@
-﻿@{ 
-    this.Context.Response.Headers.Add("X-Sircl-Document-Title", "MvcDashboardLogging - " + ViewBag.Title);
+﻿@inject IHostEnvironment hostEnvironment
+@{
+    Context.Response.Headers["X-Sircl-AppId"] = hostEnvironment.ApplicationName + "-" + this.Context.GetRouteValue("area") + "-" + this.User?.Identity?.Name?.GetHashCode();
+    if (this.Context.Request.Headers["X-Sircl-Target"] == "#body-content")
+    {
+        this.Context.Response.Headers.Add("X-Sircl-Document-Title", this.Context.GetRouteValue("area") + " - " + ViewBag.Title);
+    }
 }
-<script>if (typeof appId === "undefined" || appId != "MvcDashboardLogging") { location.reload(); }</script>
+<script>if (typeof sircl === "undefined") { location.reload(); }</script>
 @RenderBody()

@@ -44,7 +44,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
         {
             if (refresh)
             {
-                Response.Headers["X-Sircl-History"] = "refresh";
+                Response.Headers["X-Sircl-History"] = "reload";
             }
             return this.StatusCode(204);
         }

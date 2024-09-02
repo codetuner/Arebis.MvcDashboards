@@ -80,7 +80,7 @@
     @if (Model.Item.Id != 0)
     {
         <div class="float-end">
-            <a class="btn btn-outline-secondary" asp-action="New" asp-route-cloneOfId="@Model.Item.Id"><i class="spinner fa fa-clone"></i> Clone</a>
+            <a class="btn btn-outline-secondary" asp-action="New" asp-route-cloneOfId="@Model.Item.Id" history="replace"><i class="spinner fa fa-clone"></i> Clone</a>
             <button type="submit" class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?"><i class="spinner fas fa-trash-alt"></i> Delete</button>
         </div>
     }

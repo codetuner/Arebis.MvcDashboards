@@ -58,7 +58,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
 
         protected IActionResult DialogOk()
         {
-            Response.Headers["X-Sircl-History"] = "refresh";
+            Response.Headers["X-Sircl-History"] = "reload";
             return this.StatusCode(204);
         }
 
