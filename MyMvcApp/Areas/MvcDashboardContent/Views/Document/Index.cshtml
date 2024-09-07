@@ -1,0 +1,110 @@
+﻿@model IndexModel
+@{
+    ViewBag.Title = "Documents";
+    var canEditToPublish = User.IsInRole("Administrator") || User.IsInRole("ContentAdministrator") || User.IsInRole("ContentEditor");
+}
+
+
+<h1>Documents</h1>
+
+<form class="card p-3 bg-white onchange-submit" action="@Url.Action("Index")" method="get" history="replace" sub-target="#subTarget">
+
+    <div class="d-flex justify-content-between">
+        <a href="@Url.Action("NewModal")" class="btn btn-primary" target="#newDocumentModal" onkeydown-click="+"><i class="spinner fas fa-solid fa-plus"></i> New</a>
+
+        <div class="flex-grow-1"></div>
+
+        <div>
+            <select class="form-control auto-width" asp-for="State" asp-items="Model.States"><option value="">All</option></select>
+        </div>
+        <div>&nbsp;&nbsp;</div>
+        <div>
+            <select class="form-control auto-width" asp-for="DocumentTypeId" asp-items="Model.DocumentTypes"><option value="">All</option></select>
+        </div>
+        <div>&nbsp;&nbsp;</div>
+        <div>
+            <input type="search" class="form-control oninput-change" asp-for="Query" style="max-width: 280px;" autocomplete="off" placeholder="Search" />
+        </div>
+    </div>
+
+    <div id="subTarget">
+
+        <div class="overlay" hidden></div>
+
+        <div class="table-responsive">
+            <table class="table table-hover mt-3">
+                <thead>
+                    <tr>
+                        <th class="onchange-nosubmit"><input type="checkbox" ifchecked-check="<table|>tbody input[type=checkbox]" ifunchecked-uncheck="<table|>tbody input[type=checkbox]" /></th>
+                        <th asp-order="@Model.Order">State</th>
+                        <th>Type</th>
+                        <th asp-order="@Model.Order">Name</th>
+                        <th asp-order="@Model.Order">Culture</th>
+                        <th asp-order="@Model.Order">Path</th>
+                        <th asp-order="@Model.Order">SortKey</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr class="state-@(item.State.Replace(' ', '-').ToLowerInvariant())" href="@Url.Action("Edit", new { id = item.Id })">
+                            <td class="onchange-nosubmit" onclick-propagate="off"><input type="checkbox" name="Selection" value="@item.Id" /></td>
+                            <td style="white-space: nowrap">
+                                @if (item.AutoPublish)
+                                {
+                                    <i class="far fa-play-circle" title="Auto-publish"></i>
+                                }
+                                else
+                                {
+                                    <i class="far fa-pause-circle" title="No auto-publish"></i>
+                                }
+                                @if (item.State == "new")
+                                {
+                                    <span class="badge bg-light text-dark">New</span>
+                                }
+                                else if (item.State == "uptodate")
+                                {
+                                    <span class="badge bg-success">Published</span>
+                                }
+                                else if (item.State == "outdated")
+                                {
+                                    <span class="badge bg-warning">Outdated</span>
+                                }
+                                else if (item.State == "deleted")
+                                {
+                                    <span class="badge bg-danger">Deleted</span>
+                                }
+                            </td>
+                            <td>@item.Type?.Name</td>
+                            <td>@item.Name</td>
+                            <td>@item.Culture</td>
+                            <td>@item.Path</td>
+                            <td>@item.SortKey</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <pagesize-select asp-for="PageSize" class="form-control auto-width float-end"></pagesize-select>
+        <pagination-nav asp-for="Page" max="Model.MaxPage" />
+
+        @if (User.IsInRole("Administrator") || User.IsInRole("ContentAdministrator") || User.IsInRole("ContentEditor"))
+        {
+            if (Model.State != "deleted")
+            {
+                <button class="btn btn-primary" name="Page" value="@Model.Page" enable-ifanychecked=".state-new [name=Selection], .state-outdated [name=Selection]" formaction="@Url.Action("IndexPublish")" formmethod="post"><i class="spinner"></i> Publish</button>
+                <button class="btn btn-primary" name="Page" value="@Model.Page" enable-ifanychecked=".state-outdated [name=Selection], .state-uptodate [name=Selection]" formaction="@Url.Action("IndexUnpublish")" formmethod="post"><i class="spinner"></i> Unpublish</button>
+                <button class="btn btn-danger " name="Page" value="@Model.Page" enable-ifanychecked="[name=Selection]" formaction="@Url.Action("IndexDelete")" formmethod="post" onclick-confirm="Are you sure ?"><i class="spinner"></i> Delete</button>
+            }
+            else
+            {
+                <button class="btn btn-success" name="Page" value="@Model.Page" enable-ifanychecked=".state-deleted [name=Selection]" formaction="@Url.Action("IndexRestore")" formmethod="post"><i class="spinner fas fa-solid fa-life-ring"></i> Restore</button>
+                <button class="btn btn-danger" name="Page" value="@Model.Page" enable-ifanychecked=".state-deleted [name=Selection]" formaction="@Url.Action("IndexDestroy")" formmethod="post" onclick-confirm="Permanently destroy the selected documents ?"><i class="spinner fas fa-solid fa-skull-crossbones"></i> Shred</button>
+            }
+        }
+
+    </div>
+
+</form>
+
+<div id="newDocumentModal" class="modal fade" tabindex="-1"></div>

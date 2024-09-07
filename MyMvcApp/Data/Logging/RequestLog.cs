@@ -17,11 +17,11 @@ namespace MyMvcApp.Data.Logging
         /// <summary>
         /// Id of the log.
         /// </summary>
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public virtual int Id { get; set; }
 
         /// <summary>
-        /// DateTime the request was initiated.
+        /// UTC dateTime the request was initiated.
         /// </summary>
         public virtual DateTime Timestamp { get; set; }
 

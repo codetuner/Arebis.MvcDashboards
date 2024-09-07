@@ -7,7 +7,7 @@ namespace MyMvcApp.Tasks
         [TaskArgument]
         public int? Count { get; set; }
 
-        public override Task Execute(ITaskHost taskHost)
+        public override Task Execute(IScheduledTaskHost taskHost)
         {
             // Reschedule task if recurrence has been set:
             base.Execute(taskHost);

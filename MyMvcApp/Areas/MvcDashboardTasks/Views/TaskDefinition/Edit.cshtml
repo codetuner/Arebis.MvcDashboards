@@ -25,7 +25,7 @@
 
     <div class="mb-3">
         <label for="@Html.IdFor(m => m.Item.ImplementationClass)" class="form-label">Implementation class: *</label>
-        <i class="fas fa-info-circle float-end" data-bs-toggle="tooltip" title="Specify the full name of the class that implements this task type."></i>
+        <i class="fas fa-solid fa-info-circle float-end" data-bs-toggle="tooltip" title="Specify the full name of the class that implements this task type."></i>
         <input asp-for="Item.ImplementationClass" type="text" class="form-control" list="implementationcandidates" />
         <datalist id="implementationcandidates">
             @foreach (var item in Model.ImplementationCandidateNames)
@@ -38,7 +38,7 @@
 
     <div class="mb-3">
         <label for="@Html.IdFor(m => m.Item.ProcessRole)" class="form-label">Process role:</label>
-        <i class="fas fa-info-circle float-end" data-bs-toggle="tooltip" title="Specify the process role that that defines the implementation class and is capable of running tasks of this class. Leave empty if all process instances can run this task type."></i>
+        <i class="fas fa-solid fa-info-circle float-end" data-bs-toggle="tooltip" title="Specify the process role that that defines the implementation class and is capable of running tasks of this class. Leave empty if all process instances can run this task type."></i>
         <input asp-for="Item.ProcessRole" type="text" class="form-control" list="processrolecandidates" />
         <datalist id="processrolecandidates">
             @foreach (var item in Model.ProcessRoleCandidateNames)
@@ -66,12 +66,12 @@
         <label asp-for="Item.IsActive" class="form-check-label">Active</label>
     </div>
 
-    @if (Model.Item.Id != 0)
+    @if (!Model.IsNew)
     {
-        <button type="submit" class="btn btn-danger float-end" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?"><i class="spinner fas fa-trash-alt"></i> Delete</button>
+        <button type="submit" class="btn btn-danger float-end" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?"><i class="spinner fas fa-solid fa-trash-alt"></i> Delete</button>
     }
-    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-check"></i> Save</button>
-    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true" onkeydown-click="Ctrl+S"><i class="spinner fas fa-check"></i> Apply</button>
-    <a href="history:back" class="btn btn-secondary"><i class="fas fa-angle-left"></i> Back</a>
+    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Save")</button>
+    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true" onkeydown-click="Ctrl+S"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
+    <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>
 
 </form>

@@ -9,7 +9,7 @@
 <form class="card p-3 bg-white onchange-submit" action="@Url.Action("Index")" method="get" history="replace" sub-target="#subTarget">
 
     <div class="d-flex justify-content-between">
-        <a href="@Url.Action("New", new { domainId = Model.DomainId })" class="btn btn-primary @(Model.Domains.Any() ? "" : "disabled")" onkeydown-click="+"><i class="spinner fas fa-plus"></i> New</a>
+        <a href="@Url.Action("New", new { domainId = Model.DomainId })" class="btn btn-primary @(Model.Domains.Any() ? "" : "disabled")" onkeydown-click="+"><i class="spinner fas fa-solid fa-plus"></i> New</a>
         <div class="flex-grow-1"></div>
         <div>
             <select class="form-control auto-width" asp-for="DomainId" asp-items="Model.Domains"><option value="">All</option></select>
@@ -44,17 +44,17 @@
                             <td>
                                 @if (item.MimeType == MediaTypeNames.Text.Html)
                                 {
-                                    <i class="fas fa-code" title="HTML" style="color: #a0a0ff; width: 1.2em;"></i>
+                                    <i class="fas fa-solid fa-code" title="HTML" style="color: #a0a0ff; width: 1.2em;"></i>
                                 }
                                 else
                                 {
-                                    <i class="fas fa-font" title="Plain Text" style="color: #c0c0c0; width: 1.2em; padding-left: 0.2em;"></i>
+                                    <i class="fas fa-solid fa-font" title="Plain Text" style="color: #c0c0c0; width: 1.2em; padding-left: 0.2em;"></i>
                                 }
                                 @item.Name
                                 <span class="float-end">
                                 @if (!String.IsNullOrWhiteSpace(item.Notes))
                                 {
-                                        <i class="fas fa-sticky-note" title="Has Notes" style="color: #d0d020;"></i>
+                                        <i class="fas fa-solid fa-sticky-note" title="Has Notes" style="color: #d0d020;"></i>
                                 }
                                 </span>
                             </td>

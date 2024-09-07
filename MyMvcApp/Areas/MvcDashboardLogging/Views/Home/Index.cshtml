@@ -31,7 +31,7 @@
     <div class="border bg-light p-4 pb-3 rounded-lg m-3">
         <form asp-action="Flush" method="post">
             <input type="hidden" name="days" value="30" />
-            <button type="submit" class="btn btn-primary btn-lg float-end" onclick-confirm="Ok to delete all log records older than 30 days ?"><span class="spinner fas fa-trash"></span> Flush</button>
+            <button type="submit" class="btn btn-primary btn-lg float-end" onclick-confirm="Ok to delete all log records older than 30 days ?"><span class="spinner fas fa-solid fa-trash"></span> Flush</button>
             <h5>Flush request logs</h5>
             <p>Delete request log records older than 30 days (except if bookmaked) to make room for fresh log records.</p>
         </form>

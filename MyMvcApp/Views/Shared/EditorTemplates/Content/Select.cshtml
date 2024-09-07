@@ -1,0 +1,24 @@
+﻿@model String
+@using System.Text.Json 
+@{ var values = (string?)ViewBag.Values; }
+<label for="@Html.IdFor(m => m)" class="form-label">@ViewBag.Name:</label>
+<select id="@Html.IdFor(m => m)" name="@Html.NameFor(m => m)" class="form-control">
+    @if (String.IsNullOrEmpty(values))
+    {
+        <option value="">(No values defined. Open for more info.)</option>
+        <option value="">|  Define a "Values" setting with ";"-separated values on the Document Type's property.</option>
+        <option value="">|  Values can be just "January" for instance ("value" format), or "01=January" ("value=text" format).</option>
+        <option value="">|  Add a ";" in front of list to support no value.</option>
+        <option value="">|  I.e: Values=;q1=First Quarter;q2=Second Quarter;q3=Third Quarter;q4=Fourth Quarter</option>
+    }
+    else
+    {
+        @foreach (var item in values.Split(';'))
+        {
+            // A value can be either "value" or "value=displaystring":
+            var value = (item.Contains('=') ? item.Substring(0, item.IndexOf('=')) : item);
+            var text = (item.Contains('=') ? item.Substring(value.Length + 1) : item);
+            <option value="@value" selected="@((Model==value) ? "selected" : null)">@(text)</option>
+        }
+    }
+</select>

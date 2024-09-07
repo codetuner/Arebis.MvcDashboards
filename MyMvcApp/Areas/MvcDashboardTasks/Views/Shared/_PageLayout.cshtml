@@ -143,10 +143,6 @@
             }
         }
 
-        *[href] {
-            cursor: pointer;
-        }
-
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -297,9 +293,9 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <span>
-                <i class="whileloading-show fas fa-spinner fa-spin" style="color: limegreen; margin-right: 3px;"></i>
+                <i class="whileloading-show fas fa-solid fa-spinner fa-spin" style="color: limegreen; margin-right: 3px;"></i>
                 <a class="navbar-brand" asp-area="MvcDashboardTasks" asp-controller="Home" asp-action="Index">
-                    <i class="whileloading-hide fas fa-tachometer-alt"></i>&nbsp;MvcDashboardTasks
+                    <i class="whileloading-hide fas fa-solid fa-tachometer-alt"></i>&nbsp;MvcDashboardTasks
                 </a>
                 <span class="btn-group" role="group" onload-load="@Url.Action("MvcDashboardsDropdown", "Home")"></span>
             </span>
@@ -312,7 +308,7 @@
                         <a class="nav-link" asp-area="MvcDashboardTasks" asp-controller="Task" asp-action="Index"><i class="far fa-calendar-check"></i> Tasks</a>
                     </li>
                     <li class="nav-item" ifroute-setactive="\/TaskDefinition(\/|$)">
-                        <a class="nav-link" asp-area="MvcDashboardTasks" asp-controller="TaskDefinition" asp-action="Index"><i class="fas fa-calendar"></i> Definitions</a>
+                        <a class="nav-link" asp-area="MvcDashboardTasks" asp-controller="TaskDefinition" asp-action="Index"><i class="fas fa-solid fa-calendar"></i> Definitions</a>
                     </li>
                 </ul>
                 <form class="d-flex" asp-area="MvcDashboardTasks" asp-controller="Task" asp-action="Index" method="get">
@@ -322,7 +318,7 @@
                 </form>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/" target="_self"><i class="fas fa-sign-out-alt"></i></a>
+                        <a class="nav-link" href="/" target="_self"><i class="fas fa-solid fa-sign-out-alt"></i></a>
                     </li>
                 </ul>
             </div>

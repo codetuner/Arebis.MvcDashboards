@@ -20,10 +20,10 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
     {
         #region Construction
 
-        private readonly TasksDbContext context;
+        private readonly ScheduledTasksDbContext context;
         private readonly ILogger logger;
 
-        public TaskDefinitionController(TasksDbContext context, ILogger<TaskDefinitionController> logger)
+        public TaskDefinitionController(ScheduledTasksDbContext context, ILogger<TaskDefinitionController> logger)
         {
             this.context = context;
             this.logger = logger;
@@ -64,7 +64,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         {
             var model = new EditModel
             {
-                Item = new Data.Tasks.TaskDefinition()
+                Item = new Data.Tasks.ScheduledTaskDefinition()
             };
 
             return EditView(model);
@@ -166,7 +166,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         {
             // Retrieve candidate implementation types:
             model.ImplementationCandidateNames = Assembly.GetEntryAssembly()!.DefinedTypes
-                .Where(t => t.IsPublic && !t.IsAbstract && typeof(ITaskImplementation).IsAssignableFrom(t))
+                .Where(t => t.IsPublic && !t.IsAbstract && typeof(IScheduledTaskImplementation).IsAssignableFrom(t))
                 .Select(t => t.FullName!)
                 .OrderBy(n => n)
                 .ToList();

@@ -1,0 +1,13 @@
+﻿@{
+    Layout = "_Layout";
+    this.Context.Response.StatusCode = 404;
+}
+
+<p style="margin: 64px 14px; text-align: center; font-size: 3em;">404 <span style="white-space: nowrap;">Page not found</span></p>
+
+
+@if (this.Context.User?.IsInRole("Administrator") == true || this.Context.User?.IsInRole("ContentAdministrator") == true || this.Context.User?.IsInRole("ContentEditor") == true || this.Context.User?.IsInRole("ContentAuthor") == true)
+{
+    <p style="margin: 42px 14px; text-align: center;"><button type="button" style="background-color: #f0f0f4; border: solid 1px #c8c8cf; border-radius: 3px; padding: 4px 12px; font-size: 1.075rem; font-weight: 400; ">Create this page</button></p>
+}
+

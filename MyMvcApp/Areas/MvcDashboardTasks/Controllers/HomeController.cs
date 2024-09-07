@@ -19,10 +19,10 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
 
         #region Construction
 
-        private readonly TasksDbContext context;
+        private readonly ScheduledTasksDbContext context;
         private readonly ILogger logger;
 
-        public HomeController(TasksDbContext context, ILogger<HomeController> logger)
+        public HomeController(ScheduledTasksDbContext context, ILogger<HomeController> logger)
         {
             this.context = context;
             this.logger = logger;

@@ -159,9 +159,9 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <span>
-                <i class="whileloading-show fas fa-spinner fa-spin" style="color: limegreen; margin-right: 3px;"></i>
+                <i class="whileloading-show fas fa-solid fa-spinner fa-spin" style="color: limegreen; margin-right: 3px;"></i>
                 <a class="navbar-brand" asp-area="MvcDashboardIdentity" asp-controller="Home" asp-action="Index">
-                    <i class="whileloading-hide fas fa-tachometer-alt"></i>&nbsp;MvcDashboardIdentity
+                    <i class="whileloading-hide fas fa-solid fa-tachometer-alt"></i>&nbsp;MvcDashboardIdentity
                 </a>
                 <span class="btn-group" role="group" onload-load="@Url.Action("MvcDashboardsDropdown", "Home")"></span>
             </span>
@@ -171,12 +171,12 @@
             <div class="collapse navbar-collapse" id="navBarMainContent">
                 <ul id="topMenu" class="navbar-nav me-auto mb-2 mb-lg-0" onload-load="@Url.Action("TopMenu", "Home")" onload-reloadafter="120">
                     <li class="nav-item" ifroute-setactive="\/Users(\/|$)">
-                        <a class="nav-link" asp-area="MvcDashboardIdentity" asp-controller="Users" asp-action="Index"><i class="fas fa-user"></i> Users</a>
+                        <a class="nav-link" asp-area="MvcDashboardIdentity" asp-controller="Users" asp-action="Index"><i class="fas fa-solid fa-user"></i> Users</a>
                     </li>
                     @if (userManager.SupportsUserRole)
                     {
                         <li class="nav-item" ifroute-setactive="\/Roles(\/|$)">
-                            <a class="nav-link" asp-area="MvcDashboardIdentity" asp-controller="Roles" asp-action="Index"><i class="fas fa-theater-masks"></i> Roles</a>
+                            <a class="nav-link" asp-area="MvcDashboardIdentity" asp-controller="Roles" asp-action="Index"><i class="fas fa-solid fa-theater-masks"></i> Roles</a>
                         </li>
                     }
                 </ul>
@@ -187,7 +187,7 @@
                 </form>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/" target="_self"><i class="fas fa-sign-out-alt"></i></a>
+                        <a class="nav-link" href="/" target="_self"><i class="fas fa-solid fa-sign-out-alt"></i></a>
                     </li>
                 </ul>
             </div>
@@ -221,7 +221,7 @@
             <div class="modal-content target" id="modal-lg-content">
                 <div class="modal-body text-center">
                     <div style="font-size: 3em; color: darkgray; margin: 1em;">
-                        <i class="fas fa-spinner fa-spin"></i>
+                        <i class="fas fa-solid fa-spinner fa-spin"></i>
                     </div>
                 </div>
             </div>

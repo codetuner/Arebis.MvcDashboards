@@ -4,9 +4,9 @@ namespace MyMvcApp.Tasks
 {
     public class TasksFlushTask : BaseRecurrentTaskImplementation
     {
-        private readonly Data.Tasks.TasksDbContext context;
+        private readonly Data.Tasks.ScheduledTasksDbContext context;
 
-        public TasksFlushTask(Data.Tasks.TasksDbContext context)
+        public TasksFlushTask(Data.Tasks.ScheduledTasksDbContext context)
         {
             this.context = context;
 
@@ -27,7 +27,7 @@ namespace MyMvcApp.Tasks
         [TaskArgumentAttribute]
         public int FailureRetentionDays { get; set; }
 
-        public override Task Execute(ITaskHost host)
+        public override Task Execute(IScheduledTaskHost host)
         {
             // Reschedule task:
             base.Execute(host);

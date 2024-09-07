@@ -15,7 +15,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         public IActionResult MvcDashboardsDropdown()
         {
             var model = new List<string>();
-            foreach (var type in this.GetType().Assembly.GetTypes().Where(t => t.Name == "BaseController" && (t.Namespace?.Contains(".Areas.MvcDashboard") ?? false)))
+            foreach (var type in this.GetType().Assembly.GetTypes().Where(t => t.Name == "BaseController" && (t.Namespace?.Contains(".Areas.MvcDashboard") ?? false)).OrderBy(t => t.FullName))
             {
                 var accessible = true;
                 var aatributes = type.GetCustomAttributes(typeof(AuthorizeAttribute), false);

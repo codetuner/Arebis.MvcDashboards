@@ -27,8 +27,8 @@
             <div>
                 @foreach (var val in Model.Values)
                 {
-                    <i id="cult-rev-@(val.Culture)" class="fas fa-check" onclick-click="<DIV|>A"></i>
-                    <i id="cult-tor-@(val.Culture)" class="fas fa-check" onclick-click="<DIV|>A" style="color: #d0d0d0;"></i>
+                    <i id="cult-rev-@(val.Culture)" class="fas fa-solid fa-check" onclick-click="<DIV|>A"></i>
+                    <i id="cult-tor-@(val.Culture)" class="fas fa-solid fa-check" onclick-click="<DIV|>A" style="color: #d0d0d0;"></i>
                     <a href="null" onclick-scrollintoview="#cult-@(val.Culture)" class="onunloadchanged-allow" style="margin-right: 1ch;" tabindex="-1">@(val.Culture)</a>
                 }
             </div>
@@ -132,7 +132,7 @@
             <p>
                 Automatically translate based on
                 <select asp-for="SourceCulture" asp-items="@(new SelectList(Model.Values.Select(v => v.Culture)))" class="form-control" style="width: 10ch; display: inline"></select>
-                <button type="submit" class="btn btn-secondary" asp-action="AutoTranslate" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-globe"></i> Translate</button>
+                <button type="submit" class="btn btn-secondary" asp-action="AutoTranslate" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-solid fa-globe"></i> Translate</button>
             </p>
             <p>
                 Note: only cultures with no value and not marked reviewed will get a value, provided the translation service supports the culture.
@@ -140,16 +140,16 @@
         </div>
     }
 
-    @if (Model.Item.Id != 0)
+    @if (!Model.IsNew)
     {
         <span class="float-end">
-            <button type="submit" class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?"><i class="spinner fas fa-trash-alt"></i> Delete</button>
+            <button type="submit" class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?"><i class="spinner fas fa-solid fa-trash-alt"></i> Delete</button>
         </span>
     }
-    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-check"></i> Save</button>
-    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true" onkeydown-click="Ctrl+S"><i class="spinner fas fa-check"></i> Apply</button>
-    <a href="history:back" class="btn btn-secondary"><i class="fas fa-angle-left"></i> Back</a>
-    @if (Model.Item.Id != 0)
+    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Save")</button>
+    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true" onkeydown-click="Ctrl+S"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
+    <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>
+    @if (!Model.IsNew)
     { 
         <div class="form-check mt-2">
             <input class="form-check-input" type="checkbox" asp-for="SaveAsCopy" ifchecked-uncheck=".reviewed-chk">
@@ -170,7 +170,7 @@
             </div>
             <div id="preview-modal-body" class="modal-body" style="min-height: 200px;">
                 <h1 class="text-center">
-                    <i class="fas fa-spinner fa-spin"></i>
+                    <i class="fas fa-solid fa-spinner fa-spin"></i>
                 </h1>
                 <p class="text-center">
                     <i>Creating preview...</i>

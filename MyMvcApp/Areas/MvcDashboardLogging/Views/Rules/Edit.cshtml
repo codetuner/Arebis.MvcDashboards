@@ -1,9 +1,9 @@
 ﻿@model EditModel
 @{
-    ViewBag.Title = (Model.Item.Id == 0) ? "new" : $"Rule {Model.Item.Id}";
+    ViewBag.Title = (Model.IsNew) ? "new" : $"Rule {Model.Item.Id}";
 }
 
-<h1>Rule @((Model.Item.Id == 0) ? "" : Model.Item.Id.ToString()) : <small class="text-muted">@((Model.Item.Id == 0) ? "new" : null)</small></h1>
+<h1>Rule @((Model.IsNew) ? "" : Model.Item.Id.ToString()) : <small class="text-muted">@((Model.IsNew) ? "new" : null)</small></h1>
 
 <form asp-action="Submit" asp-route-id="@Model.Item.Id" method="post" onkeyenter-click="" autocomplete="off" onchange-set="HasChanges" onunloadchanged-confirm="Changes will be lost. Proceed anyway ?">
 
@@ -160,16 +160,16 @@
 
     </fieldset>
 
-    @if (Model.Item.Id != 0)
+    @if (!Model.IsNew)
     {
         <div class="float-end">
             <a class="btn btn-outline-secondary" asp-action="New" asp-route-cloneOfId="@Model.Item.Id" history="replace"><i class="spinner fa fa-clone"></i> Clone</a>
-            <button type="submit" class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?"><i class="spinner fas fa-trash-alt"></i> Delete</button>
+            <button type="submit" class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?"><i class="spinner fas fa-solid fa-trash-alt"></i> Delete</button>
         </div>
     }
-    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-check"></i> Save</button>
-    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true" onkeydown-click="Ctrl+S"><i class="spinner fas fa-check"></i> Apply</button>
-    <a href="history:back" class="btn btn-secondary"><i class="fas fa-angle-left"></i> Back</a>
+    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Save")</button>
+    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true" onkeydown-click="Ctrl+S"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
+    <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>
 
 </form>
 

@@ -17,7 +17,7 @@ namespace MyMvcApp.Data.Localize
         /// <summary>
         /// Id of the query.
         /// </summary>
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [JsonIgnore]
         public virtual int Id { get; set; }
 

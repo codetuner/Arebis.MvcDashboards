@@ -62,11 +62,11 @@
                     }
                     else if (Model.Item.Succeeded == false)
                     {
-                        <text><i class="fas fa-times"></i> Failed</text>
+                        <text><i class="fas fa-solid fa-times"></i> Failed</text>
                     }
                     else if (Model.Item.IsRunning)
                     {
-                        <text><i class="fas fa-running"></i> Running</text>
+                        <text><i class="fas fa-solid fa-running"></i> Running</text>
                     }
                 </td>
             </tr>
@@ -83,11 +83,11 @@
     }
 
     <div class="mb-3">
-        @if (Model.Item.Id != 0)
+        @if (!Model.IsNew)
         {
             <a class="btn btn-outline-secondary float-end" asp-action="New" asp-route-cloneOfId="@Model.Item.Id" history="replace"><i class="spinner fa fa-clone"></i> Clone</a>
         }
-        <a href="history:back" class="btn btn-secondary"><i class="fas fa-angle-left"></i> Back</a>
+        <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>
     </div>
 
     <div class="mb-3">

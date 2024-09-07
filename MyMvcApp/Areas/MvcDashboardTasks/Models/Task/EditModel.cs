@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardTasks.Models.Task
 {
-    public class EditModel : BaseEditModel<Data.Tasks.Task>
+    public class EditModel : BaseEditModel<Data.Tasks.ScheduledTask>
     {
-        public Data.Tasks.TaskDefinition[]? Definitions { get; internal set; } = null!;
+        public bool IsNew => this.Item.Id == 0;
+
+        public Data.Tasks.ScheduledTaskDefinition[]? Definitions { get; internal set; } = null!;
     }
 }

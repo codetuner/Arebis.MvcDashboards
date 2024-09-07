@@ -60,7 +60,7 @@ namespace MyMvcApp.Tasks
             this.mainLoopCancellationTokenSource = mainLoopCancellationTokenSource;
             this.processRole = configuration.GetValue<string?>("Tasks:ProcessRole", null);
             this.schedulerMinimalDelayMs = configuration.GetValue<int>("Tasks:SchedulerInitialDelayMs", 2000);
-            this.schedulerExtendedDelayMs = configuration.GetValue<int>("Tasks:SchedulerExtendedDelayMs", 3000);
+            this.schedulerExtendedDelayMs = configuration.GetValue<int>("Tasks:SchedulerExtendedDelayMs", 23000);
         }
 
         public void Run()
@@ -79,7 +79,7 @@ namespace MyMvcApp.Tasks
                     using (IServiceScope scope = serviceProvider.CreateScope())
                     {
                         // Retrieve tasks to execute:
-                        var dbContext = scope.ServiceProvider.GetRequiredService<TasksDbContext>();
+                        var dbContext = scope.ServiceProvider.GetRequiredService<ScheduledTasksDbContext>();
                         var tasks = dbContext.Tasks
                             .Include(t => t.Definition)
                             .Where(t => t.Definition.ProcessRole == null || t.Definition.ProcessRole == processRole)
@@ -166,7 +166,7 @@ namespace MyMvcApp.Tasks
                     using (IServiceScope scope = serviceProvider.CreateScope())
                     {
                         // Retrieve task entity:
-                        var dbContext = scope.ServiceProvider.GetRequiredService<TasksDbContext>();
+                        var dbContext = scope.ServiceProvider.GetRequiredService<ScheduledTasksDbContext>();
                         var task = dbContext.Tasks
                             .Include(t => t.Definition)
                             .Single(t => t.Id == taskId);
@@ -184,7 +184,7 @@ namespace MyMvcApp.Tasks
                             // Retrieve implementation type:
                             var implementationType = Type.GetType(task.Definition.ImplementationClass);
                             if (implementationType == null) throw new Exception($"Could not find implementation class \"{task.Definition.ImplementationClass}\". Check class name or specify ProcessRole of the task definition.");
-                            var implementation = (ITaskImplementation)ActivatorUtilities.CreateInstance(scope.ServiceProvider, implementationType)!;
+                            var implementation = (IScheduledTaskImplementation)ActivatorUtilities.CreateInstance(scope.ServiceProvider, implementationType)!;
 
                             // Parse arguments:
                             var arguments = new Dictionary<string, string?>();
@@ -320,14 +320,14 @@ namespace MyMvcApp.Tasks
             }
         }
 
-        private class TaskHost : ITaskHost
+        private class TaskHost : IScheduledTaskHost
         {
-            private readonly TasksDbContext dbContext;
-            private readonly Data.Tasks.Task currentTaskEntity;
+            private readonly ScheduledTasksDbContext dbContext;
+            private readonly Data.Tasks.ScheduledTask currentTaskEntity;
             private readonly IReadOnlyDictionary<string, string?> currentTaskArguments;
             private readonly CancellationTokenSource cancellationTokenSource;
 
-            public TaskHost(TasksDbContext dbContext, Data.Tasks.Task currentTaskEntity, IReadOnlyDictionary<string, string?> currentTaskArguments, CancellationTokenSource cancellationTokenSource)
+            public TaskHost(ScheduledTasksDbContext dbContext, Data.Tasks.ScheduledTask currentTaskEntity, IReadOnlyDictionary<string, string?> currentTaskArguments, CancellationTokenSource cancellationTokenSource)
             {
                 this.dbContext = dbContext;
                 this.currentTaskEntity = currentTaskEntity;
@@ -358,7 +358,7 @@ namespace MyMvcApp.Tasks
                 nextTaskArguments["PreviousTaskId"] = currentTaskEntity.Id.ToString();
 
                 // Create next scheduled instance:
-                var task = new Data.Tasks.Task();
+                var task = new Data.Tasks.ScheduledTask();
                 task.Name = currentTaskEntity.Name;
                 task.DefinitionId = currentTaskEntity.DefinitionId;
                 task.QueueName = currentTaskEntity.QueueName;
@@ -373,7 +373,7 @@ namespace MyMvcApp.Tasks
                 currentTaskEntity.OutputWriteLine(str);
             }
 
-            internal System.Threading.Tasks.Task Execute(ITaskImplementation implementation)
+            internal System.Threading.Tasks.Task Execute(IScheduledTaskImplementation implementation)
             {
                 // Execute task:
                 var result = implementation.Execute(this);

@@ -2,7 +2,7 @@
 
 namespace MyMvcApp.Areas.MvcDashboardTasks.Models.Task
 {
-    public class IndexModel : BaseIndexModel<Data.Tasks.Task>
+    public class IndexModel : BaseIndexModel<Data.Tasks.ScheduledTask>
     {
         public int? DefinitionId { get; set; }
         

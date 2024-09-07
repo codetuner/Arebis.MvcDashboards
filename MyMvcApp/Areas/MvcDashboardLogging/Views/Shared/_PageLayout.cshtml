@@ -294,9 +294,9 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <span>
-                <i class="whileloading-show fas fa-spinner fa-spin" style="color: limegreen; margin-right: 3px;"></i>
+                <i class="whileloading-show fas fa-solid fa-spinner fa-spin" style="color: limegreen; margin-right: 3px;"></i>
                 <a class="navbar-brand" asp-area="MvcDashboardLogging" asp-controller="Home" asp-action="Index">
-                    <i class="whileloading-hide fas fa-tachometer-alt"></i>&nbsp;MvcDashboardLogging
+                    <i class="whileloading-hide fas fa-solid fa-tachometer-alt"></i>&nbsp;MvcDashboardLogging
                 </a>
                 <span class="btn-group" role="group" onload-load="@Url.Action("MvcDashboardsDropdown", "Home")"></span>
             </span>
@@ -306,10 +306,10 @@
             <div class="collapse navbar-collapse" id="navBarMainContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item" ifroute-setactive="\/Items(\/|$)">
-                        <a class="nav-link" asp-area="MvcDashboardLogging" asp-controller="Items" asp-action="Index"><i class="fas fa-bug"></i> Logs</a>
+                        <a class="nav-link" asp-area="MvcDashboardLogging" asp-controller="Items" asp-action="Index"><i class="fas fa-solid fa-bug"></i> Logs</a>
                     </li>
                     <li class="nav-item" ifroute-setactive="\/Rules(\/|$)">
-                        <a class="nav-link" asp-area="MvcDashboardLogging" asp-controller="Rules" asp-action="Index"><i class="fas fa-ruler"></i> Rules</a>
+                        <a class="nav-link" asp-area="MvcDashboardLogging" asp-controller="Rules" asp-action="Index"><i class="fas fa-solid fa-ruler"></i> Rules</a>
                     </li>
                 </ul>
                 <form class="d-flex" action="@Url.Action("Index", "Items")" method="get">
@@ -319,7 +319,7 @@
                 </form>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/" target="_self"><i class="fas fa-sign-out-alt"></i></a>
+                        <a class="nav-link" href="/" target="_self"><i class="fas fa-solid fa-sign-out-alt"></i></a>
                     </li>
                 </ul>
             </div>

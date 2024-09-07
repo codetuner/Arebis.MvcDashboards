@@ -3,7 +3,7 @@
     /// <summary>
     /// Base implementation for recurrent tasks.
     /// </summary>
-    public abstract class BaseRecurrentTaskImplementation : BaseTaskImplementation
+    public abstract class BaseRecurrentTaskImplementation : BaseScheduledTaskImplementation
     {
         /// <summary>
         /// The recurrence interval to schedule the task.
@@ -27,7 +27,7 @@
         [TaskArgumentAttribute]
         public bool LocalTimeBase { get; set; }
 
-        public override Task Execute(ITaskHost host)
+        public override Task Execute(IScheduledTaskHost host)
         {
             if (this.Recurrence.HasValue && this.Recurrence.Value.TotalSeconds >= 1)
             {

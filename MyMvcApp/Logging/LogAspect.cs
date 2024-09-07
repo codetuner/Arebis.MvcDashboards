@@ -69,31 +69,31 @@ namespace MyMvcApp.Logging
         /// <summary>
         /// Log aspect to mark requests informational logging.
         /// </summary>
-        public static readonly LogAspect Information = new LogAspect("Information", "aspect-information", "", "<i class=\"fas fa-info\"></i>", "#9AC8EB");
+        public static readonly LogAspect Information = new LogAspect("Information", "aspect-information", "", "<i class=\"fas fa-solid fa-info\"></i>", "#9AC8EB");
 
         /// <summary>
         /// Log aspect to mark requests demanding attention.
         /// </summary>
-        public static readonly LogAspect Attention = new LogAspect("Attention", "aspect-attention", "", "<i class=\"fas fa-exclamation-triangle\"></i>", "#E5DB9C");
+        public static readonly LogAspect Attention = new LogAspect("Attention", "aspect-attention", "", "<i class=\"fas fa-solid fa-exclamation-triangle\"></i>", "#E5DB9C");
 
         /// <summary>
         /// Log aspect to mark requests with possible timing issue.
         /// </summary>
-        public static readonly LogAspect Timing = new LogAspect("Timing", "aspect-timing", "", "<i class=\"fas fa-stopwatch\"></i>", "#F7F6CF");
+        public static readonly LogAspect Timing = new LogAspect("Timing", "aspect-timing", "", "<i class=\"fas fa-solid fa-stopwatch\"></i>", "#F7F6CF");
 
         /// <summary>
         /// Log aspect to mark requests with possible security issue.
         /// </summary>
-        public static readonly LogAspect Security = new LogAspect("Security", "aspect-security", "", "<i class=\"fas fa-shield-alt\"></i>", "#26474E");
+        public static readonly LogAspect Security = new LogAspect("Security", "aspect-security", "", "<i class=\"fas fa-solid fa-shield-alt\"></i>", "#26474E");
 
         /// <summary>
         /// Log aspect to mark requests resulting in a 404 Not Found error.
         /// </summary>
-        public static readonly LogAspect NotFound = new LogAspect("NotFound", "aspect-notfound", "", "<i class=\"fas fa-search\"></i>", "#F4CFDF");
+        public static readonly LogAspect NotFound = new LogAspect("NotFound", "aspect-notfound", "", "<i class=\"fas fa-solid fa-search\"></i>", "#F4CFDF");
 
         /// <summary>
         /// Log aspect to mark requests resulting in an error.
         /// </summary>
-        public static readonly LogAspect Error = new LogAspect("Error", "aspect-error", "", "<i class=\"fas fa-bug\"></i>", "#744622");
+        public static readonly LogAspect Error = new LogAspect("Error", "aspect-error", "", "<i class=\"fas fa-solid fa-bug\"></i>", "#744622");
     }
 }

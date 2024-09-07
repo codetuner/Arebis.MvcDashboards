@@ -9,10 +9,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using MyMvcApp.Data;
+using MyMvcApp.Data.Content;
 using MyMvcApp.Localize;
 using MyMvcApp.Logging;
 using System.Configuration;
 using System.Globalization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+#region Content
+
+builder.Services.AddDbContext<ContentDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
+
+#endregion
 
 #region Localization
 
@@ -39,8 +48,6 @@ builder.Services.AddLocalizationFromSource(builder.Configuration, options => {
     //options.UIRouteDataStringKey = "uiculture";
     options.UseOnlyReviewedLocalizationValues = false;
 });
-
-
 
 builder.Services.AddModelBindingLocalizationFromSource();
 
@@ -99,7 +106,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 #region Tasks
 
-builder.Services.AddDbContext<MyMvcApp.Data.Tasks.TasksDbContext>(options =>
+builder.Services.AddDbContext<MyMvcApp.Data.Tasks.ScheduledTasksDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -186,5 +193,16 @@ app.MapControllerRoute(
     pattern: "{culture:regex(^[a-z][a-z](\\-[A-Z][A-Z]){{0,1}}$)=en}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+
+#region Content
+
+app.MapControllerRoute(
+    name: "content",
+    //pattern: "{**path}",
+    pattern: "{culture:regex(^[a-z][a-z](\\-[A-Z][A-Z]){{0,1}}$)=en}/{**path}",
+    defaults: new { controller = "Content", action = "Render" }
+);
+
+#endregion
 
 app.Run();

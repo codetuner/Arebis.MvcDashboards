@@ -33,7 +33,7 @@ namespace MyMvcApp.Localize
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, string toLanguage, string mimeType, IEnumerable<string> sources, CancellationToken? ct = null)
+        public async Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, string toLanguage, string mimeType, IEnumerable<string> sources, CancellationToken ct = default)
         {
             var result = new List<string?>();
             var responseObjects = await TranslateInternalAsync(fromLanguage, new string[] { toLanguage }, mimeType, sources, ct);
@@ -46,7 +46,7 @@ namespace MyMvcApp.Localize
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, IEnumerable<string> toLanguages, string mimeType, string source, CancellationToken? ct = null)
+        public async Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, IEnumerable<string> toLanguages, string mimeType, string source, CancellationToken ct = default)
         {
             var result = new List<string?>();
             var responseObjects = await TranslateInternalAsync(fromLanguage, toLanguages, mimeType, new string[] { source }, ct);
@@ -58,7 +58,7 @@ namespace MyMvcApp.Localize
             return result;
         }
 
-        protected virtual async Task<List<TranslateResponseItem>> TranslateInternalAsync(string fromLanguage, IEnumerable<string> toLanguages, string mimeType, IEnumerable<string> sources, CancellationToken? ct = null)
+        protected virtual async Task<List<TranslateResponseItem>> TranslateInternalAsync(string fromLanguage, IEnumerable<string> toLanguages, string mimeType, IEnumerable<string> sources, CancellationToken ct = default)
         {
             var result = new List<TranslateResponseItem>();
             var sourcesEnumerator = sources.GetEnumerator();
@@ -86,12 +86,12 @@ namespace MyMvcApp.Localize
                         requestObject.Add(new TranslateRequestItem { Text = text });
                     }
 
-                    ct?.ThrowIfCancellationRequested();
+                    ct.ThrowIfCancellationRequested();
 
                     this.httpClient ??= BuildHttpClient();
                     var textType = (mimeType == MediaTypeNames.Text.Plain) ? "plain" : (mimeType == MediaTypeNames.Text.Html) ? "html" : null;
                     var url = (configSection["TranslationServiceUrl"] ?? "https://api.cognitive.microsofttranslator.com/translate") + $"?api-version=3.0&from={fromLanguage}&to={String.Join("&to=", toLanguages)}&textType={textType}";
-                    using (var response = await this.httpClient.PostAsJsonAsync(url, requestObject, ct ?? CancellationToken.None))
+                    using (var response = await this.httpClient.PostAsJsonAsync(url, requestObject, ct))
                     {
                         if (response.IsSuccessStatusCode)
                         {

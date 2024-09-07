@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MyMvcApp.Data.Content.Document">
+    <Position X="7.75" Y="0.5" Width="2.25" />
+    <Members>
+      <Field Name="path" Hidden="true" />
+      <Property Name="this" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AEAiCAAAgAAAEAJACEACAAQAAYAAAAAgRQQAAAECAIU=</HashCode>
+      <FileName>Data\Content\Document.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Type" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Properties" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="MyMvcApp.Data.Content.DocumentType">
+    <Position X="0.5" Y="0.5" Width="2.25" />
+    <Members>
+      <Method Name="AllPropertyTypes" Hidden="true" />
+      <Method Name="GetInheritedPropertyTypes" Hidden="true" />
+    </Members>
+    <AssociationLine Name="Base" Type="MyMvcApp.Data.Content.DocumentType" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="1.25" Y="0.5" />
+        <Point X="1.25" Y="0.25" />
+        <Point X="2.188" Y="0.25" />
+        <Point X="2.188" Y="0.5" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>ACACAAAQAAAAAAAAAAAAAAQAAAAAAAEACIAAAgAAQAA=</HashCode>
+      <FileName>Data\Content\DocumentType.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Base" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="OwnPropertyTypes" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="MyMvcApp.Data.Content.DataType">
+    <Position X="0.5" Y="6.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAEAAAAAAAAAAAAQAAAAAAAAAgAEAAAAAAAA=</HashCode>
+      <FileName>Data\Content\DataType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyMvcApp.Data.Content.Property">
+    <Position X="4" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAgAAAAAAAAAAAAAAAAAAAAAAAAigQAiAAAAAAA=</HashCode>
+      <FileName>Data\Content\Property.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Type" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="MyMvcApp.Data.Content.PropertyType">
+    <Position X="0.5" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACQAAABAIAAAgACAAAAAQAAAAAAAAAgAACAAAAAAA=</HashCode>
+      <FileName>Data\Content\PropertyType.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="DataType" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="MyMvcApp.Data.Content.SecuredPath">
+    <Position X="11" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAiAAAAAAAAAAIAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\Content\SecuredPath.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyMvcApp.Data.Content.PathRedirection">
+    <Position X="11" Y="2.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAiAAAAAAAAAAAgQAAAAAAAAAAgAAAAIAAABAAAAAA=</HashCode>
+      <FileName>Data\Content\PathRedirection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyMvcApp.Data.Content.PublishedDocument">
+    <Position X="7.75" Y="6.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAgQAAAAAAJAAAAAAAQAAQAAAAACAAAAAAECBAQ=</HashCode>
+      <FileName>Data\Content\PublishedDocument.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Document" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Properties" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="MyMvcApp.Data.Content.PublishedDocumentProperty">
+    <Position X="4" Y="7.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAgAIgAgAAAAA=</HashCode>
+      <FileName>Data\Content\PublishedDocument.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

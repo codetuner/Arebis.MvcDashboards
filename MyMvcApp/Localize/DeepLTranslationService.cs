@@ -35,7 +35,7 @@ namespace MyMvcApp.Localize
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, IEnumerable<string> toLanguages, string mimeType, string source, CancellationToken? ct = null)
+        public async Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, IEnumerable<string> toLanguages, string mimeType, string source, CancellationToken ct = default)
         {
             var result = new List<string?>();
             var sources = new string[] { source };
@@ -56,7 +56,7 @@ namespace MyMvcApp.Localize
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, string toLanguage, string mimeType, IEnumerable<string> sources, CancellationToken? ct = null)
+        public async Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, string toLanguage, string mimeType, IEnumerable<string> sources, CancellationToken ct = default)
         {
             var result = new List<string?>();
             var sourcesEnumerator = sources.GetEnumerator();
@@ -86,10 +86,10 @@ namespace MyMvcApp.Localize
                     }
                     var content = new FormUrlEncodedContent(data);
 
-                    ct?.ThrowIfCancellationRequested();
+                    ct.ThrowIfCancellationRequested();
 
                     this.httpClient ??= BuildHttpClient();
-                    using (var response = await this.httpClient.PostAsync(configSection["TranslationServiceUrl"], content, ct ?? CancellationToken.None))
+                    using (var response = await this.httpClient.PostAsync(configSection["TranslationServiceUrl"], content, ct))
                     {
                         if (response.IsSuccessStatusCode)
                         {

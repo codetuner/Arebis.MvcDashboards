@@ -20,10 +20,10 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
 
         #region Construction
 
-        private readonly TasksDbContext context;
+        private readonly ScheduledTasksDbContext context;
         private readonly ILogger logger;
 
-        public TaskController(TasksDbContext context, ILogger<TaskController> logger)
+        public TaskController(ScheduledTasksDbContext context, ILogger<TaskController> logger)
         {
             this.context = context;
             this.logger = logger;
@@ -118,7 +118,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
             var model = (original == null)
                 ? new EditModel
                 {
-                    Item = new Data.Tasks.Task()
+                    Item = new Data.Tasks.ScheduledTask()
                     {
                         DefinitionId = definitionId ?? 0,
                         QueueName = "Main"
@@ -126,7 +126,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 }
                 : new EditModel()
                 {
-                    Item = new Data.Tasks.Task()
+                    Item = new Data.Tasks.ScheduledTask()
                     {
                         DefinitionId = original.DefinitionId,
                         Name = original.Name,

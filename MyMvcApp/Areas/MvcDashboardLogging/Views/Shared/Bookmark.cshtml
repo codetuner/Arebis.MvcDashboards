@@ -1,7 +1,7 @@
 ﻿@model MyMvcApp.Data.Logging.RequestLog
 @if (Model.IsBookmarked)
 {
-    <i class="fas fa-star" x-onclick-confirm="Remove bookmark ?" onclick-load="@Url.Action("RemoveBookmark", "Items", new { id = Model.Id })" target=":parent"></i>
+    <i class="fas fa-solid fa-star" x-onclick-confirm="Remove bookmark ?" onclick-load="@Url.Action("RemoveBookmark", "Items", new { id = Model.Id })" target=":parent"></i>
 }
 else
 {

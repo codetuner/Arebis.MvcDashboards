@@ -20,7 +20,7 @@ namespace MyMvcApp.Localize
         /// <param name="sources">The texts to be translated.</param>
         /// <param name="ct">(Optional) A CancellationToken.</param>
         /// <returns>Translated texts in the same order as the given texts. Null if the translation operation is not supported or was cancelled.</returns>
-        Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, string toLanguage, string mimeType, IEnumerable<string> sources, CancellationToken? ct = null);
+        Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, string toLanguage, string mimeType, IEnumerable<string> sources, CancellationToken ct = default);
 
         /// <summary>
         /// Requests to translate one text from one language to on or more other languages.
@@ -31,6 +31,6 @@ namespace MyMvcApp.Localize
         /// <param name="source">The text to be translated.</param>
         /// <param name="ct">(Optional) A CancellationToken.</param>
         /// <returns>Translated texts in the same order as the given languages. Null if the translation operation is not supported or was cancelled.</returns>
-        Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, IEnumerable<string> toLanguages, string mimeType, string source, CancellationToken? ct = null);
+        Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, IEnumerable<string> toLanguages, string mimeType, string source, CancellationToken ct = default);
     }
 }

@@ -32,7 +32,7 @@ namespace MyMvcApp.Localize
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, IEnumerable<string> toLanguages, string mimeType, string source, CancellationToken? ct = null)
+        public async Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, IEnumerable<string> toLanguages, string mimeType, string source, CancellationToken ct = default)
         {
             var result = new List<string?>();
             var sources = new string[] { source };
@@ -53,7 +53,7 @@ namespace MyMvcApp.Localize
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, string toLanguage, string mimeType, IEnumerable<string> sources, CancellationToken? ct = null)
+        public async Task<IEnumerable<string?>> TranslateAsync(string fromLanguage, string toLanguage, string mimeType, IEnumerable<string> sources, CancellationToken ct = default)
         {
             var result = new List<string>();
             var sourcesEnumerator = sources.GetEnumerator();
@@ -86,10 +86,10 @@ namespace MyMvcApp.Localize
                         requestObject.Texts.Add(text);
                     }
 
-                    ct?.ThrowIfCancellationRequested();
+                    ct.ThrowIfCancellationRequested();
 
                     this.httpClient ??= BuildHttpClient();
-                    using (var response = await this.httpClient.PostAsJsonAsync((configSection["TranslationServiceUrl"] ?? "https://translation.googleapis.com/language/translate/v2") + "?key=" + configSection["ApiKey"], requestObject, ct ?? CancellationToken.None))
+                    using (var response = await this.httpClient.PostAsJsonAsync((configSection["TranslationServiceUrl"] ?? "https://translation.googleapis.com/language/translate/v2") + "?key=" + configSection["ApiKey"], requestObject, ct))
                     {
                         if (response.IsSuccessStatusCode)
                         {
