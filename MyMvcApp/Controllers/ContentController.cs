@@ -6,6 +6,7 @@ using MyMvcApp.Data;
 using MyMvcApp.Data.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -36,8 +37,11 @@ namespace MyMvcApp.Controllers
             // Get current path:
             path = "/" + path;
 
+            // Store path in ViewBag:
+            ViewBag.Path = path;
+
             // Get current culture:
-            var currentUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
+            var currentUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
 
             // Check for redirections first:
             if (!cache.TryGetValue("Content:PathRedirections", out List<PathRedirection>? redirections))
@@ -102,7 +106,7 @@ namespace MyMvcApp.Controllers
                 // Where path matches and has viewname:
                 .Where(d => d.Path == path && d.ViewName != null)
                 // Get the best match for the current UI culture:
-                .Where(d => d.Culture == currentUICulture || d.Culture == null)
+                .Where(d => d.Culture == currentUICulture.Name || d.Culture == currentUICulture.TwoLetterISOLanguageName || d.Culture == null)
                 .OrderByDescending(d => d.Culture)
                 .FirstOrDefaultAsync();
             if (document == null)

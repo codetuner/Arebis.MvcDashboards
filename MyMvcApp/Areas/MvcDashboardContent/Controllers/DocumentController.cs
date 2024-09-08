@@ -163,11 +163,12 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
         #region Edit
 
         [HttpGet]
-        public IActionResult New(int typeId)
+        public IActionResult New(int? typeId = null, string? culture = null, string? path = null)
         {
             var model = new EditModel();
             model.Item = Activator.CreateInstance<Data.Content.Document>();
-            model.Item.TypeId = typeId;
+            model.Item.TypeId = typeId ?? 0;
+            model.Item.Path = path;
 
             return EditView(model);
         }
@@ -304,7 +305,8 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
                 .Include(dt => dt.OwnPropertyTypes!).ThenInclude(pt => pt.DataType)
                 .OrderBy(t => t.Name).ToArray();
             model.AllDocumentTypesDict = model.AllDocumentTypes.ToDictionary(dt => dt.Id, dt => dt);
-            model.DocumentType = model.AllDocumentTypesDict[model.Item!.TypeId];
+            if (model.Item!.TypeId != 0)
+                model.DocumentType = model.AllDocumentTypesDict[model.Item!.TypeId];
             model.SupportedUICultures = this.localizationOptions.Value.SupportedUICultures
                 ?? new List<CultureInfo>() { CultureInfo.InvariantCulture };
             model.PathsList = context.ContentDocuments.Where(d => d.Path != null).Select(d => d.Path!).Distinct().OrderBy(p => p).ToList();

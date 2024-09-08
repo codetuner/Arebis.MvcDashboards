@@ -1,6 +1,12 @@
-﻿@{
+﻿@inject MyMvcApp.Data.Content.ContentDbContext context
+@{
     Layout = "_Layout";
     this.Context.Response.StatusCode = 404;
+
+    var path = (string)ViewBag.Path;
+    var nonPublishedDocuments = context.ContentDocuments
+        .Where(d => d.Path == path && d.DeletedOnUtc == null)
+        .ToList();
 }
 
 <p style="margin: 64px 14px; text-align: center; font-size: 3em;">404 <span style="white-space: nowrap;">Page not found</span></p>
@@ -8,6 +14,18 @@
 
 @if (this.Context.User?.IsInRole("Administrator") == true || this.Context.User?.IsInRole("ContentAdministrator") == true || this.Context.User?.IsInRole("ContentEditor") == true || this.Context.User?.IsInRole("ContentAuthor") == true)
 {
-    <p style="margin: 42px 14px; text-align: center;"><button type="button" style="background-color: #f0f0f4; border: solid 1px #c8c8cf; border-radius: 3px; padding: 4px 12px; font-size: 1.075rem; font-weight: 400; ">Create this page</button></p>
+    if (nonPublishedDocuments.Count > 1)
+    {
+        <p style="margin: 42px 14px; text-align: center;"><a asp-area="MvcDashboardContent" asp-controller="Document" asp-action="Index" asp-route-query="@(path)" style="background-color: #f0f0f4; border: solid 1px #c8c8cf; border-radius: 3px; padding: 4px 12px; font-size: 1.075rem; font-weight: 400; color: #000; text-decoration: none;">Manage documents on this path</a></p>
+    }
+    else if (nonPublishedDocuments.Count == 1)
+    {
+        <p style="margin: 42px 14px; text-align: center;"><a asp-area="MvcDashboardContent" asp-controller="Document" asp-action="Edit" asp-route-id="@(nonPublishedDocuments[0].Id)" style="background-color: #f0f0f4; border: solid 1px #c8c8cf; border-radius: 3px; padding: 4px 12px; font-size: 1.075rem; font-weight: 400; color: #000; text-decoration: none;">Edit and/or publish this page</a></p>
+    }
+    else // (nonPublishedDocuments.Count == 0)
+    {
+        <p style="margin: 42px 14px; text-align: center;"><a asp-area="MvcDashboardContent" asp-controller="Document" asp-action="New" asp-route-path="@ViewBag.Path" style="background-color: #f0f0f4; border: solid 1px #c8c8cf; border-radius: 3px; padding: 4px 12px; font-size: 1.075rem; font-weight: 400; color: #000; text-decoration: none;">Create this page</a></p>
+    }
+
 }
 

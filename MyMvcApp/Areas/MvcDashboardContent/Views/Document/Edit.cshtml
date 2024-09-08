@@ -13,6 +13,7 @@
     <input type="hidden" asp-for="Item.Id" />
     <input type="hidden" asp-for="HasChanges" />
     <input type="hidden" asp-for="IsDeleted" />
+    <input type="hidden" asp-for="Item.LastPublishedOnUtc" />
 
     <div asp-validation-summary="All" class="alert alert-danger alert-dismissible fade show mb-3">
         <strong>Following errors have occured:</strong>
@@ -46,9 +47,14 @@
         <label for="@Html.IdFor(m => m.Item.Path)" class="form-label">Path:</label>
         <div class="input-group">
             <input asp-for="Item.Path" type="text" class="form-control ifvalue-events" list="@Html.IdFor(m => m.Item.Path)List" />
-            @if (!Model.IsNew && Model.Item.Path != null && Model.Item.Path.StartsWith('/'))
+            @if (Model.Item.Path != null && Model.Item.Path.StartsWith('/') && Model.Item.LastPublishedOnUtc.HasValue)
             {
-                <a class="btn btn-outline-secondary ifvalueItem.Path-enable ifvalueItem.Pathis-disable substitute-fields" asp-route="content" asp-route-path="@Model.Item.Path.Substring(1)" target="view">View</a>
+                <button type="button" class="btn btn-outline-secondary ifvalueItem.Path-enable ifvalueItem.Pathis-disable"
+                        onclick="var url = '@(Url.RouteUrl("content", new { path="[Item.Path]" }))';
+                                 var path = document.getElementById('Item_Path').value;
+                                 url = url.replace('%5BItem.Path%5D', path.substring(1));
+                                 window.open(url, '_blank');
+                        ">View</button>
             }
         </div>
         <datalist id="@Html.IdFor(m => m.Item.Path)List">
@@ -142,3 +148,30 @@
     </p>
 
 </form>
+
+@if (Model.Item.TypeId == 0)
+{
+    <form history="replace">
+        <div class="modal" data-bs-backdrop="static" tabindex="-1" onload-showmodalafter="1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">New document</h5>
+                        <a href="history:back" class="btn-close" aria-label="Close"></a>
+                    </div>
+                    <div class="modal-body pb-4">
+                        <p>
+                            Choose type of document to create:
+                        </p>
+                        <div class="d-grid gap-2">
+                            @foreach (var item in Model.AllDocumentTypes)
+                            {
+                                <button type="submit" name="TypeId" value="@item.Id" class="btn btn-light"><i class="spinner fas fa-solid fa-plus"></i> @item.Name</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+}
