@@ -135,13 +135,13 @@
         {
             <div class="float-end">
                 <button type="submit" asp-action="Preview" asp-route-id="@Model.Item.Id" class="btn btn-outline-primary" formtarget="_blank"><i class="fas fa-solid fa-eye"></i> Preview</button>
-                <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" name="andcopy" value="true"><i class="spinner fas fa-solid fa-copy"></i> @(Model.IsNew ? "Create" : "Save") &amp; Copy</button>
+                <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" name="andcopy" value="true"><i class="spinner fas fa-solid fa-copy"></i> @(Model.IsNew ? "Create" : "Update") &amp; Copy</button>
                 @if (!Model.IsNew)
                 {
                     <button type="submit" asp-action="Delete" asp-route-id="@Model.Item.Id" class="btn btn-danger" onclick-confirm="Are you sure ?"><i class="spinner fas fa-solid fa-trash-alt"></i> Delete</button>
                 }
             </div>
-            <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" onkeydown-click="Ctrl+S"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Save")</button>
+            <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" onkeydown-click="Ctrl+S"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Update")</button>
             <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" name="apply" value="true"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
         }
         <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>

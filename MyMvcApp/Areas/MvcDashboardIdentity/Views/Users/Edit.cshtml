@@ -104,7 +104,7 @@
     {
         <button type="submit" class="btn btn-danger float-end" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?" formnovalidate><i class="spinner fas fa-solid fa-trash-alt"></i> Delete</button>
     }
-    <button type="submit" class="btn btn-primary"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Save")</button>
+    <button type="submit" class="btn btn-primary"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Update")</button>
     <button type="submit" class="btn btn-primary" name="apply" value="true" history="replace"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
     <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>
 </form>
