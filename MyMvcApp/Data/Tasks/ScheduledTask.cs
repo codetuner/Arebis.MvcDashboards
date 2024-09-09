@@ -19,11 +19,17 @@ namespace MyMvcApp.Data.Tasks
         [ForeignKey(nameof(DefinitionId))]
         public virtual ScheduledTaskDefinition Definition { get; set; } = null!;
 
+        [StringLength(400)]
         public virtual string? Name { get; set; }
 
+        [StringLength(400)]
         public virtual string? QueueName { get; set; }
-        
-        public virtual string? MachineName { get; set; }
+
+        [StringLength(400)]
+        public virtual string? MachineNameToRunOn { get; set; }
+
+        [StringLength(400)]
+        public virtual string? MachineNameRanOn { get; set; }
 
         public virtual string? Arguments { get; set; }
 

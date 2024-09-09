@@ -21,9 +21,9 @@ namespace MyMvcApp.Data.Tasks.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImplementationClass = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProcessRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
+                    ImplementationClass = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    ProcessRole = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
                     Arguments = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
@@ -41,9 +41,10 @@ namespace MyMvcApp.Data.Tasks.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DefinitionId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    QueueName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MachineName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
+                    QueueName = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
+                    MachineNameToRunOn = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
+                    MachineNameRanOn = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
                     Arguments = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UtcTimeCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UtcTimeToExecute = table.Column<DateTime>(type: "datetime2", nullable: false),

@@ -95,7 +95,7 @@
                                 <strong>@(item.Name ?? item.Definition.Name)</strong>
                             </td>
                             <td style="@tdstyle" class="@tdclass x-no-wrap">@item.QueueName</td>
-                            <td style="@tdstyle" class="@tdclass x-no-wrap">@item.MachineName</td>
+                            <td style="@tdstyle" class="@tdclass x-no-wrap">@(item.MachineNameRanOn ?? item.MachineNameToRunOn)</td>
                             <td style="@tdstyle" class="@tdclass x-no-wrap x-datetime-utc-local">@(item.UtcTimeCreated.ToString("u"))</td>
                             <td style="@tdstyle" class="@tdclass x-no-wrap x-datetime-utc-local">@(item.UtcTimeToExecute.ToString("u"))</td>
                             <td style="@tdstyle" class="@tdclass x-no-wrap x-datetime-utc-local">@(item.UtcTimeStarted.HasValue ? item.UtcTimeStarted.Value.ToString("u") : "")</td>

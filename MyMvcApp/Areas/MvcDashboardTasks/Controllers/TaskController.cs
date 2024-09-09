@@ -40,7 +40,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
             var count = await context.Tasks
                 .Where(i => i.DefinitionId == model.DefinitionId || model.DefinitionId == null)
                 .Where(i => i.Definition.ProcessRole == model.ProcessRole || model.ProcessRole == null)
-                .Where(i => noQuery || i.Name!.Contains(model.Query ?? "") || i.Definition.Name!.Contains(model.Query ?? "") || i.QueueName == model.Query || i.MachineName == model.Query)
+                .Where(i => noQuery || i.Name!.Contains(model.Query ?? "") || i.Definition.Name!.Contains(model.Query ?? "") || i.QueueName == model.Query || i.MachineNameToRunOn == model.Query || i.MachineNameRanOn == model.Query)
                 .Where(i => model.StatusFilter != "Queued" || (i.UtcTimeDone == null) && (i.Definition.IsActive || i.UtcTimeStarted != null))
                 .Where(i => model.StatusFilter != "Running" || (i.UtcTimeDone == null && i.UtcTimeStarted != null))
                 .Where(i => model.StatusFilter != "Succeeded" || i.Succeeded == true)
@@ -51,7 +51,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 .Include(i => i.Definition)
                 .Where(i => i.DefinitionId == model.DefinitionId || model.DefinitionId == null)
                 .Where(i => i.Definition.ProcessRole == model.ProcessRole || model.ProcessRole == null)
-                .Where(i => noQuery || i.Name!.Contains(model.Query ?? "") || i.Definition.Name!.Contains(model.Query ?? "") || i.QueueName == model.Query || i.MachineName == model.Query)
+                .Where(i => noQuery || i.Name!.Contains(model.Query ?? "") || i.Definition.Name!.Contains(model.Query ?? "") || i.QueueName == model.Query || i.MachineNameToRunOn == model.Query || i.MachineNameRanOn == model.Query)
                 .Where(i => model.StatusFilter != "Queued" || (i.UtcTimeDone == null) && (i.Definition.IsActive || i.UtcTimeStarted != null))
                 .Where(i => model.StatusFilter != "Running" || (i.UtcTimeDone == null && i.UtcTimeStarted != null))
                 .Where(i => model.StatusFilter != "Succeeded" || i.Succeeded == true)
@@ -131,7 +131,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                         DefinitionId = original.DefinitionId,
                         Name = original.Name,
                         QueueName = original.QueueName,
-                        MachineName = original.MachineName,
+                        MachineNameToRunOn = original.MachineNameToRunOn,
                         Arguments = original.Arguments,
                         UtcTimeToExecute = original.UtcTimeToExecute
                     },

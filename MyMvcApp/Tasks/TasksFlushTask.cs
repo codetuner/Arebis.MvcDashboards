@@ -12,7 +12,7 @@ namespace MyMvcApp.Tasks
 
             this.Recurrence = TimeSpan.FromDays(1);
             this.SuccessRetentionDays = 30;
-            this.FailureRetentionDays = 60;
+            this.FailureRetentionDays = 90;
         }
 
         /// <summary>

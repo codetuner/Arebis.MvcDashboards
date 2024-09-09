@@ -57,12 +57,12 @@
     </div>
 
     <div class="mb-3">
-        <label for="@Html.IdFor(m => m.Item.MachineName)" class="form-label">Machine name:</label>
+        <label for="@Html.IdFor(m => m.Item.MachineNameToRunOn)" class="form-label">Machine name to run on:</label>
         <div class="input-group">
-            <input asp-for="Item.MachineName" type="text" class="form-control" />
-            <button class="btn btn-outline-secondary" type="button" onclick="document.getElementById('@(Html.IdFor(m => m.Item.MachineName))').value = '@(Environment.MachineName)'">Current</button>
+            <input asp-for="Item.MachineNameToRunOn" type="text" class="form-control" />
+            <button class="btn btn-outline-secondary" type="button" onclick="document.getElementById('@(Html.IdFor(m => m.Item.MachineNameToRunOn))').value = '@(Environment.MachineName)'">Current</button>
         </div>
-        <span asp-validation-for="Item.MachineName" class="text-danger"></span>
+        <span asp-validation-for="Item.MachineNameToRunOn" class="text-danger"></span>
     </div>
 
     <div class="mb-3">

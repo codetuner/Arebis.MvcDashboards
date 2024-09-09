@@ -83,7 +83,7 @@ namespace MyMvcApp.Tasks
                         var tasks = dbContext.Tasks
                             .Include(t => t.Definition)
                             .Where(t => t.Definition.ProcessRole == null || t.Definition.ProcessRole == processRole)
-                            .Where(t => t.MachineName == null || t.MachineName == Environment.MachineName)
+                            .Where(t => t.MachineNameToRunOn == null || t.MachineNameToRunOn == Environment.MachineName)
                             .Where(t => t.Definition.IsActive == true)
                             .Where(t => t.UtcTimeToExecute <= DateTime.UtcNow && t.UtcTimeStarted == null)
                             .OrderBy(t => t.UtcTimeToExecute)
@@ -174,7 +174,7 @@ namespace MyMvcApp.Tasks
                         if (task == null) continue;
 
                         // Flag task as started:
-                        task.MachineName = Environment.MachineName;
+                        task.MachineNameRanOn = Environment.MachineName;
                         task.UtcTimeStarted = DateTime.UtcNow;
                         task.OutputWriteLine($"=== {task.UtcTimeStarted:yyyy/MM/yy HH:mm:ss} Started");
                         dbContext.SaveChanges();

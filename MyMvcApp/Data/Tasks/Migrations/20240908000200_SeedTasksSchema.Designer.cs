@@ -12,8 +12,8 @@ using MyMvcApp.Data.Tasks;
 namespace MyMvcApp.Data.Tasks.Migrations
 {
     [DbContext(typeof(ScheduledTasksDbContext))]
-    [Migration("20240907000100_CreateTasksSchema")]
-    partial class CreateTasksSchema
+    [Migration("20240908000200_SeedTasksSchema")]
+    partial class SeedTasksSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,17 +39,24 @@ namespace MyMvcApp.Data.Tasks.Migrations
                     b.Property<int>("DefinitionId")
                         .HasColumnType("int");
 
-                    b.Property<string>("MachineName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("MachineNameRanOn")
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
+
+                    b.Property<string>("MachineNameToRunOn")
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.Property<string>("Output")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("QueueName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.Property<bool?>("Succeeded")
                         .HasColumnType("bit");
@@ -94,17 +101,20 @@ namespace MyMvcApp.Data.Tasks.Migrations
 
                     b.Property<string>("ImplementationClass")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.Property<string>("ProcessRole")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.HasKey("Id");
 

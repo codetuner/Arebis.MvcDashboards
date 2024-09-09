@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyMvcApp.Data.Tasks;
 
@@ -11,9 +12,11 @@ using MyMvcApp.Data.Tasks;
 namespace MyMvcApp.Data.Tasks.Migrations
 {
     [DbContext(typeof(ScheduledTasksDbContext))]
-    partial class ScheduledTasksDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240908000100_CreateTasksSchema")]
+    partial class CreateTasksSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,12 +81,6 @@ namespace MyMvcApp.Data.Tasks.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DefinitionId");
-
-                    b.HasIndex("MachineNameToRunOn");
-
-                    b.HasIndex("UtcTimeToExecute");
-
-                    b.HasIndex("UtcTimeStarted");
 
                     b.ToTable("ScheduledTask", "tasks");
                 });

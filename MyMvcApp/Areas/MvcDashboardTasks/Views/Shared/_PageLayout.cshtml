@@ -179,7 +179,7 @@
                     var form = document.getElementById("taskIndexForm");
                     if (form != null) {
                         //sircl.ext.submit(form); // <== checkboxes ok, but returns to first page every time
-                        sircl._loadUrl($(form), window.location, $(sircl.mainTargetSelector$), null) // <== keeps page but erases checkboxes
+                        sircl._loadUrl($(form), window.location.href, $(sircl.mainTargetSelector$), null) // <== keeps page but erases checkboxes
                     }
                 }
             }, 10000);
