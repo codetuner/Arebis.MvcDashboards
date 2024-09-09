@@ -59,8 +59,8 @@ builder.Services.AddControllers(config =>
 
 builder.Services.AddTransient<ILocalizationSource, DbContextLocalizationSource>();
 
-builder.Services.AddTransient<ITranslationService, DeepLTranslationService>();
-//builder.Services.AddTransient<ITranslationService, GoogleTranslationService>();
+//builder.Services.AddTransient<ITranslationService, DeepLTranslationService>();
+builder.Services.AddTransient<ITranslationService, GoogleTranslationService>();
 //builder.Services.AddTransient<ITranslationService, BingTranslationService>();
 
 #endregion

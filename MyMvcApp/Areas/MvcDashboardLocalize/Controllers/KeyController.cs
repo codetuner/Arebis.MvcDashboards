@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Logging;
 using MyMvcApp.Areas.MvcDashboardLocalize.Models.Key;
 using MyMvcApp.Data.Localize;
 using MyMvcApp.Localize;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading;
@@ -116,21 +118,24 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
             var succeededTranslations = new List<string>();
             var failedTranslations = new List<string>();
             var source = model.Values.Single(v => v.Culture == model.SourceCulture);
+            var arguments = (model.ArgumentNames ?? "").Split(',').Select(a => a.Trim()).ToArray();
             if (!String.IsNullOrWhiteSpace(source.Value))
             {
                 // Mark source as reviewed (as it is sufficiently trusted to base translations on):
                 source.Reviewed = true;
 
                 // Translate each culture that is not empty and not reviewed:
-                var valuesToTranslate = model.Values.Where(v => v.Culture != model.SourceCulture && v.Reviewed == false && String.IsNullOrWhiteSpace(v.Value)).ToList();
+                var valuesToTranslate = model.Values
+                    .Where(v => v.Culture != model.SourceCulture && v.Reviewed == false && String.IsNullOrWhiteSpace(v.Value))
+                    .ToList();
                 if (valuesToTranslate.Any())
                 {
-                    var result = (await translationService.TranslateAsync(source.Culture, valuesToTranslate.Select(v => v.Culture), model.Item.MimeType, source.Value, cancellationToken)).ToList();
+                    var result = (await translationService.TranslateAsync(source.Culture, valuesToTranslate.Select(v => v.Culture), model.Item.MimeType, ToTranslatable(source.Value, arguments), cancellationToken)).ToList();
                     for (int i = 0; i < valuesToTranslate.Count; i++)
                     {
                         if (result[i] != null)
                         {
-                            valuesToTranslate[i].Value = result[i];
+                            valuesToTranslate[i].Value = FromTranslatable(result[i], arguments);
                             model.HasChanges = true;
                             succeededTranslations.Add(valuesToTranslate[i].Culture);
                         }
@@ -156,6 +161,43 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
             }
 
             return await EditView(model);
+        }
+
+        /// <summary>
+        /// In the given input string, replaces "{{FirstName}}" by "⁑2⁑" if "FirstName" is listed as the 3th argument.
+        /// This to avoid translation of the "FirstName" argument name.
+        /// </summary>
+        [return: NotNullIfNotNull(nameof(input))]
+        private string? ToTranslatable(string? input, string[] arguments)
+        {
+            if (input == null) return input;
+
+            var output = input;
+            for (int i = 0; i < arguments.Length; i++)
+            {
+                if (arguments[i].Length == 0) continue;
+                output = output.Replace("{{" + arguments[i] + "}}", "⁑" + i + "⁑");
+            }
+
+            return output;
+        }
+
+        /// <summary>
+        /// Reverses the transformation done by <see cref="ToTranslatable(string?, string[])"/> method.
+        /// </summary>
+        [return:NotNullIfNotNull(nameof(input))]
+        private string? FromTranslatable(string? input, string[] arguments)
+        {
+            if (input == null) return input;
+
+            var output = input;
+            for (int i = 0; i < arguments.Length; i++)
+            {
+                if (arguments[i].Length == 0) continue;
+                output = output.Replace("⁑" + i + "⁑", "{{" + arguments[i] + "}}");
+            }
+
+            return output;
         }
 
         [HttpPost]

@@ -62,7 +62,7 @@ namespace MyMvcApp.Localize
             var sourcesEnumerator = sources.GetEnumerator();
             while (true)
             {
-                var sourcesBatch  =new List<string>();
+                var sourcesBatch = new List<string>();
                 for (int i = 0; i < MaxBatchSize; i++)
                 {
                     if (sourcesEnumerator.MoveNext())
