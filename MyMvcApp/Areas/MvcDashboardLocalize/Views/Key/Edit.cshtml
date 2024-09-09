@@ -132,7 +132,7 @@
             <p>
                 Automatically translate based on
                 <select asp-for="SourceCulture" asp-items="@(new SelectList(Model.Values.Select(v => v.Culture)))" class="form-control" style="width: 10ch; display: inline"></select>
-                <button type="submit" class="btn btn-secondary" asp-action="AutoTranslate" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-solid fa-globe"></i> Translate</button>
+                <button type="submit" class="btn btn-primary" asp-action="AutoTranslate" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-solid fa-language"></i> Translate</button>
             </p>
             <p>
                 Note: only cultures with no value and not marked reviewed will get a value, provided the translation service supports the culture.

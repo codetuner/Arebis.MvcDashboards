@@ -29,8 +29,8 @@ namespace MyMvcApp.Data.Content.Migrations
 
             migrationBuilder.Sql("""
                 SET IDENTITY_INSERT [content].[PropertyType] ON
-                INSERT INTO [content].[PropertyType] ([Id], [Name], [DisplayOrder], [DocumentTypeId], [DataTypeId], [Settings]) VALUES (1, N'Title', 0, 1, 5, N'{}')
-                INSERT INTO [content].[PropertyType] ([Id], [Name], [DisplayOrder], [DocumentTypeId], [DataTypeId], [Settings]) VALUES (2, N'Body', 1, 1, 2, N'{"Rows":"16"}')
+                INSERT INTO [content].[PropertyType] ([Id], [Name], [DisplayOrder], [DocumentTypeId], [DataTypeId], [Settings]) VALUES (1, N'Title', 0, 1, 5, N'{"CultureSensitive":"true"}')
+                INSERT INTO [content].[PropertyType] ([Id], [Name], [DisplayOrder], [DocumentTypeId], [DataTypeId], [Settings]) VALUES (2, N'Body', 1, 1, 2, N'{"CultureSensitive":"true","MimeType":"text/html","Rows":"16"}')
                 SET IDENTITY_INSERT [content].[PropertyType] OFF                
                 """);
         }

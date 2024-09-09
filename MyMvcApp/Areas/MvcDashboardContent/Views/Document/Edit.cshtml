@@ -22,7 +22,7 @@
 
     <div class="mb-3">
         <label for="@Html.IdFor(m => m.Item.Name)" class="form-label">Name: *</label>
-        <input asp-for="Item.Name" type="text" class="form-control" />
+        <input asp-for="Item.Name" type="text" class="form-control @(Model.HasTranslationService ? "onchange-submit" : "")" />
         <span asp-validation-for="Item.Name" class="text-danger"></span>
     </div>
 
@@ -33,7 +33,7 @@
 
     <div class="mb-3">
         <label for="@Html.IdFor(m => m.Item.Culture)" class="form-label">Culture:</label>
-        <input asp-for="Item.Culture" type="text" class="form-control" list="cultureList" />
+        <input asp-for="Item.Culture" type="text" class="form-control onchange-submit" list="cultureList" />
         <datalist id="cultureList">
             @foreach (var item in Model.SupportedUICultures)
             {
@@ -118,60 +118,81 @@
 
     <div class="mb-3 form-check form-switch">
         <input asp-for="Item.AutoPublish" type="checkbox" class="form-check-input" ifchecked-hide="#publish-field">
-        <label asp-for="Item.AutoPublish" class="form-check-label">Auto-publish on every update</label>
+        <label asp-for="Item.AutoPublish" class="form-check-label">Auto-publish on @(Model.IsNew ? "create" : "update")</label>
     </div>
 
     <div class="mb-3 form-check form-switch animate" id="publish-field">
         <input asp-for="Publish" type="checkbox" class="form-check-input onchange-ignore">
-        <label asp-for="Publish" class="form-check-label">(Re)publish on save</label>
+        <label asp-for="Publish" class="form-check-label">(Re)publish on @(Model.IsNew ? "create" : "update")</label>
     </div>
 
     <p class="mt-3">
         @if (Model.IsDeleted)
         {
             <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-danger"><i class="spinner fas fa-solid fa-check"></i> Save &amp; Undelete</button>
+            <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>
         }
         else
         {
-            <div class="float-end">
+            <div class="float-end mb-2">
                 <button type="submit" asp-action="Preview" asp-route-id="@Model.Item.Id" class="btn btn-outline-primary" formtarget="_blank"><i class="fas fa-solid fa-eye"></i> Preview</button>
                 <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" name="andcopy" value="true"><i class="spinner fas fa-solid fa-copy"></i> @(Model.IsNew ? "Create" : "Update") &amp; Copy</button>
+                @if (Model.HasTranslationService && Model.SupportedUICultures.Count > 1 && !String.IsNullOrWhiteSpace(Model.Item.Culture))
+                {
+                    <div class="btn-group dropup">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-solid fa-language"></i> @(Model.IsNew ? "Create" : "Update") &amp; Translate
+                        </button>
+                        <ul class="dropdown-menu">
+                            @foreach (var culture in Model.SupportedUICultures.Where(c => c.Name != Model.Item.Culture))
+                            {
+                                <li>
+                                    <a href="" class="dropdown-item onunloadchanged-allow" onclick-click="<li|>button">@culture.DisplayName (@culture.NativeName)</a>
+                                    <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" name="andtranslate" value="@culture.Name" hidden></button>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+
                 @if (!Model.IsNew)
                 {
                     <button type="submit" asp-action="Delete" asp-route-id="@Model.Item.Id" class="btn btn-danger" onclick-confirm="Are you sure ?"><i class="spinner fas fa-solid fa-trash-alt"></i> Delete</button>
                 }
             </div>
-            <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" onkeydown-click="Ctrl+S"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Update")</button>
-            <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" name="apply" value="true"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
+            <span style="white-space: nowrap;">
+                <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" onkeydown-click="Ctrl+S"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Update")</button>
+                <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" name="apply" value="true"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
+                <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>
+            </span>
         }
-        <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>
     </p>
 
 </form>
 
 @if (Model.Item.TypeId == 0)
 {
-    <form history="replace">
-        <div class="modal" data-bs-backdrop="static" tabindex="-1" onload-showmodalafter="1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">New document</h5>
-                        <a href="history:back" class="btn-close" aria-label="Close"></a>
-                    </div>
-                    <div class="modal-body pb-4">
-                        <p>
-                            Choose type of document to create:
-                        </p>
-                        <div class="d-grid gap-2">
+    <div class="modal" data-bs-backdrop="static" tabindex="-1" onload-showmodalafter="1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New document</h5>
+                    <a href="history:back" class="btn-close" aria-label="Close"></a>
+                </div>
+                <div class="modal-body pb-4">
+                    <p>
+                        Choose type of document to create:
+                    </p>
+                    <div class="d-grid gap-2">
+                        <form history="replace">
                             @foreach (var item in Model.AllDocumentTypes)
                             {
                                 <button type="submit" name="TypeId" value="@item.Id" class="btn btn-light"><i class="spinner fas fa-solid fa-plus"></i> @item.Name</button>
                             }
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
 }

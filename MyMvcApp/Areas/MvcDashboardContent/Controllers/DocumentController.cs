@@ -1,19 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
+﻿using Arebis.Core.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MyMvcApp.Areas.MvcDashboardContent.Models.Document;
-using MyMvcApp.Data;
 using MyMvcApp.Data.Content;
 using MyMvcApp.Models.Content;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
 {
@@ -24,11 +18,13 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
 
         private readonly ContentDbContext context;
         private readonly IOptions<RequestLocalizationOptions> localizationOptions;
+        private readonly ITranslationService? translationService;
 
-        public DocumentController(ContentDbContext context, IOptions<RequestLocalizationOptions> localizationOptions)
+        public DocumentController(ContentDbContext context, IOptions<RequestLocalizationOptions> localizationOptions, ITranslationService? translationService = null)
         {
             this.context = context;
             this.localizationOptions = localizationOptions;
+            this.translationService = translationService;
         }
 
         #endregion
@@ -163,18 +159,20 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
         #region Edit
 
         [HttpGet]
-        public IActionResult New(int? typeId = null, string? culture = null, string? path = null)
+        public async Task<IActionResult> New(int? typeId = null, string? culture = null, string? path = null, CancellationToken ct = default)
         {
             var model = new EditModel();
             model.Item = Activator.CreateInstance<Data.Content.Document>();
+            if (this.localizationOptions.Value.SupportedUICultures != null && this.localizationOptions.Value.SupportedUICultures.Count > 1)
+                model.Item.Culture = this.localizationOptions.Value.DefaultRequestCulture.UICulture.Name;
             model.Item.TypeId = typeId ?? 0;
             model.Item.Path = path;
 
-            return EditView(model);
+            return await EditView(model, ct);
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id, CancellationToken ct)
         {
             var model = new EditModel();
             model.Item = context.ContentDocuments
@@ -183,16 +181,16 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
                 ?? throw new BadHttpRequestException("Object not found.", 404);
             model.IsDeleted = model.Item.DeletedOnUtc.HasValue;
 
-            return EditView(model);
+            return await EditView(model, ct);
         }
 
         [HttpPost]
-        public IActionResult Submit(int id, EditModel model)
+        public async Task<IActionResult> Submit(int id, EditModel model, CancellationToken ct)
         {
             ModelState.Clear();
             model.HasChanges = true;
 
-            return EditView(model);
+            return await EditView(model, ct);
         }
 
         [HttpPost]
@@ -206,7 +204,7 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Save(int id, EditModel model, bool apply = false, bool andcopy = false, CancellationToken ct = default)
+        public async Task<IActionResult> Save(int id, EditModel model, bool apply = false, bool andcopy = false, string? andtranslate = null, CancellationToken ct = default)
         {
             if (ModelState.IsValid)
             {
@@ -239,6 +237,33 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
                         model.Item.Properties?.ForEach(p => p.Id = 0);
                         Response.Headers["X-Sircl-History-Replace"] = Url.Action("New");
                     }
+                    else if (andtranslate != null && this.translationService != null && model.Item.Culture != null)
+                    {
+                        ModelState.Clear();
+                        model.HasChanges = true;
+                        model.Item.Id = 0;
+                        model.Item.Properties?.ForEach(p => p.Id = 0);
+                        Response.Headers["X-Sircl-History-Replace"] = Url.Action("New");
+
+                        // Translate properties:
+                        var fromLanguage = model.Item.Culture;
+                        model.Item.Culture = andtranslate;
+                        foreach (var property in model.Item.Properties ?? [])
+                        {
+                            if (String.IsNullOrWhiteSpace(property.Value)) continue;
+                            var type = await context.ContentPropertyTypes.FindAsync(property.TypeId, ct);
+                            if (type == null) continue;
+                            await context.Entry(type).Reference(e => e.DataType).LoadAsync(ct);
+                            if (type.CombinedSettings.TryGetValue("CultureSensitive", out object? css))
+                            {
+                                if (Boolean.Parse((string)css ?? "false") == true)
+                                {
+                                    var translation = await this.translationService.TranslateAsync(fromLanguage, andtranslate, type.CombinedSettings.ContainsKey("MimeType") ? (string)type.CombinedSettings["MimeType"] : "text/text", new string[] { property.Value }, ct);
+                                    property.Value = translation.FirstOrDefault();
+                                }
+                            }
+                        }
+                    }
                     else
                     {
                         return Back(false);
@@ -251,7 +276,7 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
                 }
             }
 
-            return EditView(model);
+            return await EditView(model, ct);
         }
 
         [HttpPost]
@@ -295,10 +320,10 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
                 ViewBag.Exception = ex;
             }
 
-            return EditView(model);
+            return await EditView(model, ct);
         }
 
-        private IActionResult EditView(EditModel model)
+        private async Task<IActionResult> EditView(EditModel model, CancellationToken ct)
         {
             model.Item.Properties ??= new();
             model.AllDocumentTypes = context.ContentDocumentTypes
@@ -307,9 +332,14 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
             model.AllDocumentTypesDict = model.AllDocumentTypes.ToDictionary(dt => dt.Id, dt => dt);
             if (model.Item!.TypeId != 0)
                 model.DocumentType = model.AllDocumentTypesDict[model.Item!.TypeId];
-            model.SupportedUICultures = this.localizationOptions.Value.SupportedUICultures
-                ?? new List<CultureInfo>() { CultureInfo.InvariantCulture };
+            if (this.localizationOptions.Value.SupportedUICultures != null && this.localizationOptions.Value.SupportedUICultures.Count > 1)
+            {
+                var docCultures = await context.ContentDocuments.Where(d => d.Name == model.Item!.Name && d.Id != model.Item!.Id && d.DeletedOnUtc == null)
+                    .Select(d => d.Culture).ToListAsync(ct);
+                model.SupportedUICultures = this.localizationOptions.Value.SupportedUICultures.Where(c => !docCultures.Contains(c.Name)).ToList();
+            }
             model.PathsList = context.ContentDocuments.Where(d => d.Path != null).Select(d => d.Path!).Distinct().OrderBy(p => p).ToList();
+            model.HasTranslationService = this.translationService != null;
             return View("Edit", model);
         }
 

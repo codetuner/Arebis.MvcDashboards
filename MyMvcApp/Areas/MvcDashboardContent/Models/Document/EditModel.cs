@@ -23,11 +23,13 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Models.Document
 
         public List<string> PathsList { get; internal set; } = [];
 
-        public IList<CultureInfo> SupportedUICultures { get; internal set; } = [];
-
         public bool Publish { get; set; }
 
         public bool Unpublish { get; set; }
+
+        public IList<CultureInfo> SupportedUICultures { get; internal set; } = [];
+
+        public bool HasTranslationService { get; internal set; }
 
         /// <summary>
         /// Returns all instantiable document types in hierarchy of the current one (all parent types and all child types).
