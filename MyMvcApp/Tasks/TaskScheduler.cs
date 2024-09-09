@@ -165,11 +165,13 @@ namespace MyMvcApp.Tasks
                 {
                     using (IServiceScope scope = serviceProvider.CreateScope())
                     {
-                        // Retrieve task entity:
+                        // Retrieve non-running task entity:
                         var dbContext = scope.ServiceProvider.GetRequiredService<ScheduledTasksDbContext>();
                         var task = dbContext.Tasks
                             .Include(t => t.Definition)
-                            .Single(t => t.Id == taskId);
+                            .Where(t => t.UtcTimeStarted == null)
+                            .SingleOrDefault(t => t.Id == taskId);
+                        if (task == null) continue;
 
                         // Flag task as started:
                         task.MachineName = Environment.MachineName;
@@ -178,35 +180,42 @@ namespace MyMvcApp.Tasks
                         dbContext.SaveChanges();
 
                         // Try to run task implementation:
-                        if (task.Definition.ImplementationClass == null) break;
                         try
                         {
-                            // Retrieve implementation type:
-                            var implementationType = Type.GetType(task.Definition.ImplementationClass);
-                            if (implementationType == null) throw new Exception($"Could not find implementation class \"{task.Definition.ImplementationClass}\". Check class name or specify ProcessRole of the task definition.");
-                            var implementation = (IScheduledTaskImplementation)ActivatorUtilities.CreateInstance(scope.ServiceProvider, implementationType)!;
-
-                            // Parse arguments:
-                            var arguments = new Dictionary<string, string?>();
-                            AddArguments(arguments, task.Definition.Arguments);
-                            AddArguments(arguments, task.Arguments);
-                            foreach (var prop in implementation.GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public))
+                            if (task.Definition.ImplementationClass != null)
                             {
-                                var attr = (TaskArgumentAttribute?)prop.GetCustomAttribute(typeof(TaskArgumentAttribute));
-                                if (attr != null)
+                                // Retrieve implementation type:
+                                var implementationType = Type.GetType(task.Definition.ImplementationClass);
+                                if (implementationType == null) throw new Exception($"Could not find implementation class \"{task.Definition.ImplementationClass}\". Check class name or specify ProcessRole of the task definition.");
+                                var implementation = (IScheduledTaskImplementation)ActivatorUtilities.CreateInstance(scope.ServiceProvider, implementationType)!;
+
+                                // Parse arguments:
+                                var arguments = new Dictionary<string, string?>();
+                                AddArguments(arguments, task.Definition.Arguments);
+                                AddArguments(arguments, task.Arguments);
+                                foreach (var prop in implementation.GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public))
                                 {
-                                    if (arguments.TryGetValue(attr.Name ?? prop.Name, out string? strvalue))
+                                    var attr = (TaskArgumentAttribute?)prop.GetCustomAttribute(typeof(TaskArgumentAttribute));
+                                    if (attr != null)
                                     {
-                                        prop.SetValue(implementation, ConvertValue(strvalue, prop.PropertyType));
+                                        if (arguments.TryGetValue(attr.Name ?? prop.Name, out string? strvalue))
+                                        {
+                                            prop.SetValue(implementation, ConvertValue(strvalue, prop.PropertyType));
+                                        }
                                     }
                                 }
-                            }
 
-                            // Execute task:
-                            var taskHost = new TaskHost(dbContext, task, arguments, taskCancellationTokenSource);
-                            var result = taskHost.Execute(implementation);
-                            result.Wait();
-                            task.Succeeded = true;
+                                // Execute task:
+                                var taskHost = new TaskHost(dbContext, task, arguments, taskCancellationTokenSource);
+                                var result = taskHost.Execute(implementation);
+                                result.Wait();
+                                task.Succeeded = true;
+                            }
+                            else
+                            {
+                                task.OutputWriteLine($"Task definition has no implementation class to run.");
+                                task.Succeeded = false;
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -231,20 +240,20 @@ namespace MyMvcApp.Tasks
                 {
                     break;
                 }
+            }
 
-                lock (queueThreads)
+            lock (queueThreads)
+            {
+                if (queue.IsEmpty)
                 {
-                    if (queue.IsEmpty)
-                    {
-                        // Remove current thread from running threads:
-                        runningThreads.Remove(Thread.CurrentThread, out Thread? t);
+                    // Remove current thread from running threads:
+                    runningThreads.Remove(Thread.CurrentThread, out Thread? t);
 
-                        // Remove queue:
-                        if (queueName != null) queueThreads.Remove(queueName);
+                    // Remove queue:
+                    if (queueName != null) queueThreads.Remove(queueName);
 
-                        // End thread:
-                        return;
-                    }
+                    // End thread:
+                    return;
                 }
             }
         }
@@ -280,7 +289,10 @@ namespace MyMvcApp.Tasks
             }
             else if (propertyType == typeof(DateTime) || propertyType == typeof(DateTime?))
             {
-                return DateTime.Parse(strvalue);
+                if (strvalue.EndsWith('Z'))
+                    return DateTime.Parse(strvalue).ToUniversalTime();
+                else
+                    return DateTime.Parse(strvalue).ToUniversalTime().ToLocalTime();
             }
             else if (propertyType == typeof(DateTimeOffset) || propertyType == typeof(DateTimeOffset?))
             {

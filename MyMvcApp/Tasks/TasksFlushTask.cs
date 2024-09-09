@@ -33,12 +33,14 @@ namespace MyMvcApp.Tasks
             base.Execute(host);
 
             // Delete succeeded tasks:
-            context.Tasks.Where(t => t.Succeeded == true && t.UtcTimeDone.HasValue && t.UtcTimeDone < DateTime.UtcNow.AddDays(-SuccessRetentionDays))
+            int c1 = context.Tasks.Where(t => t.Succeeded == true && t.UtcTimeDone.HasValue && t.UtcTimeDone < DateTime.UtcNow.AddDays(-SuccessRetentionDays))
                 .ExecuteDelete();
 
             // Delete failed tasks:
-            context.Tasks.Where(t => t.Succeeded == false && t.UtcTimeDone.HasValue && t.UtcTimeDone < DateTime.UtcNow.AddDays(-FailureRetentionDays))
+            int c2 = context.Tasks.Where(t => t.Succeeded == false && t.UtcTimeDone.HasValue && t.UtcTimeDone < DateTime.UtcNow.AddDays(-FailureRetentionDays))
                 .ExecuteDelete();
+
+            host.WriteLine($"{c1} succeeded tasks deleted and {c2} failed tasks deleted.");
 
             return Task.CompletedTask;
         }
