@@ -99,7 +99,7 @@
                 {
                     <span class="float-end">
                         <span id="@Html.IdFor(m => m.Values[i].Value)_tb" class="d-none d-sm-none d-md-inline">
-                            @foreach(var arg in Model.Item.ArgumentNames ?? Array.Empty<string>())
+                            @foreach (var arg in Model.Item.ArgumentNames ?? Array.Empty<string>())
                             {
                                 <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertArg('@(Html.IdFor(m => m.Values[i].Value))', '{{@(arg?.Replace("'", "\\'"))}}');">{{@(arg)}}</button>
                             }
@@ -140,24 +140,16 @@
         </div>
     }
 
-    @if (!Model.IsNew)
-    {
-        <span class="float-end">
+    <span class="float-end">
+        <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" name="andcopy" value="true"><i class="spinner fas fa-solid fa-copy"></i> @(Model.IsNew ? "Create" : "Update") &amp; Copy</button>
+        @if (!Model.IsNew)
+        {
             <button type="submit" class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?"><i class="spinner fas fa-solid fa-trash-alt"></i> Delete</button>
-        </span>
-    }
+        }
+    </span>
     <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Update")</button>
     <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true" onkeydown-click="Ctrl+S"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
     <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>
-    @if (!Model.IsNew)
-    { 
-        <div class="form-check mt-2">
-            <input class="form-check-input" type="checkbox" asp-for="SaveAsCopy" ifchecked-uncheck=".reviewed-chk">
-            <label class="form-check-label" asp-for="SaveAsCopy">
-                As copy
-            </label>
-        </div>
-    }
 
 </form>
 

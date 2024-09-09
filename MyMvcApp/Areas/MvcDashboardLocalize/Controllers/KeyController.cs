@@ -1,6 +1,7 @@
 ﻿using Arebis.Core.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow;
 using Microsoft.EntityFrameworkCore;
 using MyMvcApp.Areas.MvcDashboardLocalize.Models.Key;
 using MyMvcApp.Data.Localize;
@@ -221,18 +222,12 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Save(int id, EditModel model, bool apply = false)
+        public async Task<IActionResult> Save(int id, EditModel model, bool apply = false, bool andcopy = false)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (model.SaveAsCopy)
-                    {
-                        model.Item!.Id = 0;
-                        foreach (var v in model.Values) v.Id = 0;
-                    }
-
                     var domain = await context.LocalizeDomains.FindAsync(model.Item!.DomainId);
 
                     model.Item.ArgumentNames = string.IsNullOrWhiteSpace(model.ArgumentNames)
@@ -243,15 +238,25 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
                     model.Item.ValuesToReview = (domain?.Cultures ?? Array.Empty<string>()).Except(model.Item.Values.Where(v => v.Reviewed).Select(v => v.Culture)).ToArray();
                     context.Update(model.Item);
                     await context.SaveChangesAsync();
-                    if (!apply)
+
+                    if (andcopy)
                     {
-                        return Back(false);
+                        ModelState.Clear();
+                        model.HasChanges = true;
+                        model.Item!.Id = 0;
+                        foreach (var v in model.Values) v.Id = 0;
+                        Response.Headers["X-Sircl-History-Replace"] = Url.Action("New");
                     }
-                    else
+                    else if (apply)
                     {
                         ModelState.Clear();
                         model.HasChanges = false;
                         model.SaveAsCopy = false;
+                        Response.Headers["X-Sircl-History-Replace"] = Url.Action("Edit", new { id = model.Item!.Id });
+                    }
+                    else
+                    {
+                        return Back(false);
                     }
                 }
                 catch (Exception ex)
@@ -266,7 +271,6 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
                 SetToastrMessage("error", "Failed to save the key.<br/>See validation messages for more information.");
             }
 
-            Response.Headers["X-Sircl-History-Replace"] = Url.Action("Edit", new { id = model.Item!.Id });
             return await EditView(model);
         }
 
