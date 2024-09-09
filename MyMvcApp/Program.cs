@@ -1,5 +1,7 @@
 using Arebis.Core.AspNet.Mvc.Localization;
 using Arebis.Core.Localization;
+using Arebis.Core.Services.Interfaces;
+using Arebis.Core.Services.Translation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Localization.Routing;
