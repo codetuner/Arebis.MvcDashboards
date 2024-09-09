@@ -1,7 +1,4 @@
-﻿using MyMvcApp.Data.Tasks;
-using Task = MyMvcApp.Data.Tasks.ScheduledTask;
-
-namespace MyMvcApp.Tasks
+﻿namespace MyMvcApp.Tasks
 {
     /// <summary>
     /// Represents the host running the tasks.

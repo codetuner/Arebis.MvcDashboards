@@ -1,17 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient.DataClassification;
 using Microsoft.EntityFrameworkCore;
 using MyMvcApp.Areas.MvcDashboardLogging.Models.Home;
-using MyMvcApp.Data;
 using MyMvcApp.Data.Logging;
 using MyMvcApp.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
 {

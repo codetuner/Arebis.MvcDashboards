@@ -1,18 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using MyMvcApp.Areas.MvcDashboardTasks.Models.TaskDefinition;
 using MyMvcApp.Data.Tasks;
 using MyMvcApp.Tasks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mime;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
 {

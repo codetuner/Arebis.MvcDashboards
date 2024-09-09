@@ -1,14 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyMvcApp.Areas.MvcDashboardLogging.Models.Rules;
-using MyMvcApp.Data;
 using MyMvcApp.Data.Logging;
 using MyMvcApp.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
 {

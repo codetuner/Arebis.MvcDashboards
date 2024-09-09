@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace MyMvcApp.Logging
+﻿namespace MyMvcApp.Logging
 {
     public enum LogAction
     {

@@ -2,13 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyMvcApp.Areas.MvcDashboardContent.Models.DocumentType;
-using MyMvcApp.Data;
 using MyMvcApp.Data.Content;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
 {

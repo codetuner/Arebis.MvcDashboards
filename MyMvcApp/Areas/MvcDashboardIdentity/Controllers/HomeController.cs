@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyMvcApp.Areas.MvcDashboardIdentity.Models.Home;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using MyMvcApp.Data;
 
 namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers

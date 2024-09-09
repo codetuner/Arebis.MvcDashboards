@@ -2,14 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using MyMvcApp.Areas.MvcDashboardLogging.Models.Items;
-using MyMvcApp.Data;
 using MyMvcApp.Data.Logging;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
 {

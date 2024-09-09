@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
 using MyMvcApp.Areas.MvcDashboardContent.Models.PathRedirection;
 using MyMvcApp.Data.Content;
-using System;
-using System.Linq;
 
 namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
 {

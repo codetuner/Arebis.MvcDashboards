@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace MyMvcApp.Logging
+﻿namespace MyMvcApp.Logging
 {
     public class RequestLogNotFoundFilter : BaseRequestLogFilter
     {
