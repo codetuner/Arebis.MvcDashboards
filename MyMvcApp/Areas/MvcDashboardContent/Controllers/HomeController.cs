@@ -6,7 +6,6 @@ using MyMvcApp.Data.Content;
 
 namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
 {
-    [Authorize(Roles = "Administrator,ContentAdministrator,ContentEditor,ContentAuthor")]
     public class HomeController : BaseController
     {
         private static bool migrationsComplete = false;

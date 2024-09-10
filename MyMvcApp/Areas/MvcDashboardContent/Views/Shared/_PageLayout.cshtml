@@ -251,9 +251,12 @@
             </button>
             <div class="collapse navbar-collapse" id="navBarMainContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item" ifroute-setactive="\/Document(\/|$)">
-                        <a class="nav-link" asp-area="MvcDashboardContent" asp-controller="Document" asp-action="Index"><i class="far fa-file-alt"></i> Documents</a>
-                    </li>
+                    @if (User.IsInRole("Administrator") || User.IsInRole("ContentAdministrator") || User.IsInRole("ContentEditor") || User.IsInRole("ContentAuthor"))
+                    {
+                        <li class="nav-item" ifroute-setactive="\/Document(\/|$)">
+                            <a class="nav-link" asp-area="MvcDashboardContent" asp-controller="Document" asp-action="Index"><i class="far fa-file-alt"></i> Documents</a>
+                        </li>
+                    }
                     @if (User.IsInRole("Administrator") || User.IsInRole("ContentAdministrator"))
                     {
                         <li class="nav-item" ifroute-setactive="\/DocumentType(\/|$)">
@@ -291,9 +294,12 @@
             <div class="card text-white bg-danger m-3">
                 <div class="card-header">Security Warning</div>
                 <div class="card-body">
-                    <h5 class="card-title">Your Content Dashboard is unsecure</h5>
+                    <h5 class="card-title mb-3">Your Content Dashboard is unsecure</h5>
                     <div class="card-text">
-                        <p>Uncomment the <code style="color: aqua;">[Authorize(Roles = "Administrator,ContentAdministrator,ContentEditor,ContentAuthor")]</code> attribute on the BaseController class of the Content Dashboard.</p>
+                        <p><b>The Content Dashboard uses role-based security.</b><br/>
+                           Take the following steps to use and secure the Content Dashboard:</p>
+                        <p>1) Make sure your account is member of the proper role(s).</p>
+                        <p>2) Uncomment the <code style="color: aqua;">[Authorize(Roles = "Administrator,ContentAdministrator,ContentEditor,ContentAuthor")]</code> attribute on the BaseController class of the Content Dashboard.</p>
                     </div>
                 </div>
             </div>

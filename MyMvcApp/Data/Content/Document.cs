@@ -247,10 +247,10 @@ namespace MyMvcApp.Data.Content
         /// <summary>
         /// Publishes or updates the publication of this document.
         /// </summary>
-        public async Task<PublishedDocument> PublishAsync(ContentDbContext context, IIdentity? byUser, CancellationToken ct = default)
+        public async Task<PublishedDocument> PublishAsync(ContentDbContext context, IIdentity? byUser, bool forPreview = false, CancellationToken ct = default)
         {
             // Ensure required data is loaded if no eager loading was done and lazy loading is not enabled:
-            if (this.Id == 0) throw new InvalidOperationException("A document needs to be saved before it can be published.");
+            if (this.Id == 0 && !forPreview) throw new InvalidOperationException("A document needs to be saved before it can be published.");
             if (this.Type == null) await context.Entry(this).Reference(e => e.Type).LoadAsync(ct);
             if (this.Type == null) throw new InvalidOperationException("A document needs to have a type in order to be published.");
             if (this.Properties == null) await context.Entry(this).Collection(e => e.Properties!).LoadAsync(ct);

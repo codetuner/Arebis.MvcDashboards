@@ -47,7 +47,7 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
         [HttpGet]
         public IActionResult New()
         {
-            var model = new EditModel() { Item = new DocumentType() { Name = null! } };
+            var model = new EditModel() { Item = new DocumentType() { Name = null!, IsInstantiable = true } };
             return EditView(model);
         }
 

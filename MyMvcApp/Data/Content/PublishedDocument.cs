@@ -25,7 +25,7 @@ namespace MyMvcApp.Data.Content
         /// The origin document.
         /// </summary>
         [ForeignKey(nameof(DocumentId))]
-        public virtual Document? Document {  get; set; }
+        public virtual Document? Document { get; set; }
 
         /// <summary>
         /// Sequential version number.
@@ -73,7 +73,7 @@ namespace MyMvcApp.Data.Content
                     }
                     else
                     {
-                        return this.Path[0..^1].Split('/');
+                        return this.Path.Split('/')[1..^0];
                     }
                 }
                 else
@@ -144,8 +144,14 @@ namespace MyMvcApp.Data.Content
         {
             if (this.PathSegmentsCount == null) return new List<PublishedDocument>().AsQueryable().OrderBy(d => d.Id);
 
+            var prefix = this.PathSegmentsCount switch
+            {
+                0 => "/",
+                1 => "/",
+                _ => this.ParentPath!
+            };
             return context.ContentPublishedDocuments.AsNoTracking()
-                .Where(d => d.PathSegmentsCount == this.PathSegmentsCount && d.Path!.StartsWith(this.ParentPath! + '/'))
+                .Where(d => d.PathSegmentsCount == this.PathSegmentsCount && d.Path!.StartsWith(prefix))
                 .OrderBy(d => d.SortKey).ThenBy(d => d.Name).ThenBy(d => d.Id);
         }
 
@@ -159,7 +165,7 @@ namespace MyMvcApp.Data.Content
 
             var pathSegments = this.PathSegments!;
             var parentPaths = new List<string>();
-            for(int i=0; i < this.PathSegmentsCount; i++)
+            for (int i = 0; i < this.PathSegmentsCount; i++)
             {
                 parentPaths.Add('/' + String.Join('/', pathSegments.Take(i)));
             }
@@ -167,7 +173,7 @@ namespace MyMvcApp.Data.Content
             return context.ContentPublishedDocuments.AsNoTracking()
                 .Where(d => parentPaths.Contains(d.Path!));
         }
-        
+
         /// <summary>
         /// Returns the direct parents of this document.
         /// If this document has no path or is root, an empty list is returned.
@@ -200,8 +206,9 @@ namespace MyMvcApp.Data.Content
         /// </summary>
         public IQueryable<PublishedDocument> GetDescendance(ContentDbContext context)
         {
+            var prefix = (this.Path == "/") ? this.Path : this.Path + "/";
             return context.ContentPublishedDocuments.AsNoTracking()
-                .Where(d => d.Path!.StartsWith(this.Path! + '/'));
+                .Where(d => d.Path != this.Path && d.Path!.StartsWith(prefix));
         }
     }
 

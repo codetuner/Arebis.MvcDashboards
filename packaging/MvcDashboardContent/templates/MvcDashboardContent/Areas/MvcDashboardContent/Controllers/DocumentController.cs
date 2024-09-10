@@ -88,7 +88,7 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
             context.ContentDocuments
                 .Where(d => selection.Contains(d.Id) && d.IsLatestPublished == false)
                 .ToList()
-                .ForEach(d => d.PublishAsync(context, this.HttpContext.User.Identity, ct).Wait());
+                .ForEach(d => d.PublishAsync(context, this.HttpContext.User.Identity, false, ct).Wait());
 
             context.SaveChanges();
 
@@ -198,7 +198,7 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
         {
             context.Attach(model.Item);
             var documentType = await context.ContentDocumentTypes.FindAsync(model.Item.TypeId, ct);
-            var publishedDocument = await model.Item.PublishAsync(context, null, ct);
+            var publishedDocument = await model.Item.PublishAsync(context, null, true, ct);
             ViewBag.IsPreview = true;
             return View($"~/Views/Content/{documentType?.ViewName ?? "NotFound"}.cshtml", new ContentModel() { Document = publishedDocument });
         }
@@ -217,7 +217,7 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
                     // Also publish if requested so:
                     if (model.Publish || model.Item.AutoPublish)
                     {
-                        await context.ContentDocuments.Find(model.Item.Id)!.PublishAsync(context, this.HttpContext.User?.Identity, ct);
+                        await context.ContentDocuments.Find(model.Item.Id)!.PublishAsync(context, this.HttpContext.User?.Identity, false, ct);
                         await context.SaveChangesAsync(ct);
                         model.Publish = false;
                     }
@@ -295,7 +295,7 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
             // Also publish if document is set to autopublish:
             if (document.AutoPublish)
             {
-                await context.ContentDocuments.Find(document.Id)!.PublishAsync(context, this.HttpContext.User?.Identity, ct);
+                await context.ContentDocuments.Find(document.Id)!.PublishAsync(context, this.HttpContext.User?.Identity, false, ct);
                 await context.SaveChangesAsync(ct);
             }
 
