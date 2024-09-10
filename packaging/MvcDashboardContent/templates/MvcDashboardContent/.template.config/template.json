@@ -1,7 +1,12 @@
 {
     "$schema": "http://json.schemastore.org/template",
     "author": "codetuner",
-    "classifications": ["Web", "MVC", "Dashboard", "Content"],
+    "classifications": [
+        "Web",
+        "MVC",
+        "Dashboard",
+        "Content"
+    ],
     "identity": "Arebis.MvcDashboardContent",
     "name": "ASP.NET MVC Dashboard Content",
     "shortName": "MvcDashboardContent",
@@ -10,5 +15,63 @@
         "type": "item"
     },
     "sourceName": "MyMvcApp", // Will replace the string 'MyMvcApp' with the value provided via -n.
-    "preferNameDirectory": "true"
+    "preferNameDirectory": "true",
+    "postActions": [
+        {
+            "Description": "Adding Reference to Microsoft.EntityFrameworkCore.SqlServer NuGet package",
+            "ActionId": "B17581D1-C5C9-4489-8F0A-004BE667B814",
+            "ContinueOnError": "true",
+            "ManualInstructions": [
+                {
+                    "Text": "Manually add the reference to Microsoft.EntityFrameworkCore.SqlServer to your project file"
+                }
+            ],
+            "args": {
+                "referenceType": "package",
+                "reference": "Microsoft.EntityFrameworkCore.SqlServer"
+            }
+        },
+        {
+            "Description": "Adding Reference to Microsoft.EntityFrameworkCore.Tools NuGet package",
+            "ActionId": "B17581D1-C5C9-4489-8F0A-004BE667B814",
+            "ContinueOnError": "true",
+            "ManualInstructions": [
+                {
+                    "Text": "Manually add the reference to Microsoft.EntityFrameworkCore.Tools to your project file"
+                }
+            ],
+            "args": {
+                "referenceType": "package",
+                "reference": "Microsoft.EntityFrameworkCore.Tools"
+            }
+        },
+        {
+            "Description": "Adding Reference to Arebis.Core.Services.Interfaces NuGet package",
+            "ActionId": "B17581D1-C5C9-4489-8F0A-004BE667B814",
+            "ContinueOnError": "true",
+            "ManualInstructions": [
+                {
+                    "Text": "Manually add the reference to Arebis.Core.Services.Interfaces to your project file"
+                }
+            ],
+            "args": {
+                "referenceType": "package",
+                "reference": "Arebis.Core.Services.Interfaces"
+            }
+        },
+        {
+            "Description": "Adding Reference to Arebis.Core.Services.Translation NuGet package",
+            "ActionId": "B17581D1-C5C9-4489-8F0A-004BE667B814",
+            "ContinueOnError": "true",
+            "ManualInstructions": [
+                {
+                    "Text": "Manually add the reference to Arebis.Core.Services.Translation to your project file"
+                }
+            ],
+            "args": {
+                "referenceType": "package",
+                "reference": "Arebis.Core.Services.Translation"
+            }
+        }
+    ]
 }
