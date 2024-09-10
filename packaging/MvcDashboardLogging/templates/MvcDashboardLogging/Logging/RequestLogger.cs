@@ -1,14 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using MyMvcApp.Data.Logging;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using MyMvcApp.Data.Logging;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MyMvcApp.Logging
 {

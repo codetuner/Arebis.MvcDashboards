@@ -1,10 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace MyMvcApp.Data.Logging
 {
@@ -20,6 +16,13 @@ namespace MyMvcApp.Data.Logging
 
             var jsOptions = new JsonSerializerOptions() { };
 
+            // Make sure times are UTC:
+            modelBuilder.Entity<RequestLog>().Property(p => p.Timestamp)
+                .HasConversion(
+                    v => v.ToUniversalTime(),
+                    v => new DateTime(v.Ticks, DateTimeKind.Utc));
+
+            // Store RequestLog Data as JSON:
             modelBuilder.Entity<RequestLog>()
                 .Property(e => e.Data)
                 .HasConversion(
@@ -32,6 +35,7 @@ namespace MyMvcApp.Data.Logging
                 )
             );
 
+            // Store RequestLog Request as JSON:
             modelBuilder.Entity<RequestLog>()
                 .Property(e => e.Request)
                 .HasConversion(

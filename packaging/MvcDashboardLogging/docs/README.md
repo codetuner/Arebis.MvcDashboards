@@ -1,6 +1,6 @@
 ## Introduction
 
-This component contains an ASP.NET Core MVC 7 item template consisting of:
+This component contains an ASP.NET Core MVC 8 item template consisting of:
 
 - A DbContext schema for holding request log information in database,
 - Request logging middleware to write failed request information to database,
@@ -12,7 +12,7 @@ To install the project item template (to be done once per developer machine):
 
     dotnet new install Arebis.MvcDashboardLogging
 
-To add the package to an ASP.NET Core MVC 7 project, from the project folder:
+To add the package to an ASP.NET Core MVC 8 project, from the project folder:
 
     dotnet new MvcDashboardLogging
 
@@ -51,4 +51,4 @@ This route registration must be added _before_ the default route registration.
 Finally, start your ASP.NET MVC application and navigate to **/MvcDashboardLogging**. Run the database migrations if requested. On the **Logs** tab you can now find logs for all failed requests.
 
 When using the dashboard, it is adviced to have Output caching configured in your Program.cs. See:
-https://learn.microsoft.com/en-us/aspnet/core/performance/caching/output?view=aspnetcore-7.0
+https://learn.microsoft.com/en-us/aspnet/core/performance/caching/output?view=aspnetcore-8.0

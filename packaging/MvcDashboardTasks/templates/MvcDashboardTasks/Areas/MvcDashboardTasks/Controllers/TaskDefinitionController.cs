@@ -1,18 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using MyMvcApp.Areas.MvcDashboardTasks.Models.TaskDefinition;
 using MyMvcApp.Data.Tasks;
 using MyMvcApp.Tasks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mime;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
 {
@@ -20,10 +12,10 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
     {
         #region Construction
 
-        private readonly TasksDbContext context;
+        private readonly ScheduledTasksDbContext context;
         private readonly ILogger logger;
 
-        public TaskDefinitionController(TasksDbContext context, ILogger<TaskDefinitionController> logger)
+        public TaskDefinitionController(ScheduledTasksDbContext context, ILogger<TaskDefinitionController> logger)
         {
             this.context = context;
             this.logger = logger;
@@ -64,7 +56,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         {
             var model = new EditModel
             {
-                Item = new Data.Tasks.TaskDefinition()
+                Item = new Data.Tasks.ScheduledTaskDefinition()
             };
 
             return EditView(model);
@@ -124,7 +116,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 SetToastrMessage("error", "Failed to save the task definition.<br/>See validation messages for more information.");
             }
 
-            Response.Headers.Add("X-Sircl-History-Replace", Url.Action("Edit", new { id = model.Item!.Id }));
+            Response.Headers["X-Sircl-History-Replace"] = Url.Action("Edit", new { id = model.Item!.Id });
             return EditView(model);
         }
 
@@ -166,7 +158,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         {
             // Retrieve candidate implementation types:
             model.ImplementationCandidateNames = Assembly.GetEntryAssembly()!.DefinedTypes
-                .Where(t => t.IsPublic && !t.IsAbstract && typeof(ITaskImplementation).IsAssignableFrom(t))
+                .Where(t => t.IsPublic && !t.IsAbstract && typeof(IScheduledTaskImplementation).IsAssignableFrom(t))
                 .Select(t => t.FullName!)
                 .OrderBy(n => n)
                 .ToList();

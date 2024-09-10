@@ -8,16 +8,23 @@
 <form id="taskIndexForm" class="card p-3 bg-white onchange-submit" action="@Url.Action("Index")" method="get" history="replace" sub-target="#subTarget">
 
     <div class="d-flex justify-content-between">
-        <a href="@Url.Action("New", new { definitionId = Model.DefinitionId })" class="btn btn-primary @(Model.Definitions.Any() ? "" : "disabled")" onkeydown-click="+"><i class="spinner fas fa-plus"></i> New</a>
+        <a href="@Url.Action("New", new { definitionId = Model.DefinitionId })" class="btn btn-primary @(Model.Definitions.Any() ? "" : "disabled")" onkeydown-click="+"><i class="spinner fas fa-solid fa-plus"></i> New</a>
         <div class="flex-grow-1"></div>
         <div>&nbsp;&nbsp;</div>
-        <div style="border: solid 1px var(--bs-border-color); border-radius: var(--bs-border-radius);">
-            <label class="btn"><input type="radio" name="StatusFilter" value="" checked="@(String.IsNullOrEmpty(Model.StatusFilter) ? "checked" : null)" /> All</label>
-            <label class="btn"><input type="radio" name="StatusFilter" value="Queued" checked="@(Model.StatusFilter == "Queued" ? "checked" : null)" /> Queued</label>
-            <label class="btn"><input type="radio" name="StatusFilter" value="Running" checked="@(Model.StatusFilter == "Running" ? "checked" : null)" /> Running</label>
-            <label class="btn"><input type="radio" name="StatusFilter" value="Succeeded" checked="@(Model.StatusFilter == "Succeeded" ? "checked" : null)" /> Succeeded</label>
-            <label class="btn"><input type="radio" name="StatusFilter" value="Failed" checked="@(Model.StatusFilter == "Failed" ? "checked" : null)" /> Failed</label>
+        <div class="d-none d-xxl-block" style="border: solid 1px var(--bs-border-color); border-radius: var(--bs-border-radius);">
+            <label class="btn"><input type="radio" x-onchange-sync="#StatusFilterSelect" name="StatusFilter" value="" checked="@(String.IsNullOrEmpty(Model.StatusFilter) ? "checked" : null)" /> All</label>
+            <label class="btn"><input type="radio" x-onchange-sync="#StatusFilterSelect" name="StatusFilter" value="Queued" checked="@(Model.StatusFilter == "Queued" ? "checked" : null)" /> Queued</label>
+            <label class="btn"><input type="radio" x-onchange-sync="#StatusFilterSelect" name="StatusFilter" value="Running" checked="@(Model.StatusFilter == "Running" ? "checked" : null)" /> Running</label>
+            <label class="btn"><input type="radio" x-onchange-sync="#StatusFilterSelect" name="StatusFilter" value="Succeeded" checked="@(Model.StatusFilter == "Succeeded" ? "checked" : null)" /> Succeeded</label>
+            <label class="btn"><input type="radio" x-onchange-sync="#StatusFilterSelect" name="StatusFilter" value="Failed" checked="@(Model.StatusFilter == "Failed" ? "checked" : null)" /> Failed</label>
         </div>
+        <select id="StatusFilterSelect" class="d-xxl-none form-control auto-width" x-onchange-sync="[name='StatusFilter']">
+            <option value="">All statusses</option>
+            <option value="Queued" selected="@(Model.StatusFilter == "Queued" ? "selected" : null)">Queued</option>
+            <option value="Running" selected="@(Model.StatusFilter == "Running" ? "selected" : null)">Running</option>
+            <option value="Succeeded" selected="@(Model.StatusFilter == "Succeeded" ? "selected" : null)">Succeeded</option>
+            <option value="Failed" selected="@(Model.StatusFilter == "Failed" ? "selected" : null)">Failed</option>
+        </select>
         <div>&nbsp;&nbsp;</div>
         <div>
             <select class="form-control auto-width" asp-for="DefinitionId" asp-items="Model.Definitions"><option value="">All definitions</option></select>
@@ -68,18 +75,18 @@
                             <td style="@tdstyle" class="@tdclass">
                                 @if (item.Succeeded == true)
                                 {
-                                    @*<i class="fas fa-check"></i>*@
+                                    @*<i class="fas fa-solid fa-check"></i>*@
                                     <i class="far fa-calendar-check"></i>
                                 }
                                 else if (item.Succeeded == false)
                                 {
-                                    @*<i class="fas fa-times"></i>*@
-                                    <i class="fas fa-calendar-times"></i>
+                                    @*<i class="fas fa-solid fa-times"></i>*@
+                                    <i class="fas fa-solid fa-calendar-times"></i>
                                 }
                                 else if (item.UtcTimeStarted.HasValue)
                                 {
-                                    <i class="fas fa-running"></i>
-                                    @*<i class="fas fa-calendar"></i>*@
+                                    <i class="fas fa-solid fa-running"></i>
+                                    @*<i class="fas fa-solid fa-calendar"></i>*@
                                 }
                                 else
                                 {
@@ -88,7 +95,7 @@
                                 <strong>@(item.Name ?? item.Definition.Name)</strong>
                             </td>
                             <td style="@tdstyle" class="@tdclass x-no-wrap">@item.QueueName</td>
-                            <td style="@tdstyle" class="@tdclass x-no-wrap">@item.MachineName</td>
+                            <td style="@tdstyle" class="@tdclass x-no-wrap">@(item.MachineNameRanOn ?? item.MachineNameToRunOn)</td>
                             <td style="@tdstyle" class="@tdclass x-no-wrap x-datetime-utc-local">@(item.UtcTimeCreated.ToString("u"))</td>
                             <td style="@tdstyle" class="@tdclass x-no-wrap x-datetime-utc-local">@(item.UtcTimeToExecute.ToString("u"))</td>
                             <td style="@tdstyle" class="@tdclass x-no-wrap x-datetime-utc-local">@(item.UtcTimeStarted.HasValue ? item.UtcTimeStarted.Value.ToString("u") : "")</td>
@@ -110,7 +117,7 @@
             </span>
             <button class="btn btn-danger" formaction="@Url.Action("IndexDelete")" formmethod="post" enable-ifanychecked="[name=Selection].candelete" onclick-confirm="Are you sure ?
 Note that only unstarted tasks will be deleted.">
-                <i class="spinner fas fa-trash"></i> Delete
+                <i class="spinner fas fa-solid fa-trash"></i> Delete
             </button>
         </div>
 

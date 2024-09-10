@@ -1,17 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using MyMvcApp.Areas.MvcDashboardIdentity.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MyMvcApp.Areas.MvcDashboardIdentity.Models.Users;
 using MyMvcApp.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
+using System.Security;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using System.Security;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
 {
@@ -188,7 +183,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
                 }
             }
 
-            Response.Headers.Add("X-Sircl-History-Replace", Url.Action("Edit", new { id = model.Item.Id }));
+            Response.Headers["X-Sircl-History-Replace"] = Url.Action("Edit", new { id = model.Item.Id });
             return EditView(model);
         }
 
@@ -232,7 +227,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
                 model.UserClaims.Add(model.NewClaim);
 
                 // Mark dirty:
-                Response.Headers.Add("X-Sircl-Form-Changed", "true");
+                Response.Headers["X-Sircl-Form-Changed"] = "true";
             }
 
             // Return view:
@@ -248,7 +243,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
             model.UserClaims.RemoveAt(claimIndex);
 
             // Mark dirty:
-            Response.Headers.Add("X-Sircl-Form-Changed", "true");
+            Response.Headers["X-Sircl-Form-Changed"] = "true";
 
             // Return view:
             return EditView(model, viewName: "Edit_Claims");

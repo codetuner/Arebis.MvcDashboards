@@ -75,12 +75,19 @@
     <p>In order for the code to compile, you need to add the following package dependencies from Nuget.org:</p>
 
     <ul>
+        <li><b>Arebis.Core.Services.Interfaces</b></li>
         <li><b>Arebis.Core.AspNet.Mvc.Localization</b></li>
         <li><b>Microsoft.EntityFrameworkCore.SqlServer</b></li>
         <li><b>Microsoft.EntityFrameworkCore.Tools</b></li>
     </ul>
 
-    <p>On your project, right-click the <b>Dependencies</b> node and choose <b>Manage NuGet Packaes...</b>, then in the <b>Browse</b> tab, search for and install these packages.</p>
+    <p>To enable the Translation service, the following package dependency must also be registered:</p>
+
+    <ul>
+        <li><b>Arebis.Core.Services.Translation</b></li>
+    </ul>
+
+    <p>On your project, right-click the <b>Dependencies</b> node and choose <b>Manage NuGet Packages...</b>, then in the <b>Browse</b> tab, search for and install these packages.</p>
 
     <p><i>For installation mode 4, you can leave out the EntityFrameworkCore packages. The code that does not compile can then simply be deleted.</i></p>
 
@@ -279,65 +286,16 @@ public abstract class BaseController : Controller
     <h3>Translation Services</h3>
 
     <i>Optional for installations 1 and 2.</i>
-    
-    <p>The MvcDashboardLocalize component comes with a Bing, a DeepL and a Google translation service integration to assist in the creation of localized data.</p>
 
-    <p>The use of these services is optional. If no translation service is set up, the translation assistant feature will be unavailable.</p>
+    <p>Make sure you have the following Nuget package dependency installed:</p>
 
-    <p>The services are implemented in the /Localize folder of the project, together with the common interface definition they share: ITranslationService.</p>
+    <ul>
+        <li><b>Arebis.Core.Services.Translation</b></li>
+    </ul>
 
-    <p>Each of these services requires you to create an account on their platform and generate an API key.</p>
+    <p>Then follow the configuration instruction for the Translation service (Bing, DeepL or Google) you want to use,
+    on <a href="https://www.nuget.org/packages/Arebis.Core.Services.Translation/">https://www.nuget.org/packages/Arebis.Core.Services.Translation/</a>.</p>
 
-    <h4>Bing Translation Service Setup</h4>
-
-    <p>Install the Bing translation service with the following code:</p>
-
-<pre><span class="new-code">builder.Services.AddTransient&lt;ITranslationService, BingTranslationService&gt;();</span></pre>
-
-    <p>In addition the API key, or subscription key, must be made available, together with the <a href="https://learn.microsoft.com/en-us/azure/media-services/latest/azure-regions-code-names">region</a>, ideally in User Secrets. For instance (non-operational example key):</p>
-
-<pre>{
-<span class="new-code">  "BingApi": {
-    "SubscriptionKey": "0a123bc45678d90efa12345bc6789d0e",
-    "Region": "eastus"
-  }</span>
-}</pre>
-
-    <p>For more information, see: <a href="http://api.microsofttranslator.com">http://api.microsofttranslator.com</a>.</p>
-
-    <h4>DeepL Translation Service Setup</h4>
-
-    <p>Install the DeepL translation service with the following code:</p>
-
-<pre><span class="new-code">builder.Services.AddTransient&lt;ITranslationService, DeepLTranslationService&gt;();</span></pre>
-
-    <p>An API key must be made available, preferably via User Secrets, as in here (non-operational example key):</p>
-
-<pre>{
-<span class="new-code">  "DeepLApi": {
-    "ApiKey": "DeepL-Auth-Key ab12345c-678d-90e1-fa23-b456cd7890ef:fx"
-  }</span>
-}</pre>
-
-    <p>Note that the API key should start with "DeepL-Auth-Key " and typically ends with ":fx".</p>
-
-    <p>For more information, see: <a href="https://www.deepl.com/en/docs-api">https://www.deepl.com/en/docs-api</a>.</p>
-
-    <h4>Google Translation Service Setup</h4>
-
-    <p>Install the Google translation service with the following code:</p>
-
-<pre><span class="new-code">builder.Services.AddTransient&lt;ITranslationService, GoogleTranslationService&gt;();</span></pre>
-
-    <p>An API key must be made available, preferably via User Secrets, as in here (non-operational example key):</p>
-
-<pre>{
-<span class="new-code">  "GoogleApi": {
-    "ApiKey": "AbcDEfGhij01KLmNop23QrS-t4U56Vw7XYz8a90"
-  }
-</span>}</pre>
-
-    <p>For more information, see: <a href="https://cloud.google.com/translate">https://cloud.google.com/translate</a>.</p>
 
     <h3>Request Localization</h3>
 
@@ -346,14 +304,6 @@ public abstract class BaseController : Controller
     <p>With this, the request localization middleware still need to be in place. Do not forget to call the <b>app.UseRequestLocalization()</b> method as you would for any localizable application.</p>
 
     <p>Read more about localization on: <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization?view=aspnetcore-6.0">https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization</a>.</p>
-
-
-
-
-
-
-
-
 
 
     <h3>Create Database Tables</h3>

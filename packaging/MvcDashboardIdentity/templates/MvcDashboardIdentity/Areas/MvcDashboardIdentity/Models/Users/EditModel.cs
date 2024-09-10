@@ -8,6 +8,8 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Models.Users
 {
     public class EditModel : BaseEditModel<IdentityUser>
     {
+        public bool IsNew => this.Item.Id == "NEW";
+
         public bool CanHavePassword { get; set; }
 
         public bool CanHaveInitialPassword { get; set; }

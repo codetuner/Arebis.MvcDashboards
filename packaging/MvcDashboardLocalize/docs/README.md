@@ -1,6 +1,6 @@
 ## Introduction
 
-This component contains an ASP.NET Core MVC 7 item template consisting of an area named "MvcDashboardLocalize" implementing a dashboard to manage application localizaiton on database, as well as the database definition and classes needed to localize the application.
+This component contains an ASP.NET Core MVC 8 item template consisting of an area named "MvcDashboardLocalize" implementing a dashboard to manage application localizaiton on database, as well as the database definition and classes needed to localize the application.
 
 To get started, follow these videos:
 
@@ -14,7 +14,7 @@ To install the project item template (to be done once per developer machine):
 
     dotnet new install Arebis.MvcDashboardLocalize
 
-To add the dashboard to an ASP.NET Core MVC 7 project, from the project folder:
+To add the dashboard to an ASP.NET Core MVC 8 project, from the project folder:
 
     dotnet new MvcDashboardLocalize
 

@@ -19,10 +19,10 @@
 
     </div>
     <div class="modal-footer justify-content-start">
-        <button type="submit" class="btn btn-primary default"><i class="spinner fas fa-save"></i> Save changes</button>
+        <button type="submit" class="btn btn-primary default"><i class="spinner fas fa-solid fa-save"></i> @(Model.IsNew ? "Create" : "Update")</button>
         @if (Model.Item?.Name != null)
         {
-            <a class="btn btn-danger" @*disabled="@(Model.Item == null ? "disabled" : null)"*@ href="@Url.Action("DeleteRequest", new { id = Model.Item?.Id })" target="<.target"><i class="spinner fas fa-trash-alt"></i> Delete</a>
+            <a class="btn btn-danger" @*disabled="@(Model.Item == null ? "disabled" : null)"*@ href="@Url.Action("DeleteRequest", new { id = Model.Item?.Id })" target="<.target"><i class="spinner fas fa-solid fa-trash-alt"></i> Delete</a>
         }
         <button type="button" class="btn btn-link cancel ml-auto" data-bs-dismiss="modal">Close</button>
     </div>

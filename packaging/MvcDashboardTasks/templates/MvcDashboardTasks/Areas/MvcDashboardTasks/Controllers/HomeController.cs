@@ -1,18 +1,7 @@
-﻿using Arebis.Core.AspNet.Mvc.Localization;
-using Arebis.Core.Localization;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
 using MyMvcApp.Areas.MvcDashboardTasks.Models.Home;
-using MyMvcApp.Data.Localize;
 using MyMvcApp.Data.Tasks;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
 {
@@ -22,10 +11,10 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
 
         #region Construction
 
-        private readonly TasksDbContext context;
+        private readonly ScheduledTasksDbContext context;
         private readonly ILogger logger;
 
-        public HomeController(TasksDbContext context, ILogger<HomeController> logger)
+        public HomeController(ScheduledTasksDbContext context, ILogger<HomeController> logger)
         {
             this.context = context;
             this.logger = logger;

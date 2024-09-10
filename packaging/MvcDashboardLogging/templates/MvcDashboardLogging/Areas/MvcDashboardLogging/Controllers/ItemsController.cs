@@ -2,14 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using MyMvcApp.Areas.MvcDashboardLogging.Models.Items;
-using MyMvcApp.Data;
 using MyMvcApp.Data.Logging;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
 {
@@ -43,7 +36,11 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
                 .Where(d => model.BookmarkedFilter == false || d.IsBookmarked == true);
             if (!String.IsNullOrWhiteSpace(model.Query))
                 query = query
-                    .Where(d => d.Message!.Contains(model.Query) || d.Url!.Contains(model.Query) || d.User!.Contains(model.Query) || d.Details!.Contains(model.Query));
+                    .Where(d => d.TraceIdentifier == model.Query
+                        || d.Message!.Contains(model.Query)
+                        || d.Url!.Contains(model.Query)
+                        || d.User!.Contains(model.Query)
+                        || d.Details!.Contains(model.Query));
 
             // Build model:
             var count = query

@@ -1,19 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using MyMvcApp.Data.Localize;
-using MyMvcApp.Areas.MvcDashboardLocalize.Models.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Arebis.Core.Localization;
-using System.Text.Json;
+using Microsoft.Extensions.Options;
+using MyMvcApp.Areas.MvcDashboardLocalize.Models.Domain;
+using MyMvcApp.Data.Localize;
 using System.Net.Mime;
-using System.IO;
+using System.Text.Json;
 
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {

@@ -35,7 +35,7 @@
                     <input asp-for="Item.Email" class="form-control" autocomplete="off" ifhasvalue-enable="#@Html.IdFor(m => m.Item.EmailConfirmed)" />
                 </div>
 
-                <div class="mb-3 form-check">
+                <div class="mb-3 form-check form-switch">
                     <input asp-for="Item.EmailConfirmed" type="checkbox" class="form-check-input">
                     <label asp-for="Item.EmailConfirmed" class="form-check-label"></label>
                 </div>
@@ -45,7 +45,7 @@
                     <input asp-for="Item.PhoneNumber" class="form-control" autocomplete="off" ifhasvalue-enable="#@Html.IdFor(m => m.Item.PhoneNumberConfirmed)" />
                 </div>
 
-                <div class="mb-3 form-check">
+                <div class="mb-3 form-check form-switch">
                     <input asp-for="Item.PhoneNumberConfirmed" type="checkbox" class="form-check-input">
                     <label asp-for="Item.PhoneNumberConfirmed" class="form-check-label"></label>
                 </div>
@@ -59,17 +59,17 @@
                     <partial name="Edit_Password" model="Model" />
                 </div>
 
-                <div class="mb-3 form-check">
+                <div class="mb-3 form-check form-switch">
                     <input asp-for="Item.TwoFactorEnabled" type="checkbox" class="form-check-input">
                     <label asp-for="Item.TwoFactorEnabled" class="form-check-label"></label>
                 </div>
 
-                <div class="mb-3 form-check">
+                <div class="mb-3 form-check form-switch">
                     <input asp-for="Item.LockoutEnabled" type="checkbox" class="form-check-input" ifchecked-show="#lockoutend-group">
                     <label asp-for="Item.LockoutEnabled" class="form-check-label"></label>
                 </div>
 
-                <div class="mb-3" id="lockoutend-group">
+                <div class="mb-3 animate" id="lockoutend-group">
                     <label asp-for="Item.LockoutEnd" class="form-label"></label>
                     <input asp-for="Item.LockoutEnd" class="form-control" type="datetime" />
                 </div>
@@ -82,10 +82,10 @@
                 <fieldset>
                     <legend>Roles</legend>
 
-                    @foreach (var item in Model.Roles!.OrderBy(r => r.Name))
+                    @foreach (var item in Model.Roles!.Where(r => !String.IsNullOrWhiteSpace(r.Name)).OrderBy(r => r.Name))
                     {
                         <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="@(Html.IdFor(m=> m.UserRoleNames))_@(item.Id)" name="@Html.NameFor(m => m.UserRoleNames)" value="@(item.Name)" checked="@(Model.UserRoleNames.Contains(item.Name) ? "checked" : null)">
+                            <input type="checkbox" class="form-check-input" id="@(Html.IdFor(m=> m.UserRoleNames))_@(item.Id)" name="@Html.NameFor(m => m.UserRoleNames)" value="@(item.Name)" checked="@(Model.UserRoleNames.Contains(item.Name!) ? "checked" : null)">
                             <label class="form-check-label" for="@(Html.IdFor(m=> m.UserRoleNames))_@(item.Id)">@item.Name</label>
                         </div>
                     }
@@ -102,9 +102,9 @@
 
     @if (Model.Item.Id != null)
     {
-        <button type="submit" class="btn btn-danger float-end" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?" formnovalidate><i class="spinner fas fa-trash-alt"></i> Delete</button>
+        <button type="submit" class="btn btn-danger float-end" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?" formnovalidate><i class="spinner fas fa-solid fa-trash-alt"></i> Delete</button>
     }
-    <button type="submit" class="btn btn-primary"><i class="spinner fas fa-check"></i> Save</button>
-    <button type="submit" class="btn btn-primary" name="apply" value="true" history="replace"><i class="spinner fas fa-check"></i> Apply</button>
-    <a href="history:back" class="btn btn-secondary"><i class="fas fa-angle-left"></i> Back</a>
+    <button type="submit" class="btn btn-primary"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Update")</button>
+    <button type="submit" class="btn btn-primary" name="apply" value="true" history="replace"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
+    <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>
 </form>

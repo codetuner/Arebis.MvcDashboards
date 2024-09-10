@@ -1,16 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using MyMvcApp.Areas.MvcDashboardTasks.Models.Task;
 using MyMvcApp.Data.Tasks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mime;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
 {
@@ -20,10 +12,10 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
 
         #region Construction
 
-        private readonly TasksDbContext context;
+        private readonly ScheduledTasksDbContext context;
         private readonly ILogger logger;
 
-        public TaskController(TasksDbContext context, ILogger<TaskController> logger)
+        public TaskController(ScheduledTasksDbContext context, ILogger<TaskController> logger)
         {
             this.context = context;
             this.logger = logger;
@@ -40,7 +32,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
             var count = await context.Tasks
                 .Where(i => i.DefinitionId == model.DefinitionId || model.DefinitionId == null)
                 .Where(i => i.Definition.ProcessRole == model.ProcessRole || model.ProcessRole == null)
-                .Where(i => noQuery || i.Name!.Contains(model.Query ?? "") || i.Definition.Name!.Contains(model.Query ?? "") || i.QueueName == model.Query || i.MachineName == model.Query)
+                .Where(i => noQuery || i.Name!.Contains(model.Query ?? "") || i.Definition.Name!.Contains(model.Query ?? "") || i.QueueName == model.Query || i.MachineNameToRunOn == model.Query || i.MachineNameRanOn == model.Query)
                 .Where(i => model.StatusFilter != "Queued" || (i.UtcTimeDone == null) && (i.Definition.IsActive || i.UtcTimeStarted != null))
                 .Where(i => model.StatusFilter != "Running" || (i.UtcTimeDone == null && i.UtcTimeStarted != null))
                 .Where(i => model.StatusFilter != "Succeeded" || i.Succeeded == true)
@@ -51,7 +43,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 .Include(i => i.Definition)
                 .Where(i => i.DefinitionId == model.DefinitionId || model.DefinitionId == null)
                 .Where(i => i.Definition.ProcessRole == model.ProcessRole || model.ProcessRole == null)
-                .Where(i => noQuery || i.Name!.Contains(model.Query ?? "") || i.Definition.Name!.Contains(model.Query ?? "") || i.QueueName == model.Query || i.MachineName == model.Query)
+                .Where(i => noQuery || i.Name!.Contains(model.Query ?? "") || i.Definition.Name!.Contains(model.Query ?? "") || i.QueueName == model.Query || i.MachineNameToRunOn == model.Query || i.MachineNameRanOn == model.Query)
                 .Where(i => model.StatusFilter != "Queued" || (i.UtcTimeDone == null) && (i.Definition.IsActive || i.UtcTimeStarted != null))
                 .Where(i => model.StatusFilter != "Running" || (i.UtcTimeDone == null && i.UtcTimeStarted != null))
                 .Where(i => model.StatusFilter != "Succeeded" || i.Succeeded == true)
@@ -118,7 +110,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
             var model = (original == null)
                 ? new EditModel
                 {
-                    Item = new Data.Tasks.Task()
+                    Item = new Data.Tasks.ScheduledTask()
                     {
                         DefinitionId = definitionId ?? 0,
                         QueueName = "Main"
@@ -126,12 +118,12 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 }
                 : new EditModel()
                 {
-                    Item = new Data.Tasks.Task()
+                    Item = new Data.Tasks.ScheduledTask()
                     {
                         DefinitionId = original.DefinitionId,
                         Name = original.Name,
                         QueueName = original.QueueName,
-                        MachineName = original.MachineName,
+                        MachineNameToRunOn = original.MachineNameToRunOn,
                         Arguments = original.Arguments,
                         UtcTimeToExecute = original.UtcTimeToExecute
                     },
@@ -206,7 +198,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 SetToastrMessage("error", "Failed to save the task.<br/>See validation messages for more information.");
             }
 
-            Response.Headers.Add("X-Sircl-History-Replace", Url.Action("Edit", new { id = model.Item!.Id }));
+            Response.Headers["X-Sircl-History-Replace"] = Url.Action("Edit", new { id = model.Item!.Id });
             return await EditView(model);
         }
 

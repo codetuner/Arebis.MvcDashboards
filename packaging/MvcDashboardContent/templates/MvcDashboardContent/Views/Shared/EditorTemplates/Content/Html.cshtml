@@ -1,0 +1,17 @@
+﻿@model String
+@{
+    var name = Html.NameFor(m => m);
+    var baseName = name.Substring(0, name.LastIndexOf("."));
+    var data = Html.ViewData;
+    var sourceCodeMode = bool.Parse((string?)data["SourceCodeMode"] ?? "false");
+    var documentId = (int)data["DocumentId"]!;
+    var propertyId = (int)data["PropertyId"]!;
+}
+<div>
+    <label for="@Html.IdFor(m => m)" class="form-label">@ViewBag.Name:</label>
+    <label class="float-end">
+        Source
+        <input type="checkbox" class="form-check-input" name="@(baseName).Settings[SourceCodeMode]" value="true" checked="@(sourceCodeMode ? "checked" : null)" onchecked-showhtmlsource="#@Html.IdFor(m => m)" />
+    </label>
+</div>
+<textarea id="@Html.IdFor(m => m)" name="@Html.NameFor(m => m)" data-type="@(sourceCodeMode ? (string?)null : "html")" class="form-control" rows="@ViewBag.Rows" save-url="@((documentId != 0) ? Url.Action("SavePropertyValue", new { id = documentId, propertyId = propertyId }) : null)">@Html.Raw(Model?.Replace("&", "&amp;"))</textarea>

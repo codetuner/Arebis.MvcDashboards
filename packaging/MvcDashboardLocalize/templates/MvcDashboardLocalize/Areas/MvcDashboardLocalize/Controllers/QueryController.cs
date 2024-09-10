@@ -1,14 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using MyMvcApp.Areas.MvcDashboardLocalize.Models.Query;
 using MyMvcApp.Data.Localize;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {
@@ -105,7 +99,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
                 SetToastrMessage("error", "Failed to save the query.<br/>See validation messages for more information.");
             }
 
-            Response.Headers.Add("X-Sircl-History-Replace", Url.Action("Edit", new { id = model.Item.Id }));
+            Response.Headers["X-Sircl-History-Replace"] = Url.Action("Edit", new { id = model.Item.Id });
             return await EditView(model);
         }
 

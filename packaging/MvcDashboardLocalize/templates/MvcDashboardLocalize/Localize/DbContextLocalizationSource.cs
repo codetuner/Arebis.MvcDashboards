@@ -1,16 +1,10 @@
 ﻿using Arebis.Core.AspNet.Mvc.Localization;
 using Arebis.Core.Localization;
 using Microsoft.Data.SqlClient;
-using Microsoft.Data.SqlClient.Server;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MyMvcApp.Data.Localize;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace MyMvcApp.Localize
 {

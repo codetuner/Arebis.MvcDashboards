@@ -1,15 +1,8 @@
-﻿using static System.Formats.Asn1.AsnWriter;
-using System;
-using Microsoft.Extensions.DependencyInjection;
-using MyMvcApp.Data.Tasks;
+﻿using MyMvcApp.Data.Tasks;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Build.Framework;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Threading;
 
 namespace MyMvcApp.Tasks
 {
@@ -67,7 +60,7 @@ namespace MyMvcApp.Tasks
             this.mainLoopCancellationTokenSource = mainLoopCancellationTokenSource;
             this.processRole = configuration.GetValue<string?>("Tasks:ProcessRole", null);
             this.schedulerMinimalDelayMs = configuration.GetValue<int>("Tasks:SchedulerInitialDelayMs", 2000);
-            this.schedulerExtendedDelayMs = configuration.GetValue<int>("Tasks:SchedulerExtendedDelayMs", 3000);
+            this.schedulerExtendedDelayMs = configuration.GetValue<int>("Tasks:SchedulerExtendedDelayMs", 23000);
         }
 
         public void Run()
@@ -86,11 +79,11 @@ namespace MyMvcApp.Tasks
                     using (IServiceScope scope = serviceProvider.CreateScope())
                     {
                         // Retrieve tasks to execute:
-                        var dbContext = scope.ServiceProvider.GetRequiredService<TasksDbContext>();
+                        var dbContext = scope.ServiceProvider.GetRequiredService<ScheduledTasksDbContext>();
                         var tasks = dbContext.Tasks
                             .Include(t => t.Definition)
                             .Where(t => t.Definition.ProcessRole == null || t.Definition.ProcessRole == processRole)
-                            .Where(t => t.MachineName == null || t.MachineName == Environment.MachineName)
+                            .Where(t => t.MachineNameToRunOn == null || t.MachineNameToRunOn == Environment.MachineName)
                             .Where(t => t.Definition.IsActive == true)
                             .Where(t => t.UtcTimeToExecute <= DateTime.UtcNow && t.UtcTimeStarted == null)
                             .OrderBy(t => t.UtcTimeToExecute)
@@ -172,51 +165,57 @@ namespace MyMvcApp.Tasks
                 {
                     using (IServiceScope scope = serviceProvider.CreateScope())
                     {
-                        // Retrieve task entity:
-                        var dbContext = scope.ServiceProvider.GetRequiredService<TasksDbContext>();
+                        // Retrieve non-running task entity:
+                        var dbContext = scope.ServiceProvider.GetRequiredService<ScheduledTasksDbContext>();
                         var task = dbContext.Tasks
                             .Include(t => t.Definition)
-                            .Single(t => t.Id == taskId);
+                            .Where(t => t.UtcTimeStarted == null)
+                            .SingleOrDefault(t => t.Id == taskId);
+                        if (task == null) continue;
 
                         // Flag task as started:
-                        task.MachineName = Environment.MachineName;
+                        task.MachineNameRanOn = Environment.MachineName;
                         task.UtcTimeStarted = DateTime.UtcNow;
                         task.OutputWriteLine($"=== {task.UtcTimeStarted:yyyy/MM/yy HH:mm:ss} Started");
                         dbContext.SaveChanges();
 
                         // Try to run task implementation:
-                        if (task.Definition.ImplementationClass == null) break;
                         try
                         {
-                            // Retrieve implementation type:
-                            var implementationType = Type.GetType(task.Definition.ImplementationClass);
-                            if (implementationType == null) throw new Exception($"Could not find implementation class \"{task.Definition.ImplementationClass}\". Check class name or specify ProcessRole of the task definition.");
-                            var implementation = (ITaskImplementation)ActivatorUtilities.CreateInstance(scope.ServiceProvider, implementationType)!;
-
-                            // Parse arguments:
-                            var arguments = new Dictionary<string, string?>();
-                            AddArguments(arguments, task.Definition.Arguments);
-                            AddArguments(arguments, task.Arguments);
-                            foreach (var prop in implementation.GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public))
+                            if (task.Definition.ImplementationClass != null)
                             {
-                                var attr = (TaskArgumentAttribute?)prop.GetCustomAttribute(typeof(TaskArgumentAttribute));
-                                if (attr != null)
+                                // Retrieve implementation type:
+                                var implementationType = Type.GetType(task.Definition.ImplementationClass);
+                                if (implementationType == null) throw new Exception($"Could not find implementation class \"{task.Definition.ImplementationClass}\". Check class name or specify ProcessRole of the task definition.");
+                                var implementation = (IScheduledTaskImplementation)ActivatorUtilities.CreateInstance(scope.ServiceProvider, implementationType)!;
+
+                                // Parse arguments:
+                                var arguments = new Dictionary<string, string?>();
+                                AddArguments(arguments, task.Definition.Arguments);
+                                AddArguments(arguments, task.Arguments);
+                                foreach (var prop in implementation.GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public))
                                 {
-                                    if (arguments.TryGetValue(attr.Name ?? prop.Name, out string? strvalue))
+                                    var attr = (TaskArgumentAttribute?)prop.GetCustomAttribute(typeof(TaskArgumentAttribute));
+                                    if (attr != null)
                                     {
-                                        if (strvalue != null)
+                                        if (arguments.TryGetValue(attr.Name ?? prop.Name, out string? strvalue))
                                         {
                                             prop.SetValue(implementation, ConvertValue(strvalue, prop.PropertyType));
                                         }
                                     }
                                 }
-                            }
 
-                            // Execute task:
-                            var taskHost = new TaskHost(dbContext, task, arguments, taskCancellationTokenSource);
-                            var result = taskHost.Execute(implementation);
-                            result.Wait();
-                            task.Succeeded = true;
+                                // Execute task:
+                                var taskHost = new TaskHost(dbContext, task, arguments, taskCancellationTokenSource);
+                                var result = taskHost.Execute(implementation);
+                                result.Wait();
+                                task.Succeeded = true;
+                            }
+                            else
+                            {
+                                task.OutputWriteLine($"Task definition has no implementation class to run.");
+                                task.Succeeded = false;
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -241,59 +240,75 @@ namespace MyMvcApp.Tasks
                 {
                     break;
                 }
+            }
 
-                lock (queueThreads)
+            lock (queueThreads)
+            {
+                if (queue.IsEmpty)
                 {
-                    if (queue.IsEmpty)
-                    {
-                        // Remove current thread from running threads:
-                        runningThreads.Remove(Thread.CurrentThread, out Thread? t);
+                    // Remove current thread from running threads:
+                    runningThreads.Remove(Thread.CurrentThread, out Thread? t);
 
-                        // Remove queue:
-                        if (queueName != null) queueThreads.Remove(queueName);
+                    // Remove queue:
+                    if (queueName != null) queueThreads.Remove(queueName);
 
-                        // End thread:
-                        return;
-                    }
+                    // End thread:
+                    return;
                 }
             }
         }
 
-        private static object? ConvertValue(string strvalue, Type propertyType)
+        private static object? ConvertValue(string? strvalue, Type propertyType)
         {
-            if (propertyType == typeof(int[]))
+            if (String.IsNullOrEmpty(strvalue))
             {
-                if (strvalue == "")
-                {
+                if (propertyType == typeof(int[]))
                     return Array.Empty<int>();
-                }
+                else if (propertyType == typeof(string[]))
+                    return Array.Empty<string>();
+                else if (propertyType == typeof(TimeSpan))
+                    return TimeSpan.Zero;
                 else
-                {
-                    return strvalue.Split(',').Select(s => Int32.Parse(s)).ToArray();
-                }
+                    return null;
+            }
+            else if (propertyType == typeof(int[]))
+            {
+                return strvalue.Split(',').Select(s => Int32.Parse(s)).ToArray();
             }
             else if (propertyType == typeof(string[]))
             {
-                if (strvalue == String.Empty)
-                {
-                    return Array.Empty<string>();
-                }
-                else
-                {
-                    return strvalue.Split(',');
-                }
+                return strvalue.Split(',');
             }
-            else if (propertyType == typeof(TimeSpan?))
+            else if (propertyType == typeof(TimeSpan) || (propertyType == typeof(TimeSpan?)))
             {
                 return TimeSpan.Parse(strvalue);
             }
-            else if (propertyType == typeof(Int32?))
+            else if (propertyType == typeof(Int32) || propertyType == typeof(Int32?))
             {
                 return Int32.Parse(strvalue);
             }
+            else if (propertyType == typeof(DateTime) || propertyType == typeof(DateTime?))
+            {
+                if (strvalue.EndsWith('Z'))
+                    return DateTime.Parse(strvalue).ToUniversalTime();
+                else
+                    return DateTime.Parse(strvalue).ToUniversalTime().ToLocalTime();
+            }
+            else if (propertyType == typeof(DateTimeOffset) || propertyType == typeof(DateTimeOffset?))
+            {
+                return DateTimeOffset.Parse(strvalue);
+            }
+            else if (propertyType == typeof(DateOnly) || propertyType == typeof(DateOnly?))
+            {
+                return DateOnly.Parse(strvalue);
+            }
+            else if (propertyType == typeof(TimeOnly) || propertyType == typeof(TimeOnly?))
+            {
+                return TimeOnly.Parse(strvalue);
+            }
             else
             {
-                return Convert.ChangeType(strvalue, propertyType, CultureInfo.InvariantCulture);
+                return Convert.ChangeType(strvalue, Nullable.GetUnderlyingType(propertyType) ?? propertyType, CultureInfo.InvariantCulture);
             }
         }
 
@@ -317,14 +332,14 @@ namespace MyMvcApp.Tasks
             }
         }
 
-        private class TaskHost : ITaskHost
+        private class TaskHost : IScheduledTaskHost
         {
-            private readonly TasksDbContext dbContext;
-            private readonly Data.Tasks.Task currentTaskEntity;
+            private readonly ScheduledTasksDbContext dbContext;
+            private readonly Data.Tasks.ScheduledTask currentTaskEntity;
             private readonly IReadOnlyDictionary<string, string?> currentTaskArguments;
             private readonly CancellationTokenSource cancellationTokenSource;
 
-            public TaskHost(TasksDbContext dbContext, Data.Tasks.Task currentTaskEntity, IReadOnlyDictionary<string, string?> currentTaskArguments, CancellationTokenSource cancellationTokenSource)
+            public TaskHost(ScheduledTasksDbContext dbContext, Data.Tasks.ScheduledTask currentTaskEntity, IReadOnlyDictionary<string, string?> currentTaskArguments, CancellationTokenSource cancellationTokenSource)
             {
                 this.dbContext = dbContext;
                 this.currentTaskEntity = currentTaskEntity;
@@ -355,7 +370,7 @@ namespace MyMvcApp.Tasks
                 nextTaskArguments["PreviousTaskId"] = currentTaskEntity.Id.ToString();
 
                 // Create next scheduled instance:
-                var task = new Data.Tasks.Task();
+                var task = new Data.Tasks.ScheduledTask();
                 task.Name = currentTaskEntity.Name;
                 task.DefinitionId = currentTaskEntity.DefinitionId;
                 task.QueueName = currentTaskEntity.QueueName;
@@ -370,7 +385,7 @@ namespace MyMvcApp.Tasks
                 currentTaskEntity.OutputWriteLine(str);
             }
 
-            internal System.Threading.Tasks.Task Execute(ITaskImplementation implementation)
+            internal System.Threading.Tasks.Task Execute(IScheduledTaskImplementation implementation)
             {
                 // Execute task:
                 var result = implementation.Execute(this);

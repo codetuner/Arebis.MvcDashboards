@@ -8,6 +8,8 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Models.Key
 {
     public class EditModel : BaseEditModel<Data.Localize.Key>
     {
+        public bool IsNew => this.Item.Id == 0;
+
         public string? ArgumentNames { get; set; }
 
         public List<KeyValue> Values { get; set; } = new();

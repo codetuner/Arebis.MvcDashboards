@@ -1,21 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
 {
     [Area("MvcDashboardIdentity")]
-    [Authorize(Roles = "Administrator,IdentityAdministrator")] // Commenting out this line disables security
+    //[Authorize(Roles = "Administrator,IdentityAdministrator")] // Commenting out this line disables security
     public abstract class BaseController : Controller
     {
         [HttpGet]
         public IActionResult MvcDashboardsDropdown()
         {
             var model = new List<string>();
-            foreach (var type in this.GetType().Assembly.GetTypes().Where(t => t.Name == "BaseController" && (t.Namespace?.Contains(".Areas.MvcDashboard") ?? false)))
+            foreach (var type in this.GetType().Assembly.GetTypes().Where(t => t.Name == "BaseController" && (t.Namespace?.Contains(".Areas.MvcDashboard") ?? false)).OrderBy(t => t.FullName))
             {
                 var accessible = true;
                 var aatributes = type.GetCustomAttributes(typeof(AuthorizeAttribute), false);
@@ -58,7 +54,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
 
         protected IActionResult DialogOk()
         {
-            Response.Headers["X-Sircl-History"] = "refresh";
+            Response.Headers["X-Sircl-History"] = "reload";
             return this.StatusCode(204);
         }
     }

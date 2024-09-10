@@ -2,14 +2,14 @@
 
   <PropertyGroup>
     <PackageType>Template</PackageType>
-    <PackageVersion>7.0.0</PackageVersion>
+    <PackageVersion>8.0.0</PackageVersion>
     <PackageId>Arebis.MvcDashboardIdentity</PackageId>
     <Title>ASP.NET MVC Dasboard Identity</Title>
     <Authors>codetuner</Authors>
     <Description>An ASP.NET MVC Dashboard area to manage the local identity store.</Description>
     <PackageTags>dotnet-new;templates;mvc;dashboard;identity</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <IncludeContentInPack>true</IncludeContentInPack>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <ContentTargetFolders>content</ContentTargetFolders>

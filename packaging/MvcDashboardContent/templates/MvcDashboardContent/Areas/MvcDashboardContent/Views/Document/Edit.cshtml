@@ -1,0 +1,198 @@
+﻿@model EditModel
+@inject ContentDbContext context
+@{
+    ViewBag.Title = Model.Item.Name ?? "new";
+}
+
+<h1>@(Model.DocumentType?.Name) <small class="text-muted">@(Model.Item.Name ?? "new")</small></h1>
+
+<form asp-action="Submit" asp-route-id="@Model.Item.Id" method="post" onkeyenter-click="" autocomplete="off" onchange-set="HasChanges" onunloadchanged-confirm="Changes will be lost. Proceed anyway ?">
+
+    <div class="overlay" hidden></div>
+
+    <input type="hidden" asp-for="Item.Id" />
+    <input type="hidden" asp-for="HasChanges" />
+    <input type="hidden" asp-for="IsDeleted" />
+    <input type="hidden" asp-for="Item.LastPublishedOnUtc" />
+
+    <div asp-validation-summary="All" class="alert alert-danger alert-dismissible fade show mb-3">
+        <strong>Following errors have occured:</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="mb-3">
+        <label for="@Html.IdFor(m => m.Item.Name)" class="form-label">Name: *</label>
+        <input asp-for="Item.Name" type="text" class="form-control @(Model.HasTranslationService ? "onchange-submit" : "")" />
+        <span asp-validation-for="Item.Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="@Html.IdFor(m => m.Item.Name)" class="form-label">Document Type: *</label>
+        <select class="form-control onchange-submit" asp-for="Item.TypeId" asp-items="Model.DocumentTypesInHierarchy" onchange-confirm="Properties may be lost. Continue anyway ?"></select>
+    </div>
+
+    <div class="mb-3">
+        <label for="@Html.IdFor(m => m.Item.Culture)" class="form-label">Culture:</label>
+        <input asp-for="Item.Culture" type="text" class="form-control onchange-submit" list="cultureList" />
+        <datalist id="cultureList">
+            @foreach (var item in Model.SupportedUICultures)
+            {
+                <option value="@item.Name">@item.DisplayName</option>
+            }
+        </datalist>
+        <span asp-validation-for="Item.Culture" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="@Html.IdFor(m => m.Item.Path)" class="form-label">Path:</label>
+        <div class="input-group">
+            <input asp-for="Item.Path" type="text" class="form-control ifvalue-events" list="@Html.IdFor(m => m.Item.Path)List" />
+            @if (Model.Item.Path != null && Model.Item.Path.StartsWith('/') && Model.Item.LastPublishedOnUtc.HasValue)
+            {
+                <button type="button" class="btn btn-outline-secondary ifvalueItem.Path-enable ifvalueItem.Pathis-disable"
+                        onclick="var url = '@(Url.RouteUrl("content", new { path="[Item.Path]" }))';
+                                 var path = document.getElementById('Item_Path').value;
+                                 url = url.replace('%5BItem.Path%5D', path.substring(1));
+                                 window.open(url, '_blank');
+                        ">View</button>
+            }
+        </div>
+        <datalist id="@Html.IdFor(m => m.Item.Path)List">
+            @foreach (var item in Model.PathsList)
+            {
+                <option value="@item" />
+            }
+        </datalist>
+        <span asp-validation-for="Item.Path" class="text-danger"></span>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            @{
+                var lastDocTypeId = 0;
+                var propertyIndex = 0;
+                Model.Item.Properties ??= new();
+                var properties = Model.Item.Properties.ToList();
+                Model.Item.Properties.Clear();
+                // Run over all property types in order of hierarchy and displayOrder:
+                foreach (var item in Model.DocumentType?.AllPropertyTypes(context) ?? new List<PropertyType>())
+                {
+                    // Get or create property for current type:
+                    var property = properties.SingleOrDefault(p => p.TypeId == item.Id);
+                    if (property == null) { property = new MyMvcApp.Data.Content.Property() { TypeId = item.Id, Document = null! }; }
+                    property.Type = item;
+                    Model.Item.Properties.Add(property);
+                    // Show document type name every first time a property of that type is shown:
+                    if (item.DocumentTypeId != lastDocTypeId)
+                    {
+                        lastDocTypeId = item.DocumentTypeId;
+                        <h5 class="card-title">Properties of @(Model.AllDocumentTypesDict[item.DocumentTypeId].Name)</h5>
+                    }
+                    var data = property.CombinedSettings;
+                    data["Name"] = item.Name;
+                    data["DocumentId"] = Model.Item.Id;
+                    data["PropertyId"] = property.Id;
+                    <div class="mb-3">
+                        @Html.EditorFor(m => m.Item.Properties![propertyIndex].Value, item.DataType?.Template, data)
+                        <input type="hidden" asp-for="Item.Properties![propertyIndex].Id" />
+                        <input type="hidden" asp-for="Item.Properties![propertyIndex].TypeId" />
+                        <input type="hidden" asp-for="Item.Properties![propertyIndex].Settings" />
+                    </div>
+                    propertyIndex++;
+                }
+            }
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="@Html.IdFor(m => m.Item.SortKey)" class="form-label">Sort key:</label>
+        <input asp-for="Item.SortKey" type="text" class="form-control" />
+        <span asp-validation-for="Item.SortKey" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="@Html.IdFor(m => m.Item.Notes)" class="form-label">Notes:</label>
+        <textarea asp-for="Item.Notes" class="form-control"></textarea>
+        <span asp-validation-for="Item.Notes" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3 form-check form-switch">
+        <input asp-for="Item.AutoPublish" type="checkbox" class="form-check-input" ifchecked-hide="#publish-field">
+        <label asp-for="Item.AutoPublish" class="form-check-label">Auto-publish on @(Model.IsNew ? "create" : "update")</label>
+    </div>
+
+    <div class="mb-3 form-check form-switch animate" id="publish-field">
+        <input asp-for="Publish" type="checkbox" class="form-check-input onchange-ignore">
+        <label asp-for="Publish" class="form-check-label">(Re)publish on @(Model.IsNew ? "create" : "update")</label>
+    </div>
+
+    <p class="mt-3">
+        @if (Model.IsDeleted)
+        {
+            <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-danger"><i class="spinner fas fa-solid fa-check"></i> Save &amp; Undelete</button>
+            <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>
+        }
+        else
+        {
+            <div class="float-end mb-2">
+                <button type="submit" asp-action="Preview" asp-route-id="@Model.Item.Id" class="btn btn-outline-primary" formtarget="_blank"><i class="fas fa-solid fa-eye"></i> Preview</button>
+                <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" name="andcopy" value="true"><i class="spinner fas fa-solid fa-copy"></i> @(Model.IsNew ? "Create" : "Update") &amp; Copy</button>
+                @if (Model.HasTranslationService && Model.SupportedUICultures.Count > 1 && !String.IsNullOrWhiteSpace(Model.Item.Culture))
+                {
+                    <div class="btn-group dropup">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-solid fa-language"></i> @(Model.IsNew ? "Create" : "Update") &amp; Translate
+                        </button>
+                        <ul class="dropdown-menu">
+                            @foreach (var culture in Model.SupportedUICultures.Where(c => c.Name != Model.Item.Culture))
+                            {
+                                <li>
+                                    <a href="" class="dropdown-item onunloadchanged-allow" onclick-click="<li|>button">@culture.DisplayName (@culture.NativeName)</a>
+                                    <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" name="andtranslate" value="@culture.Name" hidden></button>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                @if (!Model.IsNew)
+                {
+                    <button type="submit" asp-action="Delete" asp-route-id="@Model.Item.Id" class="btn btn-danger" onclick-confirm="Are you sure ?"><i class="spinner fas fa-solid fa-trash-alt"></i> Delete</button>
+                }
+            </div>
+            <span style="white-space: nowrap;">
+                <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" onkeydown-click="Ctrl+S"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Update")</button>
+                <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" name="apply" value="true"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
+                <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>
+            </span>
+        }
+    </p>
+
+</form>
+
+@if (Model.Item.TypeId == 0)
+{
+    <div class="modal" data-bs-backdrop="static" tabindex="-1" onload-showmodalafter="1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New document</h5>
+                    <a href="history:back" class="btn-close" aria-label="Close"></a>
+                </div>
+                <div class="modal-body pb-4">
+                    <p>
+                        Choose type of document to create:
+                    </p>
+                    <div class="d-grid gap-2">
+                        <form history="replace">
+                            @foreach (var item in Model.AllDocumentTypes)
+                            {
+                                <button type="submit" name="TypeId" value="@item.Id" class="btn btn-light"><i class="spinner fas fa-solid fa-plus"></i> @item.Name</button>
+                            }
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
