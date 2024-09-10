@@ -1,0 +1,19 @@
+﻿@page
+@model MyMvcApp.Pages.FoobarModel
+@{ Layout = "_Layout"; }
+
+<form method="post">
+    <div asp-validation-summary="All" class="alert alert-danger alert-dismissible fade show mb-3">
+        <strong>Following errors have occured:</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="mb-3">
+        <label for="@Html.IdFor(m => m.Email)" class="form-label">Email: *</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit!</button>
+
+</form>

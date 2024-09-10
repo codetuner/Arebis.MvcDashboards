@@ -207,4 +207,6 @@ app.MapControllerRoute(
 
 #endregion
 
+app.MapFallbackToFile("404.html");
+
 app.Run();

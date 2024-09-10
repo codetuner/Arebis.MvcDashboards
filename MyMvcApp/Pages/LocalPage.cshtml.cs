@@ -5,8 +5,9 @@ namespace MyMvcApp.Pages
 {
     public class LocalPageModel : PageModel
     {
-        public void OnGet()
+        public IActionResult OnGet()
         {
+            return Page();
         }
     }
 }
