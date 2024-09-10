@@ -44,7 +44,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
         {
             var model = new EditModel
             {
-                Item = new Domain()
+                Item = new Data.Localize.Domain()
             };
             if (requestLocalizationOptions.Value.SupportedUICultures != null)
                 model.Cultures = String.Join(',', requestLocalizationOptions.Value.SupportedUICultures.Select(c => c.TwoLetterISOLanguageName).Distinct());
@@ -145,7 +145,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
         {
             using (var stream = file.OpenReadStream())
             { 
-                var domain = JsonSerializer.Deserialize<Domain>(stream);
+                var domain = JsonSerializer.Deserialize<Data.Localize.Domain>(stream);
                 if (domain != null)
                 {
                     context.LocalizeDomains.Add(domain);
