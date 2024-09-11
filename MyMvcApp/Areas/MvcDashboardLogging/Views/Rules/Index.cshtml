@@ -3,7 +3,7 @@
     ViewBag.Title = "Log Action Rules";
 }
 
-<h1>Request Logs</h1>
+<h1>Rules</h1>
 
 <form class="card p-3 bg-white onchange-submit" action="@Url.Action("Index")" method="get" history="replace" sub-target="#subTarget">
 
@@ -38,6 +38,10 @@
         <div>&nbsp;&nbsp;</div>
         <div>
             <input type="search" class="form-control oninput-change" asp-for="Query" style="max-width: 280px;" autocomplete="off" placeholder="Search" />
+        </div>
+        <div>&nbsp;&nbsp;</div>
+        <div>
+            <a href="@Url.Action("Index")" history="replace" class="btn btn-light" title="Clear filter"><i class="spinner fas fa-solid fa-eraser"></i></a>
         </div>
     </div>
 
