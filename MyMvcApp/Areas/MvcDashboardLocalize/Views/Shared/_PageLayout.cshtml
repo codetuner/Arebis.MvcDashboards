@@ -252,7 +252,7 @@
             </div>
         }
 
-        <div id="body-content" sircl-appid="@(hostEnvironment.ApplicationName)-@(this.Context.GetRouteValue("area"))-@(this.User?.Identity?.Name?.GetHashCode())" sircl-appmode="strict">
+        <div id="body-content" sircl-appid="@(hostEnvironment.ApplicationName)-@(this.Context.GetRouteValue("area"))-@(this.User.GetDeterministicHash())" sircl-appmode="strict">
             @RenderBody()
         </div>
 

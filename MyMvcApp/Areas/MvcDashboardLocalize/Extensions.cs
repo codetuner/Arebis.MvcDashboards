@@ -1,23 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace MyMvcApp.Areas.MvcDashboardIdentity
+namespace MyMvcApp.Areas.MvcDashboardLocalize
 {
     /// <summary>
     /// Local dashboard helper extension methods.
     /// </summary>
     public static class Extensions
     {
-        /// <summary>
-        /// Determine whether a user is locked out.
-        /// </summary>
-        public static bool IsLockedout(this IdentityUser user)
-        {
-            return (user.LockoutEnd.HasValue && user.LockoutEnd > DateTime.UtcNow);
-        }
-
         /// <summary>
         /// Returns a hash for the (name of the) given user.
         /// The hash is deterministic and returns the same value accross multiple instances (i.e. in a webfarm).

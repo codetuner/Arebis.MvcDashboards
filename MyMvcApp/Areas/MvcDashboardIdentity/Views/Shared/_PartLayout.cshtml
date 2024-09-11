@@ -1,6 +1,6 @@
 ﻿@inject IHostEnvironment hostEnvironment
 @{
-    Context.Response.Headers["X-Sircl-AppId"] = hostEnvironment.ApplicationName + "-" + this.Context.GetRouteValue("area") + "-" + this.User?.Identity?.Name?.GetHashCode();
+    Context.Response.Headers["X-Sircl-AppId"] = hostEnvironment.ApplicationName + "-" + this.Context.GetRouteValue("area") + "-" + this.User.GetDeterministicHash();
     if (this.Context.Request.Headers["X-Sircl-Target"] == "#body-content")
     {
         this.Context.Response.Headers["X-Sircl-Document-Title"] = this.Context.GetRouteValue("area") + " - " + ViewBag.Title;
