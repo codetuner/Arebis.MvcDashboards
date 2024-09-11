@@ -193,11 +193,11 @@
             }
         };
         $$("before", function () {
-            console.log("TinyMCE: removing editors");
+            //console.log("TinyMCE: removing editors");
             tinymce.remove("TEXTAREA[data-type='html']");
         });
         $$("process", function () {
-            console.log("TinyMCE: initializing editors");
+            //console.log("TinyMCE: initializing editors");
             var settings = Object.assign({}, tinymce_defaults);
             settings.selector = "TEXTAREA[data-type='html']";
             tinymce.init(settings);
