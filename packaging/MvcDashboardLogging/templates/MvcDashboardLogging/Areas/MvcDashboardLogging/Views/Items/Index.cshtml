@@ -18,8 +18,7 @@
                 }
             </select>
         </div>
-        <div>&nbsp;&nbsp;</div>
-        <div class="d-none d-xxl-block" style="border: solid 1px var(--bs-border-color); border-radius: var(--bs-border-radius);">
+        <div class="ms-2 d-none d-xxl-block" onchange-submit="" style="border: solid 1px var(--bs-border-color); border-radius: var(--bs-border-radius);">
             <label class="btn"><input type="radio" x-onchange-sync="#AspectFilterSelect" name="AspectFilter" value="" checked="@(String.IsNullOrEmpty(Model.AspectFilter) ? "checked" : null)" /> All</label>
             <label class="btn"><input type="radio" x-onchange-sync="#AspectFilterSelect" name="AspectFilter" value="Error" checked="@(Model.AspectFilter == "Error" ? "checked" : null)" /> Error</label>
             <label class="btn"><input type="radio" x-onchange-sync="#AspectFilterSelect" name="AspectFilter" value="Security" checked="@(Model.AspectFilter == "Security" ? "checked" : null)" /> Security</label>
@@ -28,7 +27,7 @@
             <label class="btn"><input type="radio" x-onchange-sync="#AspectFilterSelect" name="AspectFilter" value="Timing" checked="@(Model.AspectFilter == "Timing" ? "checked" : null)" /> Timing</label>
             <label class="btn"><input type="radio" x-onchange-sync="#AspectFilterSelect" name="AspectFilter" value="Information" checked="@(Model.AspectFilter == "Information" ? "checked" : null)" /> Information</label>
         </div>
-        <select id="AspectFilterSelect" class="d-xxl-none form-control auto-width" x-onchange-sync="[name='AspectFilter']">
+        <select id="AspectFilterSelect" class="ms-2 d-xxl-none form-control auto-width" x-onchange-sync="[name='AspectFilter']">
             <option value="">All types</option>
             <option value="Error" selected="@(Model.AspectFilter == "Error" ? "selected" : null)">Error</option>
             <option value="Security" selected="@(Model.AspectFilter == "Security" ? "selected" : null)">Security</option>
@@ -37,13 +36,14 @@
             <option value="Timing" selected="@(Model.AspectFilter == "Timing" ? "selected" : null)">Timing</option>
             <option value="Information" selected="@(Model.AspectFilter == "Information" ? "selected" : null)">Information</option>
         </select>
-        <div>&nbsp;&nbsp;</div>
-        <div style="border: solid 1px var(--bs-border-color); border-radius: var(--bs-border-radius); white-space: nowrap;">
+        <div class="ms-2" style="border: solid 1px var(--bs-border-color); border-radius: var(--bs-border-radius); white-space: nowrap;">
             <label class="btn"><input type="checkbox" name="BookmarkedFilter" value="true" checked="@((Model.BookmarkedFilter) ? "checked" : null)" /> Bookmarked</label>
         </div>
-        <div>&nbsp;&nbsp;</div>
-        <div>
+        <div class="ms-2">
             <input type="search" class="form-control oninput-change" asp-for="Query" style="max-width: 280px;" autocomplete="off" placeholder="Search" />
+        </div>
+        <div class="ms-2">
+            <a href="@Url.Action("Index")" history="replace" class="btn btn-light" title="Clear filter"><i class="spinner fas fa-solid fa-eraser"></i></a>
         </div>
     </div>
 

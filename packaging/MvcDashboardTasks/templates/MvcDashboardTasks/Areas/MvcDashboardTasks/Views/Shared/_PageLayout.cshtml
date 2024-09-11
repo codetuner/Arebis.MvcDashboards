@@ -246,7 +246,6 @@
             /// Usefull for instance when 2 or more controls show a same field where depending on responsive view, only one of
             /// them is visible at the time.
             $(document).on("change", "*[x-onchange-sync]", function () {
-                console.log(this);
                 // Retrieve current value:
                 var value = null;
                 if (this.tagName == "INPUT" && this.getAttribute('type') == 'checkbox') {
@@ -332,15 +331,15 @@
             <div class="card text-white bg-danger m-3">
                 <div class="card-header">Security Warning</div>
                 <div class="card-body">
-                    <h5 class="card-title">Your Tasks Dashboard is unsecure</h5>
+                    <h5 class="card-title">Your Tasks Dashboard is unsecure!</h5>
                     <div class="card-text">
-                        <p>Uncomment the <code style="color: aqua;">[Authorize(Roles = "Administrator,TasksAdministrator")]</code> attribute on the BaseController class of the Tasks Dashboard.</p>
+                        <p>Uncomment the <code style="color: aqua;">[Authorize(Roles = "Administrator,TasksAdministrator")]</code> attribute on the BaseController class of the Tasks Dashboard to enable role-based security.</p>
                     </div>
                 </div>
             </div>
         }
 
-        <div id="body-content" sircl-appid="@(hostEnvironment.ApplicationName)-@(this.Context.GetRouteValue("area"))-@(this.User?.Identity?.Name?.GetHashCode())" sircl-appmode="strict">
+        <div id="body-content" sircl-appid="@(hostEnvironment.ApplicationName)-@(this.Context.GetRouteValue("area"))-@(this.User.GetDeterministicHash())" sircl-appmode="strict">
             @RenderBody()
         </div>
 

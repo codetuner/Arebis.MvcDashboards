@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageType>Template</PackageType>
-    <PackageVersion>8.0.0</PackageVersion>
+    <PackageVersion>8.1.0</PackageVersion>
     <PackageId>Arebis.MvcDashboardTasks</PackageId>
     <Title>ASP.NET MVC Dasboard Tasks</Title>
     <Authors>codetuner</Authors>

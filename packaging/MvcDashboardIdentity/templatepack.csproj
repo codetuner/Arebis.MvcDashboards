@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageType>Template</PackageType>
-    <PackageVersion>8.0.0</PackageVersion>
+    <PackageVersion>8.1.0</PackageVersion>
     <PackageId>Arebis.MvcDashboardIdentity</PackageId>
     <Title>ASP.NET MVC Dasboard Identity</Title>
     <Authors>codetuner</Authors>

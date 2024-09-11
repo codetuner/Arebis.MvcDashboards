@@ -52,6 +52,5 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.TagHelpers
 
             output.Content.SetHtmlContent(builder.ToString());
         }
-
     }
 }

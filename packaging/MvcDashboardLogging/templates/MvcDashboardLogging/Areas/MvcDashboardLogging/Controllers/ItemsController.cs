@@ -6,7 +6,6 @@ using MyMvcApp.Data.Logging;
 
 namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
 {
-    [Authorize(Roles = "Administrator,LoggingAdministrator")]
     public class ItemsController : BaseController
     {
         #region Construction

@@ -55,7 +55,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.TagHelpers
             {
                 for (int p = Min; p <= Max; p++)
                 {
-                    WritePage(builder, name, value, p);
+                    WritePage(builder, name, value, p, null, (p == Min) ? "1" : null);
                 }
             }
             else
@@ -83,7 +83,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.TagHelpers
                 }
                 for (int i = 0; i < pages.Length; i++)
                 {
-                    WritePage(builder, name, value, pages[i]);
+                    WritePage(builder, name, value, pages[i], null, (pages[i] == Min) ? "1" : null);
                 }
             }
             WritePage(builder, name, value, (value == Max ? Min - 1 : value + 1), "&raquo;", "ArrowRight");

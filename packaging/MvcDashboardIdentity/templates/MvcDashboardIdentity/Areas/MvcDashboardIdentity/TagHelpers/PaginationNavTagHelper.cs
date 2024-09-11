@@ -37,8 +37,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.TagHelpers
         {
             if (this.For == null)
             {
-                output.Content.SetHtmlContent(String.Empty);
-                return;
+                throw new NullReferenceException("PaginationNavTagHelper.For must have a value.");
             }
 
             //(htmlHelper as IViewContextAware).Contextualize(ViewContext);
@@ -56,7 +55,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.TagHelpers
             {
                 for (int p = Min; p <= Max; p++)
                 {
-                    WritePage(builder, name, value, p);
+                    WritePage(builder, name, value, p, null, (p == Min) ? "1" : null);
                 }
             }
             else
@@ -84,7 +83,7 @@ namespace MyMvcApp.Areas.MvcDashboardIdentity.TagHelpers
                 }
                 for (int i = 0; i < pages.Length; i++)
                 {
-                    WritePage(builder, name, value, pages[i]);
+                    WritePage(builder, name, value, pages[i], null, (pages[i] == Min) ? "1" : null);
                 }
             }
             WritePage(builder, name, value, (value == Max ? Min - 1 : value + 1), "&raquo;", "ArrowRight");
