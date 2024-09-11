@@ -19,8 +19,7 @@
                 }
             </select>
         </div>
-        <div>&nbsp;&nbsp;</div>
-        <div>
+        <div class="ms-2">
             <select class="form-control" name="AspectFilter">
                 <option value="">All types</option>
                 <option value="Error" selected="@(Model.AspectFilter == "Error" ? "selected" : null)">Error</option>
@@ -31,16 +30,13 @@
                 <option value="Information" selected="@(Model.AspectFilter == "Information" ? "selected" : null)">Information</option>
             </select>
         </div>
-        <div>&nbsp;&nbsp;</div>
-        <div style="border: solid 1px var(--bs-border-color); border-radius: var(--bs-border-radius); white-space: nowrap;">
+        <div class="ms-2" style="border: solid 1px var(--bs-border-color); border-radius: var(--bs-border-radius); white-space: nowrap;">
             <label class="btn"><input type="checkbox" name="ActiveFilter" value="true" checked="@((Model.ActiveFilter) ? "checked" : null)" /> Active</label>
         </div>
-        <div>&nbsp;&nbsp;</div>
-        <div>
+        <div class="ms-2">
             <input type="search" class="form-control oninput-change" asp-for="Query" style="max-width: 280px;" autocomplete="off" placeholder="Search" />
         </div>
-        <div>&nbsp;&nbsp;</div>
-        <div>
+        <div class="ms-2">
             <a href="@Url.Action("Index")" history="replace" class="btn btn-light" title="Clear filter"><i class="spinner fas fa-solid fa-eraser"></i></a>
         </div>
     </div>

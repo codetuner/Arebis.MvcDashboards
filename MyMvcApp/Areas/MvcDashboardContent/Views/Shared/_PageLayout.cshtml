@@ -294,12 +294,18 @@
             <div class="card text-white bg-danger m-3">
                 <div class="card-header">Security Warning</div>
                 <div class="card-body">
-                    <h5 class="card-title mb-3">Your Content Dashboard is unsecure</h5>
+                    <h5 class="card-title mb-3">Your Content Dashboard is unsecure!</h5>
                     <div class="card-text">
-                        <p><b>The Content Dashboard uses role-based security.</b><br/>
-                           Take the following steps to use and secure the Content Dashboard:</p>
-                        <p>1) Make sure your account is member of the proper role(s).</p>
-                        <p>2) Uncomment the <code style="color: aqua;">[Authorize(Roles = "Administrator,ContentAdministrator,ContentEditor,ContentAuthor")]</code> attribute on the BaseController class of the Content Dashboard.</p>
+                        <p>The Content Dashboard uses role-based security to enable specific functions to specific roles. Without role-based security enabled, the dashboard functions are not accessible.</p>
+                        <p>Take the following steps to use and secure the Content Dashboard:</p>
+                        <p>1) Make sure your account is member of the proper role(s). Choose among:</p>
+                        <ul>
+                            <li><b>Administrator</b> : This role has full access on all MvcDashboards.</li>
+                            <li><b>ContentAdministrator</b> : This role has full access on the Content Dashboard.</li>
+                            <li><b>ContentEditor</b> : This role can write, edit, publish and unpublish content but can not define content types.</li>
+                            <li><b>ContentAuthor</b> : This role can only write and edit content.</li>
+                        </ul>
+                        <p>2) Uncomment the <code style="color: aqua;">[Authorize(Roles = "Administrator,ContentAdministrator,ContentEditor,ContentAuthor")]</code> attribute on the BaseController class of the Content Dashboard to enable role-based security.</p>
                     </div>
                 </div>
             </div>

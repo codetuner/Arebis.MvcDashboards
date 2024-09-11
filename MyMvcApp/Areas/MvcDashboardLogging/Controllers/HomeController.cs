@@ -7,7 +7,6 @@ using MyMvcApp.Logging;
 
 namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
 {
-    [Authorize(Roles = "Administrator,LoggingAdministrator")]
     public class HomeController : BaseController
     {
         private static bool migrationsComplete = false;

@@ -12,15 +12,19 @@
         <div class="flex-grow-1"></div>
         @if (Model.ProcessRoles.Count > 0)
         {
-            <div>&nbsp;&nbsp;</div>
-            <div>
+            <div class="ms-2">
                 <select class="form-control auto-width" asp-for="ProcessRole" asp-items="Model.ProcessRoles"><option value="">All roles</option></select>
             </div>
         }
-        <div>&nbsp;&nbsp;</div>
-        <div>
+        <div class="ms-2">
             <input type="search" class="form-control oninput-change" asp-for="Query" style="max-width: 280px;" autocomplete="off" placeholder="Search" />
         </div>
+        @if (Model.ProcessRoles.Count > 0)
+        {
+            <div class="ms-2">
+                <a href="@Url.Action("Index")" history="replace" class="btn btn-light" title="Clear filter"><i class="spinner fas fa-solid fa-eraser"></i></a>
+            </div>
+        }
     </div>
 
     <div id="subTarget">
