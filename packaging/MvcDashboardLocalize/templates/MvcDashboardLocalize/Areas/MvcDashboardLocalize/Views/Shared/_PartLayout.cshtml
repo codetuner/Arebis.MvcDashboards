@@ -1,4 +1,4 @@
-﻿@inject IHostEnvironment hostEnvironment
+﻿@inject Microsoft.Extensions.Hosting.IHostEnvironment hostEnvironment
 @{
     Context.Response.Headers["X-Sircl-AppId"] = hostEnvironment.ApplicationName + "-" + this.Context.GetRouteValue("area") + "-" + this.User.GetDeterministicHash();
     if (this.Context.Request.Headers["X-Sircl-Target"] == "#body-content")

@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections;
 using System.Security;
 
 namespace MyMvcApp.Logging

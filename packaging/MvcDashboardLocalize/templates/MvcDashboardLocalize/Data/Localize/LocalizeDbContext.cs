@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System;
+using System.Linq;
 
 namespace MyMvcApp.Data.Localize
 {

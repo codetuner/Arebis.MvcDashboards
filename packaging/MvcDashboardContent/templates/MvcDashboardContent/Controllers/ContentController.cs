@@ -11,6 +11,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace MyMvcApp.Controllers
 {
     public class ContentController : Controller

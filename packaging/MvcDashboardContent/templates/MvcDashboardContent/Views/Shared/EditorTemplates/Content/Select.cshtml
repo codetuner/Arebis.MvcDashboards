@@ -1,6 +1,9 @@
 ﻿@model String
-@using System.Text.Json 
-@{ var values = (string?)ViewBag.Values; }
+@using System.Text.Json
+@{#pragma warning disable CS8669}
+@{
+    var values = (string?)ViewBag.Values;
+}
 <label for="@Html.IdFor(m => m)" class="form-label">@ViewBag.Name:</label>
 <select id="@Html.IdFor(m => m)" name="@Html.NameFor(m => m)" class="form-control">
     @if (String.IsNullOrEmpty(values))

@@ -2,6 +2,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
+#nullable enable
+
 namespace MyMvcApp.Data.Localize
 {
     /// <summary>

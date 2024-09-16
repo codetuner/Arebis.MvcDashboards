@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace MyMvcApp.Areas.MvcDashboardTasks.TagHelpers
 {
     [HtmlTargetElement("th", Attributes = "asp-order")]

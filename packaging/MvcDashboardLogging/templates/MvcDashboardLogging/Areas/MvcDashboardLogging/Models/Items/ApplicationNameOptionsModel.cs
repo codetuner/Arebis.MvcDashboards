@@ -1,4 +1,8 @@
-﻿namespace MyMvcApp.Areas.MvcDashboardLogging.Models.Items
+﻿using System.Collections.Generic;
+
+#nullable enable
+
+namespace MyMvcApp.Areas.MvcDashboardLogging.Models.Items
 {
     public class ApplicationNameOptionsModel
     {

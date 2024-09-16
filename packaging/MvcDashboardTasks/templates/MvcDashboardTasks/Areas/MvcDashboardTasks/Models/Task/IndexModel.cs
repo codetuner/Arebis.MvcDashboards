@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+
+#nullable enable
 
 namespace MyMvcApp.Areas.MvcDashboardTasks.Models.Task
 {

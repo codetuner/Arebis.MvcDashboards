@@ -1,4 +1,6 @@
-﻿namespace MyMvcApp.Tasks
+﻿using System.Threading.Tasks;
+
+namespace MyMvcApp.Tasks
 {
     public interface IScheduledTaskImplementation
     {

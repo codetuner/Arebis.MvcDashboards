@@ -1,8 +1,13 @@
 ﻿using Arebis.Core.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MyMvcApp.Areas.MvcDashboardLocalize.Models.Home;
 using MyMvcApp.Data.Localize;
+using System.Linq;
+using System.Threading.Tasks;
+
+#nullable enable
 
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {

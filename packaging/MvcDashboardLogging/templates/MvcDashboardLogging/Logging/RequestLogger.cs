@@ -1,7 +1,12 @@
-﻿using MyMvcApp.Data.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using MyMvcApp.Data.Logging;
+using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+
+#nullable enable
 
 namespace MyMvcApp.Logging
 {

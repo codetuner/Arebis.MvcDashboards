@@ -1,4 +1,8 @@
-﻿namespace MyMvcApp.Tasks
+﻿using System;
+
+#nullable enable
+
+namespace MyMvcApp.Tasks
 {
     /// <summary>
     /// Argument of a task.
