@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
 {
     [Area("MvcDashboardIdentity")]
-    //[Authorize(Roles = "Administrator,IdentityAdministrator")] // Commenting out this line disables security
+    [Authorize(Roles = "Administrator,IdentityAdministrator")] // Commenting out this line disables security
     public abstract class BaseController : Controller
     {
         [HttpGet]

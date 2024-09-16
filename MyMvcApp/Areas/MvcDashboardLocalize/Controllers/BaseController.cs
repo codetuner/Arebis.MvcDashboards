@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {
     [Area("MvcDashboardLocalize")]
-    //[Authorize(Roles = "Administrator,LocalizeAdministrator")]
+    [Authorize(Roles = "Administrator,LocalizeAdministrator")]
     public abstract class BaseController : Controller
     {
         [HttpGet]
