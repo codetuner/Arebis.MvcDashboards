@@ -1,4 +1,6 @@
-﻿namespace MyMvcApp.Tasks
+﻿using System;
+
+namespace MyMvcApp.Tasks
 {
     /// <summary>
     /// Argument of a task.

@@ -1,4 +1,6 @@
-﻿namespace MyMvcApp.Logging
+﻿using Microsoft.AspNetCore.Http;
+
+namespace MyMvcApp.Logging
 {
     public class RequestLogNotFoundFilter : BaseRequestLogFilter
     {

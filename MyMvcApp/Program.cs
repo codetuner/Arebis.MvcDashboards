@@ -2,21 +2,21 @@ using Arebis.Core.AspNet.Mvc.Localization;
 using Arebis.Core.Localization;
 using Arebis.Core.Services.Interfaces;
 using Arebis.Core.Services.Translation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Localization.Routing;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using MyMvcApp.Data;
 using MyMvcApp.Data.Content;
 using MyMvcApp.Localize;
 using MyMvcApp.Logging;
-using System.Configuration;
+using System.Collections.Generic;
 using System.Globalization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,4 +1,8 @@
-﻿namespace MyMvcApp.Tasks
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+
+namespace MyMvcApp.Tasks
 {
     /// <summary>
     /// Represents the host running the tasks.

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-	  <ImplicitUsings>enable</ImplicitUsings>
+	  <ImplicitUsings>disable</ImplicitUsings>
 	  <Nullable>enable</Nullable>
 	  <UserSecretsId>aspnet-MyMvcApp-FCE2E826-C007-41C1-A3CC-61B116336239</UserSecretsId>
   </PropertyGroup>

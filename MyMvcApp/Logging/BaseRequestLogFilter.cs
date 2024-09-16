@@ -1,4 +1,8 @@
-﻿namespace MyMvcApp.Logging
+﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.Threading.Tasks;
+
+namespace MyMvcApp.Logging
 {
     public abstract class BaseRequestLogFilter
     {

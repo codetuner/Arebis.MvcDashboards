@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MyMvcApp.Areas.MvcDashboardLocalize.Models.Query;
 using MyMvcApp.Data.Localize;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {

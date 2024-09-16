@@ -1,4 +1,6 @@
-﻿namespace MyMvcApp.Areas.MvcDashboardLogging.Models.Items
+﻿using System.Collections.Generic;
+
+namespace MyMvcApp.Areas.MvcDashboardLogging.Models.Items
 {
     public class ApplicationNameOptionsModel
     {

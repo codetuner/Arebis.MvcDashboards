@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MyMvcApp.Areas.MvcDashboardContent.Models.Home;
 using MyMvcApp.Data.Content;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
 {

@@ -1,4 +1,6 @@
-﻿using MyMvcApp.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using MyMvcApp.Logging;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

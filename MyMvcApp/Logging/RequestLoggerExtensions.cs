@@ -1,4 +1,6 @@
-﻿namespace MyMvcApp.Logging
+﻿using Microsoft.AspNetCore.Builder;
+
+namespace MyMvcApp.Logging
 {
     public static class RequestLoggerExtensions
     {

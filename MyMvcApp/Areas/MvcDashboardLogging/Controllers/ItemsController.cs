@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.Extensions.Configuration;
 using MyMvcApp.Areas.MvcDashboardLogging.Models.Items;
 using MyMvcApp.Data.Logging;
+using System;
+using System.Linq;
 
 namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
 {

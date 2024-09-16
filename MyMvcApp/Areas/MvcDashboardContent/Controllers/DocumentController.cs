@@ -1,5 +1,7 @@
 ﻿using Arebis.Core.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +9,12 @@ using Microsoft.Extensions.Options;
 using MyMvcApp.Areas.MvcDashboardContent.Models.Document;
 using MyMvcApp.Data.Content;
 using MyMvcApp.Models.Content;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
 {

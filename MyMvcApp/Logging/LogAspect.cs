@@ -1,4 +1,6 @@
-﻿namespace MyMvcApp.Logging
+﻿using System.Collections.Generic;
+
+namespace MyMvcApp.Logging
 {
     /// <summary>
     /// Log aspects.

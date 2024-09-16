@@ -1,4 +1,7 @@
-﻿namespace MyMvcApp.Tasks
+﻿using System;
+using System.Threading.Tasks;
+
+namespace MyMvcApp.Tasks
 {
     /// <summary>
     /// Base implementation for recurrent tasks.

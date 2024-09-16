@@ -1,4 +1,7 @@
-﻿using MyMvcApp.Data.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using MyMvcApp.Data.Logging;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MyMvcApp.Logging
 {
