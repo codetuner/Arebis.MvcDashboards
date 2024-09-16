@@ -3,6 +3,8 @@ using MyMvcApp.Data.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
+#nullable enable
+
 namespace MyMvcApp.Logging
 {
     public class RequestDoNotLogRuleFilter : BaseRequestLogFilter

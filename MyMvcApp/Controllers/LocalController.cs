@@ -6,6 +6,8 @@ using Microsoft.Extensions.Localization;
 using MyMvcApp.Models.Local;
 using System;
 
+#nullable enable
+
 namespace MyMvcApp.Controllers
 {
     //[ServiceFilter(typeof(ModelStateLocalizationFilter))]

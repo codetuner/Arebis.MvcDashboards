@@ -4,6 +4,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
+#nullable enable
+
 namespace MyMvcApp.Models.Local
 {
     public class IndexModel

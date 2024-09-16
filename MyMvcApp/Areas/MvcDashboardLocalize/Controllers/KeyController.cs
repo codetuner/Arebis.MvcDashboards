@@ -13,6 +13,8 @@ using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {
     public class KeyController : BaseController

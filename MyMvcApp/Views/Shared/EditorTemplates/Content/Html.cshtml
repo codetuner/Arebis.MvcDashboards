@@ -1,4 +1,5 @@
 ﻿@model String
+@{#pragma warning disable CS8669}
 @{
     var name = Html.NameFor(m => m);
     var baseName = name.Substring(0, name.LastIndexOf("."));

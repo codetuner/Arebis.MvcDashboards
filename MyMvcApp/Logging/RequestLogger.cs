@@ -6,6 +6,8 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
+#nullable enable
+
 namespace MyMvcApp.Logging
 {
     public class RequestLogger

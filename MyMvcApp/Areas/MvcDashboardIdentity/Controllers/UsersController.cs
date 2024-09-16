@@ -12,6 +12,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
 {
     public class UsersController : BaseController

@@ -7,6 +7,8 @@ using MyMvcApp.Data.Localize;
 using System.Linq;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {
     public class HomeController : BaseController

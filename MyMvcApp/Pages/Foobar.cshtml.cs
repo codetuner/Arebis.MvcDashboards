@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
+#nullable enable
+
 namespace MyMvcApp.Pages
 {
     public class FoobarModel : PageModel

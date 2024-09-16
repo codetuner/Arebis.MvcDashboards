@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 
+#nullable enable
+
 namespace MyMvcApp.Tasks
 {
     public class TaskScheduler : IHostedService

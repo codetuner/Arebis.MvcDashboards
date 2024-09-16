@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+#nullable enable
+
 namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
 {
     [Area("MvcDashboardLogging")]

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 
+#nullable enable
+
 namespace MyMvcApp.Tasks
 {
     /// <summary>

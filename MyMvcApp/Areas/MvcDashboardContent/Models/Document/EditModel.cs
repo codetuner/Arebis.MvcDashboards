@@ -7,6 +7,8 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace MyMvcApp.Areas.MvcDashboardContent.Models.Document
 {
     public class EditModel : BaseEditModel<Data.Content.Document>

@@ -8,6 +8,8 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace MyMvcApp.Data.Content
 {
     /// <summary>

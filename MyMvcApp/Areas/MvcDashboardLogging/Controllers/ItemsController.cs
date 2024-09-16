@@ -7,6 +7,8 @@ using MyMvcApp.Data.Logging;
 using System;
 using System.Linq;
 
+#nullable enable
+
 namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
 {
     public class ItemsController : BaseController

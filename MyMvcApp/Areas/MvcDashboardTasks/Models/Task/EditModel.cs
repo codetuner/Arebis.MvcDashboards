@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace MyMvcApp.Areas.MvcDashboardTasks.Models.Task
 {
     public class EditModel : BaseEditModel<Data.Tasks.ScheduledTask>
