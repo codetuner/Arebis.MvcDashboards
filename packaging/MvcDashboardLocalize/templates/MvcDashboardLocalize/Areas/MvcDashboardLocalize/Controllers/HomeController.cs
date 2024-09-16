@@ -1,14 +1,53 @@
 ﻿using Arebis.Core.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MyMvcApp.Areas.MvcDashboardLocalize.Models.Home;
+using MyMvcApp.Data.Localize;
 
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {
     public class HomeController : BaseController
     {
-        [HttpGet]
-        public IActionResult Index()
+        private static bool migrationsComplete = false;
+
+        #region Construction
+
+        private readonly LocalizeDbContext context;
+        private readonly ILogger<HomeController> logger;
+
+        public HomeController(LocalizeDbContext context, ILogger<HomeController> logger)
         {
-            return View();
+            this.context = context;
+            this.logger = logger;
+        }
+
+        #endregion
+
+        [HttpGet]
+        public async Task<IActionResult> Index([FromServices] ILocalizationResourceProvider? resourceProvider = null)
+        {
+            var model = new IndexModel();
+
+            // Check if there are pending migrations:
+            if (!migrationsComplete)
+            {
+                var migrations = await context.Database.GetPendingMigrationsAsync();
+                if (migrations != null && migrations.Any())
+                {
+                    model.HasPendingMigrations = true;
+                }
+                else
+                {
+                    // Skip checking next time:
+                    migrationsComplete = true;
+                }
+            }
+
+            // Check whether a resource provider is installed:
+            model.HasResourceProvider = (resourceProvider != null);
+
+            // Return index view:
+            return View(model);
         }
 
         [HttpGet]
@@ -23,6 +62,14 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
             resourceProvider.Refresh();
 
             return ForwardToAction("Index", target: "_self");
+        }
+
+        [HttpGet]
+        public IActionResult RunMigrations()
+        {
+            context.Database.Migrate();
+
+            return Forward(Url.Action("Index")!);
         }
     }
 }
