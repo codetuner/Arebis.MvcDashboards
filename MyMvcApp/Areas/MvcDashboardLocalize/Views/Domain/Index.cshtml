@@ -29,7 +29,7 @@
 </p>
 
 <form asp-action="Import" enctype="multipart/form-data" method="post" hidden>
-    <input id="file-import-field" type="file" name="file" accept="text/json" class="onchange-submit" />
+    <input id="file-import-field" type="file" name="file" accept="application/json" accept-alert="Invalid file type." class="onchange-submit" />
 </form>
 
 <div id="editDomainModal" class="modal fade" data-bs-backdrop="static" tabindex="-1">
