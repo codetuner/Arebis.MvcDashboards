@@ -99,8 +99,6 @@ INSERT INTO [dbo].[AspNetUserRoles] ([UserId], [RoleId])
 SELECT (SELECT [Id] FROM [dbo].[AspNetUsers] WHERE [UserName] = '<b><span class="highlight">USERNAME</span></b>'), (SELECT [Id] FROM [dbo].[AspNetRoles] WHERE [Name] = 'Administrator')
 </pre>
 
-
-
 <p>
     Alternatively you can temporarily disable security on the MvcDashboardIdentity component so you can use the component to create
     the required roles and assign them to user accounts.

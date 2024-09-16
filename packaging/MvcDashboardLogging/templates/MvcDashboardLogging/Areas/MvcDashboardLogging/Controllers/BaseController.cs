@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
 {
     [Area("MvcDashboardLogging")]
-    //[Authorize(Roles = "Administrator,LoggingAdministrator")]
+    [Authorize(Roles = "Administrator,LoggingAdministrator")]
     public abstract class BaseController : Controller
     {
         [HttpGet]
