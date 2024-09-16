@@ -5,6 +5,7 @@
 :: SEE ALSO: https://www.c-sharpcorner.com/article/how-to-create-a-vsix-extension-for-a-custom-template-project/
 
 XCOPY /S /Y "%~dp0MyMvcApp\Areas\MvcDashboardContent" "%~dp0packaging\MvcDashboardContent\templates\MvcDashboardContent\Areas\MvcDashboardContent\"
+MKDIR "%~dp0packaging\MvcDashboardContent\templates\MvcDashboardContent\Controllers"
 COPY /Y "%~dp0MyMvcApp\Controllers\ContentController.cs" "%~dp0packaging\MvcDashboardContent\templates\MvcDashboardContent\Controllers\ContentController.cs"
 XCOPY /S /Y "%~dp0MyMvcApp\Data\Content" "%~dp0packaging\MvcDashboardContent\templates\MvcDashboardContent\Data\Content\"
 XCOPY /S /Y "%~dp0MyMvcApp\Models\Content" "%~dp0packaging\MvcDashboardContent\templates\MvcDashboardContent\Models\Content\"
