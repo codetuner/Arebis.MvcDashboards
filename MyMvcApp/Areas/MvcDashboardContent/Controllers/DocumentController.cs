@@ -245,6 +245,11 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
                         model.Item.Id = 0;
                         model.Item.Properties?.ForEach(p => p.Id = 0);
                         model.Item.AutoPublish = false;
+                        model.Item.CreatedBy = this.HttpContext.User?.Identity?.Name;
+                        model.Item.CreatedOnUtc = DateTime.UtcNow;
+                        model.Item.IsLatestPublished = false;
+                        model.Item.LastPublishedBy = null;
+                        model.Item.LastPublishedOnUtc = null;
                         Response.Headers["X-Sircl-History-Replace"] = Url.Action("New");
                     }
                     else if (andtranslate != null && this.translationService != null && model.Item.Culture != null)
