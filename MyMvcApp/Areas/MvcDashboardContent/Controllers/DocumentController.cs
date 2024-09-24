@@ -244,6 +244,7 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
                         model.HasChanges = true;
                         model.Item.Id = 0;
                         model.Item.Properties?.ForEach(p => p.Id = 0);
+                        model.Item.AutoPublish = false;
                         Response.Headers["X-Sircl-History-Replace"] = Url.Action("New");
                     }
                     else if (andtranslate != null && this.translationService != null && model.Item.Culture != null)
