@@ -10,11 +10,11 @@
 {
     if (IsPreview)
     {
-        <div style="float: right; margin: 4px 8px;"><a href="javascript:window.close();" style="background-color: #0d6efe; border: solid 1px #c8c8cf; border-radius: 4px; padding: 6px 8px; color: #fff; font-size: 0.9rem; text-decoration: none;">Close this preview</a></div>
+        <div style="position: fixed; top: 120px; right: 24px;"><a href="javascript:window.close();" style="background-color: #0d6efe; border: solid 1px #c8c8cf; border-radius: 4px; padding: 6px 8px; color: #fff; font-size: 0.9rem; text-decoration: none;">Close this preview</a></div>
     }
     else
     {
-        <div style="float: right; margin: 4px 8px;"><a asp-action="Edit" asp-controller="Document" asp-route-area="MvcDashboardContent" asp-route-id="@Model.Document.DocumentId" style="background-color: #f0f0f4; border: solid 1px #c8c8cf; border-radius: 4px; padding: 4px 8px; color: #000; font-size: .8rem; text-decoration: none;">Edit</a></div>
+        <div style="position: fixed; top: 120px; right: 24px;"><a asp-action="Edit" asp-controller="Document" asp-route-area="MvcDashboardContent" asp-route-id="@Model.Document.DocumentId" style="background-color: #f0f0f4; border: solid 1px #c8c8cf; border-radius: 4px; padding: 4px 8px; color: #000; font-size: .8rem; text-decoration: none;">Edit</a></div>
     }
 }
 
