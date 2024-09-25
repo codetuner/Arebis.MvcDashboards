@@ -20,6 +20,5 @@ An ASP.NET Core MVC dashboard area for monitoring failing and slow requests.
 ### [Arebis.MvcDashboardTasks](https://www.nuget.org/packages/Arebis.MvcDashboardTasks)
 An ASP.NET Core MVC dashboard area and system for managing scheduled tasks.
 
-### Arebis.MvcDashboardContent
+### [Arebis.MvcDashboardContent](https://www.nuget.org/packages/Arebis.MvcDashboardContent)
 An ASP.NET Core MVC dashboard area and system for managing content (a CMS).
-Comming soon.
