@@ -1,0 +1,194 @@
+﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostEnvironment
+@model IndexModel
+@using System.IO
+@{
+    ViewBag.Title = "Media";
+}
+<style>
+    .folder-list {
+        padding-bottom: 8px !important;
+    }
+
+        .folder-list .btn {
+            margin-right: 4px;
+            margin-bottom: 4px;
+        }
+
+    .file-list {
+        .files
+
+    {
+    }
+
+    .card {
+        width: 192px;
+        margin: 12px;
+    }
+
+    .card-body {
+        padding-bottom: 4px;
+    }
+
+    .card-title {
+        font-size: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-top: 8px;
+    }
+
+    .file-icon {
+        font-size: 96px;
+        color: cadetblue;
+        display: block;
+        max-width: 96px;
+        max-height: 96px;
+        width: auto;
+        height: auto;
+    }
+
+    .card-upload
+    {  
+        background-color: white;
+        color: lightblue;
+        .file-icon {
+            color: lightblue;
+        }
+    }
+
+    }
+</style>
+
+<h1>Media</h1>
+
+<div class="folder-list card p-3 bg-white mb-1">
+    <div class="">
+        <span class="float-end">
+            <a class="btn btn-danger" show-ifanychecked=".file-item-chk" hidden asp-action="DeleteSelection" target="#mediamodal-content"><i class="spinner fas fa-trash-alt"></i> Delete selected file(s)</a>
+        </span>
+        @foreach (var item in Model.BreadCrumb)
+        {
+            <a class="btn @(item.Selected ? "btn-primary" : "btn-outline-primary")" asp-action="Index" asp-route-path="@item.Value" title="@item.Text"><i class="@(item.Selected ? "fas fa-folder-open" : "fas fa-folder")"></i> @item.Text</a>
+        }
+        :
+        @foreach (var item in Model.Directories.OrderBy(d => d.Text))
+        {
+            <a class="btn btn-outline-primary" asp-action="Index" asp-route-path="@(item.Value)"><i class="fas fa-folder"></i> @(item.Text)</a>
+        }
+        @if (Model.Files.Length == 0 && Model.Directories.Count == 0)
+        {
+            <a class="btn btn-danger" asp-action="DeleteDirectory" target="#mediamodal-content" title="Delete current folder" onkeydown-click="-"><i class="fas fa-minus"></i></a>
+        }
+        <a class="btn btn-outline-primary" asp-action="CreateDirectory" target="#mediamodal-content" title="Create new folder" onkeydown-click="+"><i class="fas fa-plus"></i></a>
+    </div>
+</div>
+
+<form class="card p-3 bg-white" action="Index" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Path" />
+
+    <input id="uploadfile" type="file" name="files" class="onchange-submit" formaction="@Url.Action("UploadFiles")" multiple maxtotalsize="250 MB" maxtotalsize-alert="Total file size may not exceed 250 MB." hidden>
+
+    <div id="file-list" class="file-list" ondropfile-set="#uploadfile">
+        <div class="row row-cols-auto">
+            @foreach (var item in Model.Files.OrderBy(f => f.Name))
+            {
+                <div class="card col">
+                    <div class="card-body text-center">
+                        <span class="float-start"><input class="file-item-chk" type="checkbox" name="selection" value="@item.Name" /></span>
+                        <div class="" style="height: 96px; align-content: center;">
+                            @FileIcon(item)
+                        </div>
+                        <h5 class="card-title" title="@item.Name">@(item.Name)</h5>
+                    </div>
+                </div>
+            }
+            <div class="card col card-upload" onclick-click="#uploadfile">
+                <div class="card-body text-center">
+                    <div class="">
+                        <i class="file-icon fas fa-plus"></i>
+                    </div>
+                    <h5 class="card-title">Upload</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mediamodal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div id="mediamodal-content" class="modal-content" onkeyenter-click=">#btnOk" onkeyescape-click=">#btnCancel">
+                <div class="modal-header">
+                    <h5 class="modal-title">Media</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-spinner fa-pulse m-4" style="font-size:400%; color: cadetblue;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+@functions {
+    string? FileIcon(FileInfo file)
+    {
+        var ext = file.Extension.ToLowerInvariant();
+        switch (ext)
+        {
+            case ".webp":
+            case ".png":
+            case ".jpg":
+            case ".jpeg":
+            case ".gif":
+            case ".bmp":
+                <img class="file-icon" src="@(file.FullName.Replace(hostEnvironment.WebRootPath, ""))">
+                break;
+            case ".pdf":
+                <i class="file-icon far fa-file-pdf"></i>
+                break;
+            case ".avi":
+            case ".mov":
+            case ".mp4":
+            case ".m4v":
+                <i class="file-icon far fa-file-video"></i>
+                break;
+            case ".wav":
+            case ".mp3":
+            case ".m4a":
+                <i class="file-icon far fa-file-audio"></i>
+                break;
+            case ".zip":
+            case ".7z":
+                <i class="file-icon far fa-file-archive"></i>
+                break;
+            case ".doc":
+            case ".docx":
+            case ".docm":
+                <i class="file-icon far fa-file-word"></i>
+                break;
+            case ".xls":
+            case ".xlsx":
+            case ".xlsm":
+                <i class="file-icon far fa-file-excel"></i>
+                break;
+            case ".ppt":
+            case ".pptx":
+            case ".pptm":
+                <i class="file-icon far fa-file-powerpoint"></i>
+                break;
+            case ".htm":
+            case ".html":
+                <i class="file-icon far fa-file-code"></i>
+                break;
+            case ".js":
+            case ".css":
+            case ".json":
+                <i class="file-icon far fa-file-alt"></i>
+                break;
+            default:
+                <i class="file-icon far fa-file"></i>
+                break;
+        }
+        return null;
+    }
+}

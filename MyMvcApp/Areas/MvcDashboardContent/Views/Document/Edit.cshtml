@@ -6,6 +6,10 @@
 
 <h1>@(Model.DocumentType?.Name) <small class="text-muted">@(Model.Item.Name ?? "new")</small></h1>
 
+<script>
+    tinymce_defaults.image_list = @Json.Serialize(Model.ImageFiles.OrderBy(i => i.title));
+</script>
+
 <form asp-action="Submit" asp-route-id="@Model.Item.Id" method="post" onkeyenter-click="" autocomplete="off" onchange-set="HasChanges" onunloadchanged-confirm="Changes will be lost. Proceed anyway ?">
 
     <div class="overlay" hidden></div>

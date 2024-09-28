@@ -51,7 +51,7 @@ namespace MyMvcApp.Logging
                 this.record.Details = this.detailsBuilder.ToString();
                 this.record.DurationMs = this.stopwatch?.ElapsedMilliseconds ?? 0L;
                 this.record.Host = Environment.MachineName;
-                this.record.TraceIdentifier = httpContext.TraceIdentifier;
+                this.record.TraceIdentifier = Activity.Current?.Id ?? httpContext.TraceIdentifier;
 
                 // Add request information:
                 this.record.ApplicationName = GetApplicationName();

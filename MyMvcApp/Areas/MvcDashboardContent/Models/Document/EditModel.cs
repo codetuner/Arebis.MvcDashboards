@@ -33,6 +33,8 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Models.Document
 
         public bool HasTranslationService { get; internal set; }
 
+        public List<ImageFileItem> ImageFiles { get; internal set; } = [];
+
         /// <summary>
         /// Returns all instantiable document types in hierarchy of the current one (all parent types and all child types).
         /// </summary>
@@ -65,6 +67,13 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Models.Document
                     .Select(dt => new SelectListItem() { Value = dt.Id.ToString(), Text = dt.Name, Selected = (this.DocumentType?.Id == dt.Id) })
                     .ToList();
             }
+        }
+
+        public class ImageFileItem
+        {
+            public required string title { get; set; }
+
+            public required string value { get; set; }
         }
     }
 }
