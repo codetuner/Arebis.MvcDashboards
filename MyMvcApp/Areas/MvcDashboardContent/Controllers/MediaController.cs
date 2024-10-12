@@ -12,6 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
 {
     [Authorize(Roles = "Administrator,ContentAdministrator,ContentEditor,ContentAuthor")]
@@ -75,6 +77,32 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
         }
 
         [HttpPost]
+        public IActionResult FileDetails(IndexModel model, string name)
+        {
+            // Ensure filename does not contain path:
+            if (new char[]{ '/', '\\' }.Any(c => name.Contains(c))) return NotFound();
+
+            // Retrieve path:
+            var rootDir = new DirectoryInfo(Path.Combine(env.WebRootPath, config["Content:Media"]!));
+            var pathDir = new DirectoryInfo(Path.Combine(env.WebRootPath, config["Content:Media"]!, model.Path ?? "."));
+            var webPath = GetPath(pathDir, rootDir);
+            if (webPath == null) return this.NotFound();
+
+            var detailsModel = new FileDetailsModel();
+            detailsModel.Path = model.Path;
+            detailsModel.FileName = name;
+
+            return ViewFileDetails(detailsModel, pathDir);
+        }
+
+        private IActionResult ViewFileDetails(FileDetailsModel model, DirectoryInfo pathDir)
+        {
+            model.FileInfo = new FileInfo(Path.Combine(pathDir.FullName, model.FileName!));
+
+            return View("FileDetails", model);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> UploadFiles(IndexModel model, List<IFormFile>? files)
         {
             if (files == null)
@@ -123,7 +151,6 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
             }
 
             // Return to index view:
-            Response.Headers["X-Sircl-History-Replace"] = Url.Action("Index", null, new { Path = model.Path });
             return IndexView(model);
         }
 
@@ -155,16 +182,19 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
             return this.Back(false);
         }
 
-        [HttpGet]
-        public IActionResult RenameFile(IndexModel model)
-        { 
-            return View(model);
-        }
+        [HttpPost]
+        public IActionResult RenameFile(string path, string oldName, string newName)
+        {
+            var rootDir = new DirectoryInfo(Path.Combine(env.WebRootPath, config["Content:Media"]!));
+            var pathDir = new DirectoryInfo(Path.Combine(env.WebRootPath, config["Content:Media"]!, path ?? "."));
+            if (GetPath(pathDir, rootDir) == null) return this.NotFound();
 
-        [HttpPost, ActionName("RenameFile")]
-        public IActionResult RenameFilePost(IndexModel model)
-        { 
-            return View(model);
+            var oldFile = new FileInfo(Path.Combine(pathDir.FullName, oldName));
+            var newFile = new FileInfo(Path.Combine(pathDir.FullName, newName + oldFile.Extension));
+
+            System.IO.File.Move(oldFile.FullName, newFile.FullName);
+
+            return this.Close(true);
         }
 
         [HttpGet]
@@ -194,7 +224,6 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
             }
 
             // Return to index view:
-            Response.Headers["X-Sircl-History-Replace"] = Url.Action("Index", null, new { Path = model.Path });
             return IndexView(model);
         }
 

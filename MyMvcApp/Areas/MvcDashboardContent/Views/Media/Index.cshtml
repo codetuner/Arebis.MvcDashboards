@@ -2,6 +2,7 @@
 @model IndexModel
 @using System.IO
 @{
+#nullable enable
     ViewBag.Title = "Media";
 }
 <style>
@@ -15,12 +16,9 @@
         }
 
     .file-list {
-        .files
+        .card
 
     {
-    }
-
-    .card {
         width: 192px;
         margin: 12px;
     }
@@ -40,22 +38,23 @@
     .file-icon {
         font-size: 96px;
         color: cadetblue;
-        display: block;
+        display: inline-block;
         max-width: 96px;
         max-height: 96px;
         width: auto;
         height: auto;
     }
 
-    .card-upload
-    {  
+    .card-upload {
         background-color: white;
         color: lightblue;
-        .file-icon {
-            color: lightblue;
-        }
+        .file-icon
+
+    {
+        color: lightblue;
     }
 
+    }
     }
 </style>
 
@@ -64,26 +63,26 @@
 <div class="folder-list card p-3 bg-white mb-1">
     <div class="">
         <span class="float-end">
-            <a class="btn btn-danger" show-ifanychecked=".file-item-chk" hidden asp-action="DeleteSelection" target="#mediamodal-content"><i class="spinner fas fa-trash-alt"></i> Delete selected file(s)</a>
+            <a class="btn btn-danger" show-ifanychecked=".file-item-chk" hidden asp-action="DeleteSelection" target="#mediaformmodal-content"><i class="spinner fas fa-trash-alt"></i> Delete selected file(s)</a>
         </span>
         @foreach (var item in Model.BreadCrumb)
         {
             <a class="btn @(item.Selected ? "btn-primary" : "btn-outline-primary")" asp-action="Index" asp-route-path="@item.Value" title="@item.Text"><i class="@(item.Selected ? "fas fa-folder-open" : "fas fa-folder")"></i> @item.Text</a>
+        }
+        @if (Model.Files.Length == 0 && Model.Directories.Count == 0)
+        {
+            <a class="btn btn-danger" asp-action="DeleteDirectory" target="#mediaformmodal-content" title="Delete current folder" onkeydown-click="-"><i class="fas fa-minus"></i></a>
         }
         :
         @foreach (var item in Model.Directories.OrderBy(d => d.Text))
         {
             <a class="btn btn-outline-primary" asp-action="Index" asp-route-path="@(item.Value)"><i class="fas fa-folder"></i> @(item.Text)</a>
         }
-        @if (Model.Files.Length == 0 && Model.Directories.Count == 0)
-        {
-            <a class="btn btn-danger" asp-action="DeleteDirectory" target="#mediamodal-content" title="Delete current folder" onkeydown-click="-"><i class="fas fa-minus"></i></a>
-        }
-        <a class="btn btn-outline-primary" asp-action="CreateDirectory" target="#mediamodal-content" title="Create new folder" onkeydown-click="+"><i class="fas fa-plus"></i></a>
+        <a class="btn btn-outline-primary" asp-action="CreateDirectory" target="#mediaformmodal-content" title="Create new folder" onkeydown-click="+"><i class="fas fa-plus"></i></a>
     </div>
 </div>
 
-<form class="card p-3 bg-white" action="Index" method="post" enctype="multipart/form-data">
+<form class="card p-3 bg-white" action="Index" method="post" history="replace" enctype="multipart/form-data">
     <input type="hidden" asp-for="Path" />
 
     <input id="uploadfile" type="file" name="files" class="onchange-submit" formaction="@Url.Action("UploadFiles")" multiple maxtotalsize="250 MB" maxtotalsize-alert="Total file size may not exceed 250 MB." hidden>
@@ -94,8 +93,9 @@
             {
                 <div class="card col">
                     <div class="card-body text-center">
-                        <span class="float-start"><input class="file-item-chk" type="checkbox" name="selection" value="@item.Name" /></span>
-                        <div class="" style="height: 96px; align-content: center;">
+                        <span class="float-start"><input class="file-item-chk" type="checkbox" name="selection" value="@item.Name" style="position: relative; left: -12px;" /></span>
+                        <span class="float-end"><a href="@(item.FullName.Replace(hostEnvironment.WebRootPath, ""))" class="btn btn-sm" download="@item.Name" style="position: relative; right: -20px; color: gray;"><i class="fas fa-download"></i></a></span>
+                        <div class="onclick-submit" style="height: 96px; align-content: center; cursor: pointer;" formaction="@Url.Action("FileDetails", new { item.Name  })" formtarget="#mediamodal-content">
                             @FileIcon(item)
                         </div>
                         <h5 class="card-title" title="@item.Name">@(item.Name)</h5>
@@ -113,9 +113,9 @@
         </div>
     </div>
 
-    <div id="mediamodal" class="modal fade" tabindex="-1">
+    <div id="mediaformmodal" class="modal fade" tabindex="-1">
         <div class="modal-dialog">
-            <div id="mediamodal-content" class="modal-content" onkeyenter-click=">#btnOk" onkeyescape-click=">#btnCancel">
+            <div id="mediaformmodal-content" class="modal-content" onkeyenter-click=">#btnOk" onkeyescape-click=">#btnCancel">
                 <div class="modal-header">
                     <h5 class="modal-title">Media</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -128,6 +128,20 @@
     </div>
 
 </form>
+
+<div id="mediamodal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div id="mediamodal-content" class="modal-content" onkeyenter-click=">#btnOk" onkeyescape-click=">#btnCancel">
+            <div class="modal-header">
+                <h5 class="modal-title">Media</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-spinner fa-pulse m-4" style="font-size:400%; color: cadetblue;"></i>
+            </div>
+        </div>
+    </div>
+</div>
 
 @functions {
     string? FileIcon(FileInfo file)
