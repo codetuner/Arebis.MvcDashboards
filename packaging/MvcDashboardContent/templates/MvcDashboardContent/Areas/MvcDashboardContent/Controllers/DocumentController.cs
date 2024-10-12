@@ -1,16 +1,19 @@
 ﻿using Arebis.Core.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MyMvcApp.Areas.MvcDashboardContent.Models.Document;
 using MyMvcApp.Data.Content;
 using MyMvcApp.Models.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -26,12 +29,16 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
         #region Construction
 
         private readonly ContentDbContext context;
+        private readonly IConfiguration config;
+        private readonly IWebHostEnvironment env;
         private readonly IOptions<RequestLocalizationOptions> localizationOptions;
         private readonly ITranslationService? translationService;
 
-        public DocumentController(ContentDbContext context, IOptions<RequestLocalizationOptions> localizationOptions, ITranslationService? translationService = null)
+        public DocumentController(ContentDbContext context, IConfiguration config, IWebHostEnvironment env, IOptions<RequestLocalizationOptions> localizationOptions, ITranslationService? translationService = null)
         {
             this.context = context;
+            this.config = config;
+            this.env = env;
             this.localizationOptions = localizationOptions;
             this.translationService = translationService;
         }
@@ -77,6 +84,8 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
             model.States.Add(new SelectListItem("Published but has newer version", "outdated"));
             model.States.Add(new SelectListItem("Published (no newer version)", "uptodate"));
             model.States.Add(new SelectListItem("Deleted", "deleted"));
+
+            
 
             return View("Index", model);
         }
@@ -355,6 +364,21 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
             }
             model.PathsList = context.ContentDocuments.Where(d => d.Path != null).Select(d => d.Path!).Distinct().OrderBy(p => p).ToList();
             model.HasTranslationService = this.translationService != null;
+
+            if (config["Content:Media"] != null)
+            {
+                var path = Path.Combine(env.WebRootPath, config["Content:Media"]!);
+                var root = new DirectoryInfo(path);
+                foreach (var file in root.EnumerateFiles("*.*", SearchOption.AllDirectories))
+                {
+                    if (new string[] { ".webp", ".png", ".jpg", ".jpeg", ".gif", ".bmp" }.Contains(file.Extension.ToLowerInvariant()))
+                    {
+                        var localname = file.FullName.Replace(env.WebRootPath, "", StringComparison.OrdinalIgnoreCase).Replace('\\', '/');
+                        model.ImageFiles.Add(new EditModel.ImageFileItem() { title = localname, value = localname });
+                    }
+                }
+            }
+            
             return View("Edit", model);
         }
 

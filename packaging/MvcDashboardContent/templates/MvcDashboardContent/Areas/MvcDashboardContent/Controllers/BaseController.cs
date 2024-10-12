@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,7 +27,7 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
 
                 if (accessible)
                 {
-                    var nsparts = (type.Namespace ?? "").Split('.');
+                    var nsparts = type.Namespace!.Split('.');
                     model.Add(nsparts[nsparts.Length - 2]);
                 }
             }
@@ -40,15 +41,47 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
             return this.StatusCode(204);
         }
 
-        protected IActionResult Forward(string url)
+        protected IActionResult Close(bool refresh = false)
         {
+            if (refresh)
+            {
+                Response.Headers["X-Sircl-History"] = "reload";
+            }
+            return this.StatusCode(204);
+        }
+
+        protected IActionResult Forward(string url, string? target = null)
+        {
+            if (target != null)
+            {
+                Response.Headers["X-Sircl-Target"] = target;
+            }
             Response.Headers["Location"] = url;
             return this.StatusCode(204);
         }
 
-        protected IActionResult ForwardToAction(string action, string? controller = null, object? values = null)
+        protected IActionResult ForwardToAction(string? action, string? controller = null, object? values = null, string? target = null)
         {
-            return this.Forward(Url.Action(action, controller, values) ?? "/");
+            return this.Forward(Url.Action(action, controller, values) ?? String.Empty, target);
+        }
+
+        protected IActionResult Replace(string url)
+        {
+            Response.Headers["X-Sircl-History-Replace"] = url;
+            return this.StatusCode(204);
+        }
+
+        protected IActionResult ReplaceToAction(string? action, string? controller = null, object? values = null)
+        {
+            return this.Replace(Url.Action(action, controller, values) ?? String.Empty);
+        }
+
+        protected void SetToastrMessage(string level, string text, string? title = null)
+        {
+            if (String.IsNullOrWhiteSpace(title))
+                Response.Headers["X-Sircl-Toastr"] = $"{level}|{text}";
+            else
+                Response.Headers["X-Sircl-Toastr"] = $"{level}|{text}|{title}";
         }
     }
 }

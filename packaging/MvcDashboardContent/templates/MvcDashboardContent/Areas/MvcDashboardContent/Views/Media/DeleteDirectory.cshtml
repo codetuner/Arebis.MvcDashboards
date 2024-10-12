@@ -1,0 +1,14 @@
+﻿@model IndexModel
+<div class="modal-header">
+    <h5 class="modal-title">Media - Delete Directory</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div class="mb-3">
+        <p autofocus>Delete current directory ?</p>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" onkeydown-click="Escape" data-bs-dismiss="modal">No</button>
+    <button type="submit" class="btn btn-primary" onkeydown-click="Enter" asp-action="DeleteDirectory">Yes</button>
+</div>

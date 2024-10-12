@@ -1,0 +1,35 @@
+﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostEnvironment
+@model FileDetailsModel
+@{ if (Model.FileInfo == null) return; }
+<div class="modal-header">
+    <h5 class="modal-title">Media</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    @if (Model.FileInfo.Extension != "" && new string[] { ".webp", ".png", ".jpg", ".jpeg", ".gif", ".bmp" }.Contains(Model.FileInfo.Extension.ToLowerInvariant()))
+    {
+        <div class="alert text-center">
+            <img src="@(Model.FileInfo.FullName.Replace(hostEnvironment.WebRootPath, ""))" style="max-width: 100%; border: solid 1px gray;" />
+        </div>
+    }
+    <form asp-action="RenameFile" method="post">
+        <input type="hidden" name="Path" value="@Model.Path" />
+        <input type="hidden" name="OldName" value="@Model.FileName" />
+        <div class="input-group">
+            <input type="text" class="form-control" name="NewName" value="@(Model.FileInfo.Extension == "" ? Model.FileInfo.Name : Model.FileInfo.Name.Replace(Model.FileInfo.Extension, ""))">
+            @if (Model.FileInfo.Extension != "")
+            {
+                <button class="btn btn-outline-secondary" type="button" disabled>@(Model.FileInfo.Extension)</button>
+            }
+            <button class="btn btn-primary" type="submit">Rename</button>
+        </div>
+    </form>
+</div>
+<div class="modal-footer justify-content-between">
+    <span>
+        <a href="@(Model.FileInfo.FullName.Replace(hostEnvironment.WebRootPath, ""))" class="btn btn-secondary" download="@Model.FileInfo.Name"><i class="fas fa-download"></i> Download</a>
+    </span>
+    <span>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </span>
+</div>
