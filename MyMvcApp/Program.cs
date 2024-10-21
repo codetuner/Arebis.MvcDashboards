@@ -21,25 +21,25 @@ using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 #region Content
 
 builder.Services.AddDbContext<ContentDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
 #endregion
 
 #region Localization
 
 builder.Services.AddDbContext<MyMvcApp.Data.Localize.LocalizeDbContext>(/*contextLifetime: ServiceLifetime.Transient, optionsLifetime: ServiceLifetime.Singleton, */optionsAction: options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
 builder.Services.AddLocalizationFromSource(builder.Configuration, options => {
     options.AllowLocalizeFormat = false;
@@ -109,8 +109,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 #region Tasks
 
 builder.Services.AddDbContext<MyMvcApp.Data.Tasks.ScheduledTasksDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
 builder.Services.AddHostedService<MyMvcApp.Tasks.TaskScheduler>();
 
@@ -119,8 +119,8 @@ builder.Services.AddHostedService<MyMvcApp.Tasks.TaskScheduler>();
 #region Logging
 
 builder.Services.AddDbContext<MyMvcApp.Data.Logging.LoggingDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
 builder.Services.AddScoped<MyMvcApp.Logging.RequestLogger>();
 
