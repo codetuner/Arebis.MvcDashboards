@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Mime;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,8 +19,11 @@ using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {
-    public class KeyController : BaseController
+    public partial class KeyController : BaseController
     {
+        [GeneratedRegex(@"\{\{[^\s\{\}]+\}\}", RegexOptions.IgnoreCase, "en-US")]
+        private static partial Regex ToTranslatableRegex();
+
         #region Construction
 
         private readonly LocalizeDbContext context;
@@ -130,12 +135,13 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
                     .ToList();
                 if (valuesToTranslate.Any())
                 {
-                    var result = (await translationService.TranslateAsync(source.Culture, valuesToTranslate.Select(v => v.Culture), model.Item.MimeType, ToTranslatable(source.Value, arguments), cancellationToken)).ToList();
+                    var substitutions = new List<KeyValuePair<string, string>>();
+                    var result = (await translationService.TranslateAsync(source.Culture, valuesToTranslate.Select(v => v.Culture), model.Item.MimeType, ToTranslatable(source.Value, substitutions), cancellationToken)).ToList();
                     for (int i = 0; i < valuesToTranslate.Count; i++)
                     {
                         if (result[i] != null)
                         {
-                            valuesToTranslate[i].Value = FromTranslatable(result[i], arguments);
+                            valuesToTranslate[i].Value = FromTranslatable(result[i], substitutions);
                             model.HasChanges = true;
                             succeededTranslations.Add(valuesToTranslate[i].Culture);
                         }
@@ -164,37 +170,39 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
         }
 
         /// <summary>
-        /// In the given input string, replaces "{{FirstName}}" by "⁑2⁑" if "FirstName" is listed as the 3th argument.
-        /// This to avoid translation of the "FirstName" argument name.
+        /// In the given input string, replaces "{{...}}" pairs by "⁑x⁑" (where x is a number) to avoid translation of
+        /// the content of the double curly braces pair.
         /// </summary>
         [return: NotNullIfNotNull(nameof(input))]
-        private string? ToTranslatable(string? input, string[] arguments)
+        private string? ToTranslatable(string? input, IList<KeyValuePair<string, string>> substitutions)
         {
             if (input == null) return input;
 
             var output = input;
-            for (int i = 0; i < arguments.Length; i++)
+
+            var i = 0;
+            foreach (var match in ToTranslatableRegex().Matches(input).OrderByDescending(m => m.Index))
             {
-                if (arguments[i].Length == 0) continue;
-                output = output.Replace("{{" + arguments[i] + "}}", "⁑" + i + "⁑");
+                var replacement = "⁑" + i++ + "⁑";
+                substitutions.Add(new KeyValuePair<string, string>(match.Value, replacement));
+                output = output.Substring(0, match.Index) + replacement + output.Substring(match.Index + match.Length);
             }
 
             return output;
         }
 
         /// <summary>
-        /// Reverses the transformation done by <see cref="ToTranslatable(string?, string[])"/> method.
+        /// Reverses the transformation done by <see cref="ToTranslatable(string?, IList{KeyValuePair{string, string}})"/> method.
         /// </summary>
         [return:NotNullIfNotNull(nameof(input))]
-        private string? FromTranslatable(string? input, string[] arguments)
+        private string? FromTranslatable(string? input, IList<KeyValuePair<string, string>> substitutions)
         {
             if (input == null) return input;
 
             var output = input;
-            for (int i = 0; i < arguments.Length; i++)
+            foreach(var substitution in substitutions)
             {
-                if (arguments[i].Length == 0) continue;
-                output = output.Replace("⁑" + i + "⁑", "{{" + arguments[i] + "}}");
+                output = output.Replace(substitution.Value, substitution.Key);
             }
 
             return output;
