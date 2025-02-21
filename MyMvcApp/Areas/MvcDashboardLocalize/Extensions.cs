@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -35,6 +37,57 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize
 
             // Returns hash formatted as string:
             return String.Concat(Array.ConvertAll(output, h => h.ToString("X2")));
+        }
+
+        /// <summary>
+        /// Whether the current user is an administrator for localization.
+        /// An administrator for localization can create and delete domains and create and delete keys and queries.
+        /// </summary>
+        public static bool IsAdministrator(this ClaimsPrincipal? user)
+        {
+            return user != null && (user.IsInRole("Administrator") || user.IsInRole("LocalizeAdministrator"));
+        }
+
+        /// <summary>
+        /// Cultures the current user has read access to.
+        /// Returns null if the user has access to all cultures.
+        /// </summary>
+        public static List<string>? ReadableCultures(this ClaimsPrincipal? user)
+        {
+            if (user.IsAdministrator())
+            {
+                return null;
+            }
+            else if (user != null && user.IsInRole("LocalizeTranslator"))
+            {
+                return user.Claims.Where(c => c.Type == "ReadableCulture" || c.Type == "WritableCulture")
+                    .Select(c => c.Value).SelectMany(v => v.Split(',').Select(s => s.Trim())).ToList();
+            }
+            else
+            {
+                return new List<string>();
+            }
+        }
+
+        /// <summary>
+        /// Cultures the current user has write access to.
+        /// Returns null if the user has access to all cultures.
+        /// </summary>
+        public static List<string>? WritableCultures(this ClaimsPrincipal? user)
+        {
+            if (user.IsAdministrator())
+            {
+                return null;
+            }
+            else if (user != null && user.IsInRole("LocalizeTranslator"))
+            {
+                return user.Claims.Where(c => c.Type == "WritableCulture")
+                    .Select(c => c.Value).SelectMany(v => v.Split(',').Select(s => s.Trim())).ToList();
+            }
+            else
+            {
+                return new List<string>();
+            }
         }
     }
 }

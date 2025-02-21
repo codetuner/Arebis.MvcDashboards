@@ -9,7 +9,7 @@ using System.Linq;
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {
     [Area("MvcDashboardLocalize")]
-    [Authorize(Roles = "Administrator,LocalizeAdministrator")]
+    [Authorize(Roles = "Administrator,LocalizeAdministrator,LocalizeTranslator")]
     public abstract class BaseController : Controller
     {
         [HttpGet]

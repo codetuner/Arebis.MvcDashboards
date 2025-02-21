@@ -64,6 +64,11 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
         [HttpGet]
         public IActionResult ReloadFromSource([FromServices] ILocalizationResourceProvider resourceProvider)
         {
+            if (!User.IsAdministrator())
+            {
+                return Forbid();
+            }
+
             resourceProvider.Refresh();
 
             return ForwardToAction("Index", target: "_self");

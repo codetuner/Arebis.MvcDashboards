@@ -117,19 +117,14 @@ app.MapRazorPages();
 
     <p><i>This step is required for installation 1 and 2 only as it applies to the dashboard.</i></p>
 
-    <p>As to not come unsecure out of the box, the area is secured to be accessible only by users in the "Administrator" or "LocalizeAdministrator" role.</p>
+    <p>As to not come unsecure out of the box, the area is secured to be accessible only by users in the "Administrator", "LocalizeAdministrator" or "LocalizeTranslator" role.</p>
 
-    <p>Either create any of those roles and assign it to your user account, or change the MvcDashboardLocalize code to rely on other roles.</p>
+    <p>The first two roles have full access.</p>
 
-    <p>For the latter, edit the <code>Areas\MvcDashboardLocalize\Controllers\BaseController.cs</code> file, and set whatever role(s) you want to secure the Localize dashboard with:</p>
+    <p>The LocalizeTranslator role can only view and edit localization keys. It thereby can only see localized values in cultures that are defined as ReadableCulture or WritableCulture user claim. They can oly edit values in cultures for which they have a WritableCulture claim.</p>
+    <p>Multiple ReadableCulture and WritableCulture claims can be defined on a user, and a single claim can contain multiple cultures by separating them by comma's. For instance, the following claim value specifies 3 cultures to be readable or writable: "en,fr,fr-CA".</p>
 
-<pre>
-[Area("MvcDashboardLocalize")]
-<b>[Authorize(Roles = "<span class="highlight">Administrator,LocalizeAdministrator</span>")]</b>
-public abstract class BaseController : Controller
-{
-    ...
-</pre>
+    <p>Either create any of those roles and assign it to your user account, or change the MvcDashboardLocalize code to rely on other roles &amp; claims.</p>
 
     <h3>Create a database for localization data</h3>
 
@@ -293,8 +288,10 @@ public abstract class BaseController : Controller
         <li><b>Arebis.Core.Services.Translation</b></li>
     </ul>
 
-    <p>Then follow the configuration instruction for the Translation service (Bing, DeepL or Google) you want to use,
-    on <a href="https://www.nuget.org/packages/Arebis.Core.Services.Translation/">https://www.nuget.org/packages/Arebis.Core.Services.Translation/</a>.</p>
+    <p>
+        Then follow the configuration instruction for the Translation service (Bing, DeepL or Google) you want to use,
+        on <a href="https://www.nuget.org/packages/Arebis.Core.Services.Translation/">https://www.nuget.org/packages/Arebis.Core.Services.Translation/</a>.
+    </p>
 
 
     <h3>Request Localization</h3>

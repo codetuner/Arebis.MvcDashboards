@@ -20,9 +20,10 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Models.Key
 
         public bool SaveAsCopy { get; set; }
 
-        public Data.Localize.Domain[]? Domains { get; internal set; }
+        public Data.Localize.Domain[] Domains { get; internal set; } = [];
 
         public bool HasTranslationService { get; internal set; }
-        
+
+        public List<string> WritableCultures { get; internal set; } = new();
     }
 }

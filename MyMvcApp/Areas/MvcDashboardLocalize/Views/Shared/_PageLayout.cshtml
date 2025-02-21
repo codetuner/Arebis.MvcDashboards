@@ -61,6 +61,14 @@
             display: none;
         }
 
+        [readonly] {
+            background-color: #f0f0f0;
+        }
+
+            [readonly]:focus {
+                background-color: #f0f0f0;
+            }
+
         BODY .whileloading-show {
             display: none;
         }
@@ -87,49 +95,50 @@
         }
 
         .environment-nonprod {
-        
-            .environment-banner {
-                display: block;
-                left: 0;
-                right: 0;
-                top: 0;
-                height: 36px;
-                overflow: clip;
-                position: fixed;
-                font-weight: bold;
-                background-color: yellow;
-                border-bottom: solid 1px #d8d8d8;
-                padding: .4em 1em;
-                text-align: center;
-                z-index: 9999;
-            }
-            
-            > nav.navbar {
-                top: 36px;
-            }
-            
-            > .container-fluid {
-                margin-top: calc(28px + 36px);
-            }
-            
-            .modal-dialog {
-                margin-top: calc(28px + 36px);
-            }
-        
-            .offcanvas-end, .offcanvas-start, .offcanvas-top {
-                top: 36px;
-            }
-        
-            /* form TinyMCE input FullScreen: */
-            .tox-fullscreen {
-                padding-top: 36px;
-            }
+            .environment-banner
+
+        {
+            display: block;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 36px;
+            overflow: clip;
+            position: fixed;
+            font-weight: bold;
+            background-color: yellow;
+            border-bottom: solid 1px #d8d8d8;
+            padding: .4em 1em;
+            text-align: center;
+            z-index: 9999;
+        }
+
+        > nav.navbar {
+            top: 36px;
+        }
+
+        > .container-fluid {
+            margin-top: calc(28px + 36px);
+        }
+
+        .modal-dialog {
+            margin-top: calc(28px + 36px);
+        }
+
+        .offcanvas-end, .offcanvas-start, .offcanvas-top {
+            top: 36px;
+        }
+
+        /* form TinyMCE input FullScreen: */
+        .tox-fullscreen {
+            padding-top: 36px;
+        }
+
         }
 
         *[href] {
             cursor: pointer;
         }
-
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc" crossorigin="anonymous"></script>
@@ -219,9 +228,12 @@
                     <li class="nav-item" ifroute-setactive="\/Key(\/|$)">
                         <a class="nav-link" asp-area="MvcDashboardLocalize" asp-controller="Key" asp-action="Index"><i class="fa fa-tags"></i> Keys</a>
                     </li>
-                    <li class="nav-item" ifroute-setactive="\/Query(\/|$)">
-                        <a class="nav-link" asp-area="MvcDashboardLocalize" asp-controller="Query" asp-action="Index"><i class="fas fa-solid fa-database"></i> Queries</a>
-                    </li>
+                    @if (User.IsAdministrator())
+                    {
+                        <li class="nav-item" ifroute-setactive="\/Query(\/|$)">
+                            <a class="nav-link" asp-area="MvcDashboardLocalize" asp-controller="Query" asp-action="Index"><i class="fas fa-solid fa-database"></i> Queries</a>
+                        </li>
+                    }
                 </ul>
                 <form class="d-flex" asp-area="MvcDashboardLocalize" asp-controller="Key" asp-action="Index" method="get">
                     <input class="form-control me-2 onfocus-select" type="search" placeholder="/ Search" aria-label="Search" name="Query">
@@ -246,7 +258,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Your Localize Dashboard is unsecure!</h5>
                     <div class="card-text">
-                        <p>Uncomment the <code style="color: aqua;">[Authorize(Roles = "Administrator,LocalizeAdministrator")]</code> attribute on the BaseController class of the Localize Dashboard to enable role-based security.</p>
+                        <p>Uncomment the <code style="color: aqua;">[Authorize(Roles = "Administrator,LocalizeAdministrator,LocalizeTranslator")]</code> attribute on the BaseController class of the Localize Dashboard to enable role-based security.</p>
                     </div>
                 </div>
             </div>
@@ -308,4 +320,3 @@
 
 </body>
 </html>
-

@@ -18,14 +18,23 @@
 
     <div class="mb-3">
         <label for="@Html.IdFor(m => m.Item.DomainId)" class="form-label">Domain: *</label>
-        <select asp-for="Item.DomainId" asp-items="Model.Domains!.Select(t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = (t.Id == Model.Item.DomainId) })" class="form-control onchange-submit">
-            <option value="">-</option>
-        </select>
-        <span asp-validation-for="Item.DomainId" class="text-danger"></span>
+        @if (User.IsAdministrator())
+        {
+            <select asp-for="Item.DomainId" asp-items="Model.Domains.Select(t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = (t.Id == Model.Item.DomainId) })" class="form-control onchange-submit">
+                <option value="">-</option>
+            </select>
+            <span asp-validation-for="Item.DomainId" class="text-danger"></span>
+        }
+        else
+        {
+            <select asp-for="Item.DomainId" class="form-control" readonly>
+                <option value="@Model.Item.DomainId" selected>@Model.Domains.Single(d => d.Id == Model.Item.DomainId).Name</option>
+            </select>
+        }
         @if (Model.Item.DomainId != 0)
         {
             <div>
-                @foreach (var val in Model.Values)
+                @foreach (var val in Model.Values.Where(v => Model.WritableCultures.Contains(v.Culture)))
                 {
                     <i id="cult-rev-@(val.Culture)" class="fas fa-solid fa-check" onclick-click="<DIV|>A"></i>
                     <i id="cult-tor-@(val.Culture)" class="fas fa-solid fa-check" onclick-click="<DIV|>A" style="color: #d0d0d0;"></i>
@@ -37,30 +46,45 @@
 
     <div class="mb-3">
         <label for="@Html.IdFor(m => m.Item.Name)" class="form-label">Name: *</label>
-        <input asp-for="Item.Name" type="text" class="form-control" />
+        <input asp-for="Item.Name" type="text" class="form-control" readonly="@(!User.IsAdministrator())" />
         <span asp-validation-for="Item.Name" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <div class="form-check form-check-inline">
-            <input asp-for="Item.MimeType" class="form-check-input onchange-submit" type="radio" id="inlineCheckbox1" value="text/plain">
-            <label class="form-check-label" for="inlineCheckbox1">Plain text</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input asp-for="Item.MimeType" class="form-check-input onchange-submit" type="radio" id="inlineCheckbox2" value="text/html">
-            <label class="form-check-label" for="inlineCheckbox2">HTML</label>
-        </div>
-        <span asp-validation-for="Item.MimeType" class="text-danger"></span>
+        @if (User.IsAdministrator())
+        {
+            <div class="form-check form-check-inline">
+                <input asp-for="Item.MimeType" class="form-check-input onchange-submit" type="radio" id="inlineCheckbox1" value="text/plain">
+                <label class="form-check-label" for="inlineCheckbox1">Plain text</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input asp-for="Item.MimeType" class="form-check-input onchange-submit" type="radio" id="inlineCheckbox2" value="text/html">
+                <label class="form-check-label" for="inlineCheckbox2">HTML</label>
+            </div>
+            <span asp-validation-for="Item.MimeType" class="text-danger"></span>
+        }
+        else
+        {
+            <div class="form-check form-check-inline">
+                <input class="form-check-input onchange-submit" type="radio" checked="@(Model.Item.MimeType == "text/plain")" disabled>
+                <label class="form-check-label">Plain text</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input onchange-submit" type="radio" checked="@(Model.Item.MimeType == "text/html")" disabled>
+                <label class="form-check-label">HTML</label>
+            </div>
+            <input type="hidden" asp-for="Item.MimeType" />
+        }
     </div>
 
     <div class="mb-3">
         <label for="@Html.IdFor(m => m.Item.ForPath)" class="form-label">For path:</label>
-        <input asp-for="Item.ForPath" type="text" class="form-control" />
+        <input asp-for="Item.ForPath" type="text" class="form-control" readonly="@(!User.IsAdministrator())" />
         <span asp-validation-for="Item.ForPath" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label for="@Html.IdFor(m => m.ArgumentNames)" class="form-label">Argument names (comma-separated list):</label>
-        <input asp-for="ArgumentNames" type="text" class="form-control onchange-submit" />
+        <input asp-for="ArgumentNames" type="text" class="form-control onchange-submit" readonly="@(!User.IsAdministrator())" />
         <span asp-validation-for="ArgumentNames" class="text-danger"></span>
     </div>
 
@@ -71,44 +95,60 @@
                 <input type="hidden" asp-for="Values[i].Id" />
                 <input type="hidden" asp-for="Values[i].Culture" />
                 <h5 class="card-title">@Model.Values[i].Culture</h5>
-                <div class="grow-wrap" style="max-height: 12em">
-                    <textarea asp-for="Values[i].Value" class="form-control @(Model.Item.MimeType == "text/html" ? "x-onfocusout-validatehtml" : null)" rows="1" style="max-height: 12em"></textarea>
-                </div>
-                @if (Model.Item.MimeType == "text/html")
+                @if (User.IsAdministrator() || Model.WritableCultures.Contains(Model.Values[i].Culture))
                 {
-                    <span class="float-end">
-                        <span id="@Html.IdFor(m => m.Values[i].Value)_tb" class="d-none d-sm-none d-md-inline">
-                            @foreach (var arg in Model.Item.ArgumentNames ?? Array.Empty<string>())
-                            {
-                                <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertArg('@(Html.IdFor(m => m.Values[i].Value))', '{{@(arg?.Replace("'", "\\'"))}}');">{{@(arg)}}</button>
-                            }
-                            <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<h1>', '</h1>');">&lt;H1&gt;</button>
-                            <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<h2>', '</h2>');">&lt;H2&gt;</button>
-                            <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<h3>', '</h3>');">&lt;H3&gt;</button>
-                            <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<p>', '</p>');">&lt;P&gt;</button>
-                            <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<div>', '</div>');">&lt;DIV&gt;</button>
-                            <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<b>', '</b>');">&lt;b&gt;</button>
-                            <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<i>', '</i>');">&lt;i&gt;</button>
-                            <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<a href=\'\' target=\'_blank\'>', '</a>');">&lt;a&gt;</button>
-                            |
+                    <div class="grow-wrap" style="max-height: 12em">
+                        <textarea asp-for="Values[i].Value" class="form-control @(Model.Item.MimeType == "text/html" ? "x-onfocusout-validatehtml" : null)" rows="1" style="max-height: 12em"></textarea>
+                    </div>
+                    @if (Model.Item.MimeType == "text/html")
+                    {
+                        <span class="float-end">
+                            <span id="@Html.IdFor(m => m.Values[i].Value)_tb" class="d-none d-sm-none d-md-inline">
+                                @foreach (var arg in Model.Item.ArgumentNames ?? Array.Empty<string>())
+                                {
+                                    <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertArg('@(Html.IdFor(m => m.Values[i].Value))', '{{@(arg?.Replace("'", "\\'"))}}');">{{@(arg)}}</button>
+                                }
+                                <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<h1>', '</h1>');">&lt;H1&gt;</button>
+                                <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<h2>', '</h2>');">&lt;H2&gt;</button>
+                                <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<h3>', '</h3>');">&lt;H3&gt;</button>
+                                <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<p>', '</p>');">&lt;P&gt;</button>
+                                <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<div>', '</div>');">&lt;DIV&gt;</button>
+                                <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<b>', '</b>');">&lt;b&gt;</button>
+                                <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<i>', '</i>');">&lt;i&gt;</button>
+                                <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertTag('@(Html.IdFor(m => m.Values[i].Value))', '<a href=\'\' target=\'_blank\'>', '</a>');">&lt;a&gt;</button>
+                                |
+                            </span>
+                            <button type="submit" class="btn btn-light btn-sm p-0" asp-action="Preview" asp-route-id="@Model.Item.Id" asp-route-previewculture="@Model.Values[i].Culture" target="#preview-modal-body" tabindex="-1">Preview</button>
                         </span>
-                        <button type="submit" class="btn btn-light btn-sm p-0" asp-action="Preview" asp-route-id="@Model.Item.Id" asp-route-previewculture="@Model.Values[i].Culture" target="#preview-modal-body" tabindex="-1">Preview</button>
-                    </span>
+                    }
+                    else if (Model.Item.ArgumentNames?.Any() ?? false)
+                    {
+                        <span class="float-end">
+                            <span id="@Html.IdFor(m => m.Values[i].Value)_tb" class="d-none d-sm-none d-md-inline">
+                                @foreach (var arg in Model.Item.ArgumentNames ?? Array.Empty<string>())
+                                {
+                                    <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertArg('@(Html.IdFor(m => m.Values[i].Value))', '{{@(arg?.Replace("'", "\\'"))}}');">{{@(arg)}}</button>
+                                }
+                            </span>
+                        </span>
+                    }
+                    <label>
+                        <input type="checkbox" asp-for="Values[i].Reviewed" class="reviewed-chk" ifchecked-readonly="#@Html.IdFor(m => m.Values[i].Value)" ifchecked-hide="#@Html.IdFor(m => m.Values[i].Value)_tb" ifchecked-removeclass="d-none on #cult-rev-@(Model.Values[i].Culture)" ifchecked-addclass="d-none on #cult-tor-@(Model.Values[i].Culture)" /> Is reviewed
+                    </label>
                 }
-                else if (Model.Item.ArgumentNames?.Any() ?? false)
+                else
                 {
-                    <span class="float-end">
-                        <span id="@Html.IdFor(m => m.Values[i].Value)_tb" class="d-none d-sm-none d-md-inline">
-                            @foreach (var arg in Model.Item.ArgumentNames ?? Array.Empty<string>())
-                            {
-                                <button type="button" class="btn btn-light btn-sm p-0" tabindex="-1" onclick="insertArg('@(Html.IdFor(m => m.Values[i].Value))', '{{@(arg?.Replace("'", "\\'"))}}');">{{@(arg)}}</button>
-                            }
+                    <div class="grow-wrap" style="max-height: 12em">
+                        <textarea asp-for="Values[i].Value" class="form-control @(Model.Item.MimeType == "text/html" ? "x-onfocusout-validatehtml" : null)" rows="1" style="max-height: 12em" readonly></textarea>
+                    </div>
+                    @if (Model.Item.MimeType == "text/html")
+                    {
+                        <span class="float-end">
+                            <button type="submit" class="btn btn-light btn-sm p-0" asp-action="Preview" asp-route-id="@Model.Item.Id" asp-route-previewculture="@Model.Values[i].Culture" target="#preview-modal-body" tabindex="-1">Preview</button>
                         </span>
-                    </span>
+                    }
+                    <input type="hidden" asp-for="Values[i].Reviewed" />
                 }
-                <label>
-                    <input type="checkbox" asp-for="Values[i].Reviewed" class="reviewed-chk" ifchecked-readonly="#@Html.IdFor(m => m.Values[i].Value)" ifchecked-hide="#@Html.IdFor(m => m.Values[i].Value)_tb" ifchecked-removeclass="d-none on #cult-rev-@(Model.Values[i].Culture)" ifchecked-addclass="d-none on #cult-tor-@(Model.Values[i].Culture)" /> Is reviewed
-                </label>
             </div>
         </div>
     }
@@ -141,10 +181,13 @@
     }
 
     <span class="float-end">
-        <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" name="andcopy" value="true"><i class="spinner fas fa-solid fa-copy"></i> @(Model.IsNew ? "Create" : "Save") &amp; Copy</button>
-        @if (!Model.IsNew)
+        @if (User.IsAdministrator())
         {
-            <button type="submit" class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?"><i class="spinner fas fa-solid fa-trash-alt"></i> Delete</button>
+            <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" name="andcopy" value="true"><i class="spinner fas fa-solid fa-copy"></i> @(Model.IsNew ? "Create" : "Save") &amp; Copy</button>
+            if (!Model.IsNew)
+            {
+                <button type="submit" class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?"><i class="spinner fas fa-solid fa-trash-alt"></i> Delete</button>
+            }
         }
     </span>
     <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Save")</button>
