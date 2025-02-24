@@ -12,7 +12,10 @@
             <h5 class="card-title">@domain.Name</h5>
             <p class="card-text"><em>@String.Join(", ", domain.Cultures ?? Array.Empty<string>())</em></p>
             <span class="float-end">
-                <a asp-action="Export" asp-route-id="@domain.Id" class="card-link" download="@(domain.Name).json">Export</a>
+                @if (User.IsAdministrator())
+                {
+                    <a asp-action="Export" asp-route-id="@domain.Id" class="card-link" download="@(domain.Name).json">Export</a>
+                }
             </span>
             @if (User.IsAdministrator())
             {
