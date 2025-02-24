@@ -148,6 +148,11 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
         [HttpPost]
         public IActionResult Import(IFormFile file)
         {
+            if (!User.IsAdministrator())
+            {
+                return Forbid();
+            }
+
             using (var stream = file.OpenReadStream())
             { 
                 var domain = JsonSerializer.Deserialize<Data.Localize.Domain>(stream);
@@ -168,6 +173,11 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 
         public IActionResult Export(int id)
         {
+            if (!User.IsAdministrator())
+            {
+                return Forbid();
+            }
+
             var domain = context.LocalizeDomains
                 .Include(d => d.Keys!).ThenInclude(k => k.Values)
                 .Include(d => d.Queries)

@@ -23,7 +23,7 @@
     <a class="btn btn-primary btn-lg" href="@Url.Action("GetStarted")" role="button">Get started</a>
 </div>
 
-@if (Model.HasResourceProvider)
+@if (Model.HasResourceProvider && User.IsAdministrator())
 {
     <div class="border bg-light p-4 pb-3 rounded-lg m-3">
         <a class="btn btn-primary btn-lg float-end" href="@Url.Action("ReloadFromSource")" role="button"><span class="spinner"></span> Publish</a>

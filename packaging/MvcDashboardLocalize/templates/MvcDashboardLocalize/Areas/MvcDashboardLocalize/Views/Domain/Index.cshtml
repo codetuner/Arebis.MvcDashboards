@@ -14,23 +14,32 @@
             <span class="float-end">
                 <a asp-action="Export" asp-route-id="@domain.Id" class="card-link" download="@(domain.Name).json">Export</a>
             </span>
-            <a asp-action="Edit" asp-route-id="@domain.Id" class="card-link" target="#editDomainModal">Edit</a>
+            @if (User.IsAdministrator())
+            {
+                <a asp-action="Edit" asp-route-id="@domain.Id" class="card-link" target="#editDomainModal">Edit</a>
+            }
             <a asp-action="Index" asp-controller="Key" asp-route-domainid="@domain.Id" class="card-link">Keys</a>
-            <a asp-action="Index" asp-controller="Query" asp-route-domainid="@domain.Id" class="card-link">Queries</a>
+            @if (User.IsAdministrator())
+            {
+                <a asp-action="Index" asp-controller="Query" asp-route-domainid="@domain.Id" class="card-link">Queries</a>
+            }
         </div>
     </div>
 }
 
-<p>
-    <span class="float-end">
-        <a href="null" class="btn btn-link" onclick-click="#file-import-field">Import</a>
-    </span>
-    <a asp-action="New" class="btn btn-link" target="#editDomainModal">New</a>
-</p>
+@if (User.IsAdministrator())
+{
+    <p>
+        <span class="float-end">
+            <a href="null" class="btn btn-link" onclick-click="#file-import-field">Import</a>
+        </span>
+        <a asp-action="New" class="btn btn-link" target="#editDomainModal">New</a>
+    </p>
 
-<form asp-action="Import" enctype="multipart/form-data" method="post" hidden>
-    <input id="file-import-field" type="file" name="file" accept="application/json" accept-alert="Invalid file type." class="onchange-submit" />
-</form>
+    <form asp-action="Import" enctype="multipart/form-data" method="post" hidden>
+        <input id="file-import-field" type="file" name="file" accept="application/json" accept-alert="Invalid file type." class="onchange-submit" />
+    </form>
 
-<div id="editDomainModal" class="modal fade" data-bs-backdrop="static" tabindex="-1">
-</div>
+    <div id="editDomainModal" class="modal fade" data-bs-backdrop="static" tabindex="-1">
+    </div>
+}

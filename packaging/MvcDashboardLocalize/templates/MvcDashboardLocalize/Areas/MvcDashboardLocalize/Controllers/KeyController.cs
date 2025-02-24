@@ -12,13 +12,17 @@ using System.Linq;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 #nullable enable
 
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {
-    public class KeyController : BaseController
+    public partial class KeyController : BaseController
     {
+        [GeneratedRegex(@"\{\{[^\s]+\}\}", RegexOptions.IgnoreCase, "en-US")]
+        private static partial Regex ToTranslatableRegex();
+
         #region Construction
 
         private readonly LocalizeDbContext context;
@@ -68,6 +72,11 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
         [HttpGet]
         public async Task<IActionResult> New(int? domainId)
         {
+            if (!User.IsAdministrator())
+            {
+                return Forbid();
+            }
+
             var model = new EditModel
             {
                 Item = new Data.Localize.Key() { DomainId = domainId ?? 0, MimeType = MediaTypeNames.Text.Plain }
@@ -80,7 +89,6 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var item = await context.LocalizeKeys
-                .Include(k => k.Domain)
                 .Include(k => k.Values)
                 .SingleOrDefaultAsync(k => k.Id == id);
             if (item == null) return new NotFoundResult();
@@ -125,17 +133,18 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
                 source.Reviewed = true;
 
                 // Translate each culture that is not empty and not reviewed:
-                var valuesToTranslate = model.Values
+                var valuesToTranslate = Writable(model.Values)
                     .Where(v => v.Culture != model.SourceCulture && v.Reviewed == false && String.IsNullOrWhiteSpace(v.Value))
                     .ToList();
                 if (valuesToTranslate.Any())
                 {
-                    var result = (await translationService.TranslateAsync(source.Culture, valuesToTranslate.Select(v => v.Culture), model.Item.MimeType, ToTranslatable(source.Value, arguments), cancellationToken)).ToList();
+                    var substitutions = new List<KeyValuePair<string, string>>();
+                    var result = (await translationService.TranslateAsync(source.Culture, valuesToTranslate.Select(v => v.Culture), model.Item.MimeType, ToTranslatable(source.Value, substitutions), cancellationToken)).ToList();
                     for (int i = 0; i < valuesToTranslate.Count; i++)
                     {
                         if (result[i] != null)
                         {
-                            valuesToTranslate[i].Value = FromTranslatable(result[i], arguments);
+                            valuesToTranslate[i].Value = FromTranslatable(result[i], substitutions);
                             model.HasChanges = true;
                             succeededTranslations.Add(valuesToTranslate[i].Culture);
                         }
@@ -164,37 +173,39 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
         }
 
         /// <summary>
-        /// In the given input string, replaces "{{FirstName}}" by "⁑2⁑" if "FirstName" is listed as the 3th argument.
-        /// This to avoid translation of the "FirstName" argument name.
+        /// In the given input string, replaces "{{...}}" pairs by "⁑x⁑" (where x is a number) to avoid translation of
+        /// the content of the double curly braces pair.
         /// </summary>
         [return: NotNullIfNotNull(nameof(input))]
-        private string? ToTranslatable(string? input, string[] arguments)
+        private string? ToTranslatable(string? input, IList<KeyValuePair<string, string>> substitutions)
         {
             if (input == null) return input;
 
             var output = input;
-            for (int i = 0; i < arguments.Length; i++)
+
+            var i = 0;
+            foreach (var match in ToTranslatableRegex().Matches(input).OrderByDescending(m => m.Index))
             {
-                if (arguments[i].Length == 0) continue;
-                output = output.Replace("{{" + arguments[i] + "}}", "⁑" + i + "⁑");
+                var replacement = "⁑" + i++ + "⁑";
+                substitutions.Add(new KeyValuePair<string, string>(match.Value, replacement));
+                output = output.Substring(0, match.Index) + replacement + output.Substring(match.Index + match.Length);
             }
 
             return output;
         }
 
         /// <summary>
-        /// Reverses the transformation done by <see cref="ToTranslatable(string?, string[])"/> method.
+        /// Reverses the transformation done by <see cref="ToTranslatable(string?, IList{KeyValuePair{string, string}})"/> method.
         /// </summary>
-        [return:NotNullIfNotNull(nameof(input))]
-        private string? FromTranslatable(string? input, string[] arguments)
+        [return: NotNullIfNotNull(nameof(input))]
+        private string? FromTranslatable(string? input, IList<KeyValuePair<string, string>> substitutions)
         {
             if (input == null) return input;
 
             var output = input;
-            for (int i = 0; i < arguments.Length; i++)
+            foreach (var substitution in substitutions)
             {
-                if (arguments[i].Length == 0) continue;
-                output = output.Replace("⁑" + i + "⁑", "{{" + arguments[i] + "}}");
+                output = output.Replace(substitution.Value, substitution.Key);
             }
 
             return output;
@@ -205,7 +216,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
         {
             ModelState.Clear();
 
-            foreach (var value in model.Values)
+            foreach (var value in Writable(model.Values))
             {
                 if (!value.Reviewed && !String.IsNullOrEmpty(value.Value))
                 {
@@ -237,16 +248,49 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
                 {
                     var domain = await context.LocalizeDomains.FindAsync(model.Item!.DomainId);
 
-                    model.Item.ArgumentNames = string.IsNullOrWhiteSpace(model.ArgumentNames)
-                        ? null
-                        : model.ArgumentNames.Split(',').Select(s => s.Trim()).Where(s => s.Length > 0).ToArray();
-                    model.Item.Values = model.Values.Where(v => v.Reviewed || v.Value != null).ToList();
-                    foreach (var value in model.Values.Where(v => !v.Reviewed && v.Value == null && v.Id != default)) context.Remove(value);
-                    model.Item.ValuesToReview = (domain?.Cultures ?? Array.Empty<string>()).Except(model.Item.Values.Where(v => v.Reviewed).Select(v => v.Culture)).ToArray();
-                    context.Update(model.Item);
+                    if (User == null)
+                    {
+                        return Forbid();
+                    }
+                    else if (User.IsAdministrator())
+                    {
+                        // Update all properties based on the model:
+                        model.Item.ArgumentNames = string.IsNullOrWhiteSpace(model.ArgumentNames)
+                            ? null
+                            : model.ArgumentNames.Split(',').Select(s => s.Trim()).Where(s => s.Length > 0).ToArray();
+                        model.Item.Values = model.Values.Where(v => v.Reviewed || v.Value != null).ToList();
+                        foreach (var value in model.Values.Where(v => !v.Reviewed && v.Value == null && v.Id != default)) context.Remove(value);
+                        model.Item.ValuesToReview = (domain?.Cultures ?? Array.Empty<string>()).Except(model.Item.Values.Where(v => v.Reviewed).Select(v => v.Culture)).ToArray();
+                        context.Update(model.Item);
+                    }
+                    else
+                    {
+                        // Update only the values in writable cultures:
+                        var original = await context.LocalizeKeys
+                            .Include(k => k.Values)
+                            .SingleAsync(k => k.Id == model.Item.Id);
+                        foreach (var culture in User.WritableCultures()!)
+                        {
+                            var modelValue = model.Values.SingleOrDefault(v => v.Culture == culture);
+                            var originalValue = original.Values!.SingleOrDefault(v => v.Culture == culture);
+                            if (modelValue != null && (modelValue.Reviewed || modelValue.Value != null))
+                            {
+                                if (originalValue == null) context.LocalizeKeyValues.Add(originalValue = new KeyValue() { Culture = culture });
+                                originalValue.Value = modelValue.Value;
+                                originalValue.Reviewed = modelValue.Reviewed;
+                            }
+                            else if (originalValue != null)
+                            {
+                                context.Remove(originalValue);
+                            }
+                        }
+                        original.ValuesToReview = (domain?.Cultures ?? Array.Empty<string>()).Except(original.Values!.Where(v => v.Reviewed).Select(v => v.Culture)).ToArray();
+                        context.Update(original);
+                    }
+
                     await context.SaveChangesAsync();
 
-                    if (andcopy)
+                    if (andcopy && User.IsAdministrator())
                     {
                         ModelState.Clear();
                         model.HasChanges = true;
@@ -284,6 +328,11 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id, EditModel model)
         {
+            if (!User.IsAdministrator())
+            {
+                return Forbid();
+            }
+
             try
             {
                 var item = await context.LocalizeKeys.FindAsync(id);
@@ -326,6 +375,12 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
                 }
             }
 
+            // Filter values to only those that are readable by the current user:
+            model.Values = Readable(model.Values).ToList();
+            model.WritableCultures = this.User.WritableCultures() ?? model.Values
+                    .Select(v => v.Culture)
+                    .ToList();
+
             // Parse argument names for editor assistants:
             model.Item.ArgumentNames = string.IsNullOrWhiteSpace(model.ArgumentNames)
                 ? null
@@ -333,6 +388,18 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 
             // Return the view:
             return View("Edit", model);
+        }
+
+        private IEnumerable<KeyValue> Readable(IEnumerable<KeyValue> values)
+        {
+            var readableCultures = User.ReadableCultures();
+            return (readableCultures == null) ? values : values.Where(v => readableCultures.Contains(v.Culture));
+        }
+
+        private IEnumerable<KeyValue> Writable(IEnumerable<KeyValue> values)
+        {
+            var writableCultures = User.WritableCultures();
+            return (writableCultures == null) ? values : values.Where(v => writableCultures.Contains(v.Culture));
         }
 
         #endregion

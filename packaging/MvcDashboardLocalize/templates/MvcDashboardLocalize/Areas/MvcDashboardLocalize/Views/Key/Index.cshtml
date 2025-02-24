@@ -2,6 +2,7 @@
 @using System.Net.Mime
 @{
     ViewBag.Title = "Keys";
+    var userWritableCultures = User?.WritableCultures()?.ToArray();
 }
 
 <h1>Keys</h1>
@@ -9,7 +10,10 @@
 <form class="card p-3 bg-white onchange-submit" action="@Url.Action("Index")" method="get" history="replace" sub-target="#subTarget">
 
     <div class="d-flex justify-content-between">
-        <a href="@Url.Action("New", new { domainId = Model.DomainId })" class="btn btn-primary @(Model.Domains.Any() ? "" : "disabled")" onkeydown-click="+"><i class="spinner fas fa-solid fa-plus"></i> New</a>
+        @if (User.IsAdministrator())
+        {
+            <a href="@Url.Action("New", new { domainId = Model.DomainId })" class="btn btn-primary @(Model.Domains.Any() ? "" : "disabled")" onkeydown-click="+"><i class="spinner fas fa-solid fa-plus"></i> New</a>
+        }
         <div class="flex-grow-1"></div>
         <div>
             <select class="form-control auto-width" asp-for="DomainId" asp-items="Model.Domains"><option value="">All</option></select>
@@ -54,14 +58,14 @@
                                 }
                                 @item.Name
                                 <span class="float-end">
-                                @if (!String.IsNullOrWhiteSpace(item.Notes))
-                                {
+                                    @if (!String.IsNullOrWhiteSpace(item.Notes))
+                                    {
                                         <i class="fas fa-solid fa-sticky-note" title="Has Notes" style="color: #d0d020;"></i>
-                                }
+                                    }
                                 </span>
                             </td>
                             <td class="d-none d-md-table-cell">@item.ForPath</td>
-                            <td class="d-none d-lg-table-cell">@String.Join(' ', (item.ValuesToReview ?? Array.Empty<string>()))</td>
+                            <td class="d-none d-lg-table-cell">@String.Join(' ', (item.ValuesToReview ?? Array.Empty<string>()).Intersect(userWritableCultures ?? item.Domain.Cultures ?? Array.Empty<string>()))</td>
                         </tr>
                     }
                 </tbody>
