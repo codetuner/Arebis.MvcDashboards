@@ -32,6 +32,11 @@ namespace MyMvcApp.Tasks
         IReadOnlyDictionary<string, string?> CurrentTaskArguments { get; }
 
         /// <summary>
+        /// Optional logger to log messages from the task.
+        /// </summary>
+        IScheduledTaskLogger? Logger { get; }
+
+        /// <summary>
         /// Reschedules the currently running task to rerun now or on the given time.
         /// </summary>
         void RescheduleCurrentTask(DateTime? utcTimeToReschedule = null, IDictionary<string, string?>? additionalArguments = null);

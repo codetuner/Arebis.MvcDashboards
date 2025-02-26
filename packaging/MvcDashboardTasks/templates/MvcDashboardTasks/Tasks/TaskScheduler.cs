@@ -22,9 +22,9 @@ namespace MyMvcApp.Tasks
         private readonly TaskSchedulerMainLoop mainLoop;
         private Thread? mainLoopThread;
 
-        public TaskScheduler(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<TaskScheduler> logger)
+        public TaskScheduler(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<TaskScheduler> logger, IScheduledTaskLoggerFactory? taskLoggerFactory)
         {
-            this.mainLoop = new TaskSchedulerMainLoop(serviceProvider, configuration, logger, mainLoopCancellationTokenSource);
+            this.mainLoop = new TaskSchedulerMainLoop(serviceProvider, configuration, logger, taskLoggerFactory, mainLoopCancellationTokenSource);
         }
 
         public System.Threading.Tasks.Task StartAsync(CancellationToken cancellationToken)
@@ -55,6 +55,7 @@ namespace MyMvcApp.Tasks
         private readonly IServiceProvider serviceProvider;
         private readonly IConfiguration configuration;
         private readonly ILogger<TaskScheduler> logger;
+        private readonly IScheduledTaskLoggerFactory? taskLoggerFactory;
         private readonly CancellationTokenSource mainLoopCancellationTokenSource;
         private readonly Dictionary<string, (ConcurrentQueue<int>, Thread)> queueThreads = new();
         private readonly ConcurrentDictionary<Thread, Thread> runningThreads = new();
@@ -62,11 +63,12 @@ namespace MyMvcApp.Tasks
         private readonly int schedulerMinimalDelayMs;
         private readonly int schedulerExtendedDelayMs;
 
-        public TaskSchedulerMainLoop(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<TaskScheduler> logger, CancellationTokenSource mainLoopCancellationTokenSource)
+        public TaskSchedulerMainLoop(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<TaskScheduler> logger, IScheduledTaskLoggerFactory? taskLoggerFactory, CancellationTokenSource mainLoopCancellationTokenSource)
         {
             this.serviceProvider = serviceProvider;
             this.configuration = configuration;
             this.logger = logger;
+            this.taskLoggerFactory = taskLoggerFactory;
             this.mainLoopCancellationTokenSource = mainLoopCancellationTokenSource;
             this.processRole = configuration.GetValue<string?>("Tasks:ProcessRole", null);
             this.schedulerMinimalDelayMs = configuration.GetValue<int>("Tasks:SchedulerInitialDelayMs", 2000);
@@ -217,8 +219,16 @@ namespace MyMvcApp.Tasks
 
                                 // Execute task:
                                 var taskHost = new TaskHost(dbContext, task, arguments, taskCancellationTokenSource);
-                                var result = taskHost.Execute(implementation);
-                                result.Wait();
+                                taskHost.Logger = this.taskLoggerFactory?.CreateLogger(task);
+                                try
+                                {
+                                    var result = taskHost.Execute(implementation);
+                                    result.Wait();
+                                }
+                                finally
+                                {
+                                    taskHost.Logger?.Dispose();
+                                }
                                 task.Succeeded = true;
                             }
                             else
@@ -363,7 +373,11 @@ namespace MyMvcApp.Tasks
 
             public int CurrentTaskId => this.currentTaskEntity.Id;
 
+            public ScheduledTask CurrentTaskEntity => this.currentTaskEntity;
+
             public IReadOnlyDictionary<string, string?> CurrentTaskArguments => this.CurrentTaskArguments;
+
+            public IScheduledTaskLogger? Logger { get; set; }
 
             public void RescheduleCurrentTask(DateTime? utcTimeToReschedule = null, IDictionary<string, string?>? additionalArguments = null)
             {
