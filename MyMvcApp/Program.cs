@@ -114,6 +114,8 @@ builder.Services.AddDbContext<MyMvcApp.Data.Tasks.ScheduledTasksDbContext>(optio
 
 builder.Services.AddHostedService<MyMvcApp.Tasks.TaskScheduler>();
 
+builder.Services.AddSingleton<MyMvcApp.Tasks.IScheduledTaskLoggerFactory, MyMvcApp.Tasks.FileScheduledTaskLoggerFactory>();
+
 #endregion
 
 #region Logging

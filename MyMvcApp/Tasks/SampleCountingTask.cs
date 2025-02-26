@@ -31,6 +31,7 @@ namespace MyMvcApp.Tasks
                 // Loop implementation:
                 Console.WriteLine($"{taskHost.CurrentTaskId} : {DateTime.Now} : {i}");
                 taskHost.WriteLine($"{i}");
+                taskHost.Logger?.WriteToLog($"Counted {i}");
                 Thread.Sleep(1000);
             }
 
