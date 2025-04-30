@@ -8,8 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Arebis.Core.Services.Interfaces" Version="6.0.0" />
-    <PackageReference Include="Arebis.Core.Services.Translation" Version="8.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8" />
@@ -24,6 +22,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Arebis.Core\Arebis.Core.AspNet.Mvc.Localization\Arebis.Core.AspNet.Mvc.Localization.csproj" />
     <ProjectReference Include="..\..\Arebis.Core\Arebis.Core.Localization\Arebis.Core.Localization.csproj" />
+    <ProjectReference Include="..\..\Arebis.Core\Arebis.Core.Services.Interfaces\Arebis.Core.Services.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Arebis.Core\Arebis.Core.Services.Translation\Arebis.Core.Services.Translation.csproj" />
   </ItemGroup>
 
   <ItemGroup>
