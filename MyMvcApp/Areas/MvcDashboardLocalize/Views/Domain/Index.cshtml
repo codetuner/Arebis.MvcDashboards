@@ -12,14 +12,15 @@
             <h5 class="card-title">@domain.Name</h5>
             <p class="card-text"><em>@String.Join(", ", domain.Cultures ?? Array.Empty<string>())</em></p>
             <span class="float-end">
+                <a asp-action="ExportToTmx" asp-route-id="@domain.Id" class="card-link" target="#modal">Export to TMX</a>
                 @if (User.IsAdministrator())
                 {
-                    <a asp-action="Export" asp-route-id="@domain.Id" class="card-link" download="@(domain.Name).json">Export</a>
+                    <a asp-action="Export" asp-route-id="@domain.Id" class="card-link" download="@(domain.Name).json">Export to Json</a>
                 }
             </span>
             @if (User.IsAdministrator())
             {
-                <a asp-action="Edit" asp-route-id="@domain.Id" class="card-link" target="#editDomainModal">Edit</a>
+                <a asp-action="Edit" asp-route-id="@domain.Id" class="card-link" target="#modal">Edit</a>
             }
             <a asp-action="Index" asp-controller="Key" asp-route-domainid="@domain.Id" class="card-link">Keys</a>
             @if (User.IsAdministrator())
@@ -34,15 +35,14 @@
 {
     <p>
         <span class="float-end">
-            <a href="null" class="btn btn-link" onclick-click="#file-import-field">Import</a>
+            <a href="null" class="btn btn-link" onclick-click="#file-import-field">Import from Json</a>
         </span>
-        <a asp-action="New" class="btn btn-link" target="#editDomainModal">New</a>
+        <a asp-action="New" class="btn btn-link" target="#modal">New</a>
     </p>
 
     <form asp-action="Import" enctype="multipart/form-data" method="post" hidden>
         <input id="file-import-field" type="file" name="file" accept="application/json" accept-alert="Invalid file type." class="onchange-submit" />
     </form>
-
-    <div id="editDomainModal" class="modal fade" data-bs-backdrop="static" tabindex="-1">
-    </div>
 }
+
+<div id="modal" class="modal fade onclose-restore onchange-backdropstatic" tabindex="-1"></div>
