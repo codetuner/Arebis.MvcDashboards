@@ -18,7 +18,7 @@ PUSHD "%~dp0packaging\MvcDashboardLogging"
 DOTNET pack
 ECHO.
 ECHO Package(s) created:
-DIR bin\Debug\*.nupkg /b /s
+DIR bin\Release\*.nupkg /b /s
 ECHO.
 POPD
 PAUSE

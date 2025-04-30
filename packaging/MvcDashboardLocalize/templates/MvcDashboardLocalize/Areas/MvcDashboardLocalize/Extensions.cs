@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Xml;
 
 #nullable enable
 
@@ -88,6 +89,34 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize
             {
                 return new List<string>();
             }
+        }
+
+        /// <summary>
+        /// Adds an attribute to the given XML element.
+        /// </summary>
+        /// <returns>The XML element.</returns>
+        public static XmlElement WithAttribute(this XmlElement elem, string name, string value)
+        {
+            if (elem == null) throw new ArgumentNullException(nameof(elem));
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            var attr = elem.OwnerDocument.CreateAttribute(name);
+            attr.Value = value;
+            elem.Attributes.Append(attr);
+            return elem;
+        }
+
+        /// <summary>
+        /// Adds text to the given XML element.
+        /// </summary>
+        /// <returns>The XML element.</returns>
+        public static XmlElement WithText(this XmlElement elem, string text)
+        {
+            if (elem == null) throw new ArgumentNullException(nameof(elem));
+            if (text == null) throw new ArgumentNullException(nameof(text));
+            var textNode = elem.OwnerDocument.CreateTextNode(text);
+            elem.AppendChild(textNode);
+            return elem;
         }
     }
 }

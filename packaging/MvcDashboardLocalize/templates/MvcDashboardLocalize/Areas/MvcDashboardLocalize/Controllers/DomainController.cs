@@ -10,6 +10,8 @@ using System;
 using System.Linq;
 using System.Net.Mime;
 using System.Text.Json;
+using System.Threading;
+using System.Xml;
 
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {
@@ -185,6 +187,74 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 
             var json = JsonSerializer.Serialize(domain);
             return this.Content(json, MediaTypeNames.Application.Json);
+        }
+
+        #endregion
+
+        #region ExportToTMX
+
+        [HttpGet]
+        public IActionResult ExportToTmx(int id)
+        {
+            var model = new ExportToTmxModel
+            {
+                DomainId = id,
+                IncludeNonReviewed = false,
+                IncludeNotes = false
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public void ExportToTmx([Bind(Prefix = "id")] int domainId, ExportToTmxModel model, CancellationToken ct)
+        {
+            // Retrieve domain:
+            var domain = context.LocalizeDomains.AsNoTracking()
+                .Include(d => d.Keys!).ThenInclude(k => k.Values)
+                .Single(d => d.Id == domainId);
+
+            // Build Xml document:
+            var doc = new System.Xml.XmlDocument();
+            var root = (XmlElement)doc.AppendChild(doc.CreateElement("tmx").WithAttribute("version", "1.4"))!;
+            var header = root.AppendChild(doc.CreateElement("header")
+                .WithAttribute("creationtool", "MvcDashboardLocalize")
+                .WithAttribute("creationtoolversion", "1.0"))!;
+            header.AppendChild(doc.CreateElement("prop").WithAttribute("type", "x-Domain").WithText(domain.Name));
+            var body = root.AppendChild(doc.CreateElement("body"))!;
+            foreach (var key in domain.Keys!)
+            {
+                if (ct.IsCancellationRequested) return;
+                var keyValues = key.Values!
+                    .Where(v => (model.IncludeNonReviewed == true || v.Reviewed == true) && (!String.IsNullOrWhiteSpace(v.Value)))
+                    .ToList();
+                if (keyValues.Count < 1) continue;
+                var tu = body.AppendChild(doc.CreateElement("tu")
+                    .WithAttribute("tuid", key.Name ?? "")
+                    .WithAttribute("datatype", key.MimeType == "text/html" ? "html" : "plaintext"))!;
+                if (!String.IsNullOrWhiteSpace(key.Notes))
+                    tu.AppendChild(doc.CreateElement("note").WithText(key.Notes));
+                if (!String.IsNullOrWhiteSpace(key.ForPath))
+                    tu.AppendChild(doc.CreateElement("prop").WithAttribute("type", "x-ForPath").WithText(key.ForPath));
+                if (key.ArgumentNames != null && key.ArgumentNames.Length > 0)
+                    tu.AppendChild(doc.CreateElement("prop").WithAttribute("type", "x-ArgumentNames").WithText(String.Join(' ', key.ArgumentNames)));
+                foreach (var value in keyValues)
+                {
+                    var tuv = tu.AppendChild(doc.CreateElement("tuv").WithAttribute("lang", value.Culture))!;
+                    if (!value.Reviewed)
+                        tuv.AppendChild(doc.CreateElement("prop").WithAttribute("type", "x-ToReview").WithText("true"));
+                    tuv.AppendChild(doc.CreateElement("seg").WithText(value.Value!));
+                }
+            }
+
+            // Return result:
+            Response.StatusCode = 200;
+            Response.Headers.ContentType = MediaTypeNames.Text.Xml;
+            Response.Headers.ContentDisposition = $"attachment; filename={domain.Name}.tmx";
+            using (var writer = XmlWriter.Create(Response.BodyWriter.AsStream(false)))
+            {
+                doc.WriteContentTo(writer);
+            }
         }
 
         #endregion

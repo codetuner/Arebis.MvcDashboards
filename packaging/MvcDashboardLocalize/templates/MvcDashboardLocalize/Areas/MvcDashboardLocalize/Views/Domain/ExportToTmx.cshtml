@@ -1,0 +1,26 @@
+﻿@model ExportToTmxModel
+<form asp-action="ExportToTmx" asp-route-id="@Model.DomainId" method="post" download="Domain@(Model.DomainId).tmx">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Export to TMX</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6>Options:</h6>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" asp-for="IncludeNonReviewed">
+                    <label class="form-check-label" asp-for="IncludeNonReviewed">Include non-reviewed translations</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" asp-for="IncludeNotes">
+                    <label class="form-check-label" asp-for="IncludeNotes">Include notes</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Export</button>
+            </div>
+        </div>
+    </div>
+</form>
