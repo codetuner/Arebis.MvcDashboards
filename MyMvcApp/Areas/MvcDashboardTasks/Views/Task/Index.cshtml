@@ -17,7 +17,7 @@
             <label class="btn"><input type="radio" x-onchange-sync="#StatusFilterSelect" name="StatusFilter" value="Succeeded" checked="@(Model.StatusFilter == "Succeeded" ? "checked" : null)" /> Succeeded</label>
             <label class="btn"><input type="radio" x-onchange-sync="#StatusFilterSelect" name="StatusFilter" value="Failed" checked="@(Model.StatusFilter == "Failed" ? "checked" : null)" /> Failed</label>
         </div>
-        <select id="StatusFilterSelect" class="ms-2 d-xxl-none form-control auto-width" x-onchange-sync="[name='StatusFilter']">
+        <select id="StatusFilterSelect" class="ms-2 d-xxl-none form-control auto-width" x-onchange-sync="[name='StatusFilter']" onchange-propagate="off">
             <option value="">All statusses</option>
             <option value="Queued" selected="@(Model.StatusFilter == "Queued" ? "selected" : null)">Queued</option>
             <option value="Running" selected="@(Model.StatusFilter == "Running" ? "selected" : null)">Running</option>
