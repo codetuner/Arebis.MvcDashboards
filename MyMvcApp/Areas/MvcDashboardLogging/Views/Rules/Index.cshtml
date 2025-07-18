@@ -11,7 +11,7 @@
         <a href="@Url.Action("New")" class="btn btn-primary" onkeydown-click="+"><i class="spinner fas fa-solid fa-plus"></i> New</a>
         <div class="flex-grow-1"></div>
         <div>
-            <select class="form-control auto-width" asp-for="ApplicationFilter" onload-load="@Url.Action("ApplicationNameOptions", "Items", new { Selected = Model.ApplicationFilter })">
+            <select class="form-select auto-width" asp-for="ApplicationFilter" onload-load="@Url.Action("ApplicationNameOptions", "Items", new { Selected = Model.ApplicationFilter })">
                 <option value="">All apps</option>
                 @if (!String.IsNullOrEmpty(Model.ApplicationFilter))
                 {
@@ -20,7 +20,7 @@
             </select>
         </div>
         <div class="ms-2">
-            <select class="form-control" name="AspectFilter">
+            <select class="form-select" name="AspectFilter">
                 <option value="">All types</option>
                 <option value="Error" selected="@(Model.AspectFilter == "Error" ? "selected" : null)">Error</option>
                 <option value="Security" selected="@(Model.AspectFilter == "Security" ? "selected" : null)">Security</option>
@@ -86,8 +86,8 @@
                 </tbody>
             </table>
         </div>
-        <pagesize-select asp-for="PageSize" class="form-control auto-width float-end"></pagesize-select>
-        <pagination-nav asp-for="Page" max="Model.MaxPage" />
+        <pagesize-select asp-for="PageSize" class="form-select auto-width float-end"></pagesize-select>
+        <pagination-nav asp-for="Page" max="Model.MaxPage" keyboard="true" />
 
     </div>
 

@@ -22,7 +22,7 @@
 
         <div class="mb-3">
             <label for="@Html.IdFor(m => m.Item.Action)" class="form-label">Action: *</label>
-            <select asp-for="Item.Action" asp-items="Enum.GetValues(typeof(LogAction)).OfType<LogAction>().Select(v => new SelectListItem() { Value = v.ToString(), Text = v.ToString(), Selected = (v == Model.Item.Action) })" class="form-control">
+            <select asp-for="Item.Action" asp-items="Enum.GetValues(typeof(LogAction)).OfType<LogAction>().Select(v => new SelectListItem() { Value = v.ToString(), Text = v.ToString(), Selected = (v == Model.Item.Action) })" class="form-select">
             </select>
             <span asp-validation-for="Item.Action" class="text-danger"></span>
         </div>
@@ -46,7 +46,7 @@
 
         <div class="mb-3">
             <label>Application:</label>
-            <select class="form-control" asp-for="Item.ApplicationName" onload-load="@Url.Action("ApplicationNameOptions", "Items", new { Selected = Model.Item.ApplicationName })">
+            <select class="form-select" asp-for="Item.ApplicationName" onload-load="@Url.Action("ApplicationNameOptions", "Items", new { Selected = Model.Item.ApplicationName })">
                 <option value="">All apps</option>
                 @if (!String.IsNullOrEmpty(Model.Item.ApplicationName))
                 {

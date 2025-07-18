@@ -9,15 +9,27 @@ using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardLogging.TagHelpers
 {
+    /// <summary>
+    /// A Page-size Select tag-helper.
+    /// </summary>
     [HtmlTargetElement("pagesize-select", Attributes = "asp-for")]
     public class PageSizeSelectTagHelper : SelectTagHelper
     {
+        /// <summary>
+        /// Constructs a PageSizeSelectTagHelper instance.
+        /// </summary>
         public PageSizeSelectTagHelper(IHtmlGenerator generator) : base(generator)
         { }
 
-        [HtmlAttributeName("asp-sizes")]
+        /// <summary>
+        /// Space-separated list of available sizes.
+        /// </summary>
+        [HtmlAttributeName("sizes")]
         public string Sizes { get; set; } = "5 10 25 50 100 250";
 
+        /// <summary>
+        /// Initializes the TagHelper.
+        /// </summary>
         public override void Init(TagHelperContext context)
         {
             var sizes = this.Sizes.Split(' ').Select(s => Convert.ToInt32(s)).ToList();
@@ -30,6 +42,9 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.TagHelpers
             base.Init(context);
         }
 
+        /// <summary>
+        /// Processes the TagHelper.
+        /// </summary>
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "select";

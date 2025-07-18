@@ -32,7 +32,7 @@
 
     <div class="mb-3">
         <label for="@Html.IdFor(m => m.Item.Name)" class="form-label">Document Type: *</label>
-        <select class="form-control onchange-submit" asp-for="Item.TypeId" asp-items="Model.DocumentTypesInHierarchy" onchange-confirm="Properties may be lost. Continue anyway ?"></select>
+        <select class="form-select onchange-submit" asp-for="Item.TypeId" asp-items="Model.DocumentTypesInHierarchy" onchange-confirm="Properties may be lost. Continue anyway ?"></select>
     </div>
 
     <div class="mb-3">

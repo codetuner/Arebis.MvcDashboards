@@ -13,7 +13,7 @@
         <a href="@Url.Action("New")" class="btn btn-primary" onkeydown-click="+"><i class="spinner fas fa-solid fa-plus"></i> New</a>
         <div class="flex-grow-1"></div>
         <div>
-            <select class="form-control auto-width" asp-for="SelectedRoleName" asp-items="Model.RoleNames"><option value="">All</option></select>
+            <select class="form-select auto-width" asp-for="SelectedRoleName" asp-items="Model.RoleNames"><option value="">All</option></select>
         </div>
         <div class="ms-2">
             <input type="search" class="form-control oninput-change" asp-for="Query" style="max-width: 280px;" autocomplete="off" placeholder="Search" />
@@ -53,8 +53,8 @@
                 </tbody>
             </table>
         </div>
-        <pagesize-select asp-for="PageSize" class="form-control auto-width float-end"></pagesize-select>
-        <pagination-nav asp-for="Page" max="Model.MaxPage" />
+        <pagesize-select asp-for="PageSize" class="form-select auto-width float-end"></pagesize-select>
+        <pagination-nav asp-for="Page" max="Model.MaxPage" keyboard="true" />
 
     </div>
 

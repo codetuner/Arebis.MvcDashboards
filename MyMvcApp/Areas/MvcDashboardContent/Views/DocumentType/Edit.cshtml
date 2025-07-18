@@ -33,7 +33,7 @@
 
     <div class="mb-3">
         <label for="@Html.IdFor(m => m.Item.BaseId)" class="form-label">Base document type:</label>
-        <select asp-for="Item.BaseId" asp-items="Model.DocumentTypes.Select(t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = (t.Id == Model.Item.BaseId), Disabled = (t.Id == Model.Item.Id) })" class="form-control">
+        <select asp-for="Item.BaseId" asp-items="Model.DocumentTypes.Select(t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = (t.Id == Model.Item.BaseId), Disabled = (t.Id == Model.Item.Id) })" class="form-select">
             <option value=" ">-</option>
         </select>
         <span asp-validation-for="Item.BaseId" class="text-danger"></span>
@@ -58,7 +58,7 @@
                     </div>
                     <div class="col">
                         <div class="input-group mb-3">
-                            <select asp-for="Item.OwnPropertyTypes![i].DataTypeId" asp-items="Model.DataTypes.Select(t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = (t.Id == Model.Item.OwnPropertyTypes![i].DataTypeId ) })" class="form-control">
+                            <select asp-for="Item.OwnPropertyTypes![i].DataTypeId" asp-items="Model.DataTypes.Select(t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = (t.Id == Model.Item.OwnPropertyTypes![i].DataTypeId ) })" class="form-select">
                             </select>
                             <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#settings@(i)"><i class="spinner fas fa-solid fa-cog"></i></button>
                         </div>
