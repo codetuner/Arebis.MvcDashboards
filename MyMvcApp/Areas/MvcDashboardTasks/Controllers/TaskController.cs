@@ -113,31 +113,40 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         [HttpGet]
         public async Task<IActionResult> New(int? definitionId, int? cloneOfId)
         {
-            var original = context.Tasks.Find(cloneOfId ?? 0);
-            var model = (original == null)
-                ? new EditModel
+            var cloneOf = context.Tasks.Find(cloneOfId ?? 0);
+            if (cloneOf == null)
+            {
+                var model = new EditModel
                 {
                     Item = new Data.Tasks.ScheduledTask()
                     {
                         DefinitionId = definitionId ?? 0,
                         QueueName = "Main"
                     }
-                }
-                : new EditModel()
+                };
+
+                return await EditView(model);
+            }
+            else
+            {
+                var cloneArguments = (cloneOf.Arguments ?? "").Replace('\r', '\n').Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(l => l.Split('=', 2)).ToDictionary(a => a[0], a => a[1]);
+                cloneArguments["OriginalTaskId"] = cloneOf.Id.ToString();
+                var model = new EditModel()
                 {
                     Item = new Data.Tasks.ScheduledTask()
                     {
-                        DefinitionId = original.DefinitionId,
-                        Name = original.Name,
-                        QueueName = original.QueueName,
-                        MachineNameToRunOn = original.MachineNameToRunOn,
-                        Arguments = original.Arguments,
-                        UtcTimeToExecute = original.UtcTimeToExecute
+                        DefinitionId = cloneOf.DefinitionId,
+                        Name = cloneOf.Name,
+                        QueueName = cloneOf.QueueName,
+                        MachineNameToRunOn = cloneOf.MachineNameToRunOn,
+                        Arguments = String.Join("\r\n", cloneArguments.Select(a => a.Key + "=" + a.Value)),
+                        UtcTimeToExecute = cloneOf.UtcTimeToExecute
                     },
                     HasChanges = true
                 };
 
-            return await EditView(model);
+                return await EditView(model);
+            }
         }
 
         [HttpGet]
@@ -249,7 +258,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
             {
                 item.UtcTimeStarted = null;
                 item.Succeeded = null;
-                item.OutputWriteLine($"=== {DateTime.UtcNow:yyyy/MM/yy HH:mm:ss} Restarted");
+                item.OutputWriteLine($"=== {DateTime.UtcNow:yyyy/MM/dd HH:mm:ss} Restarted");
                 await context.SaveChangesAsync();
             }
 
@@ -264,7 +273,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
             {
                 item.UtcTimeDone = DateTime.UtcNow;
                 item.Succeeded = false;
-                item.OutputWriteLine($"=== {DateTime.UtcNow:yyyy/MM/yy HH:mm:ss} Aborted");
+                item.OutputWriteLine($"=== {DateTime.UtcNow:yyyy/MM/dd HH:mm:ss} Aborted");
                 await context.SaveChangesAsync();
             }
 
@@ -285,7 +294,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
             return View("Edit", model);
         }
 
-        private IActionResult ViewView(EditModel model)
+        private ViewResult ViewView(EditModel model)
         {
             // Return the view:
             return View("View", model);
