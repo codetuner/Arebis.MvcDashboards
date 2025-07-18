@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
+using Microsoft.AspNetCore.Hosting;
 
 #nullable enable
 
@@ -22,9 +23,9 @@ namespace MyMvcApp.Tasks
         private readonly TaskSchedulerMainLoop mainLoop;
         private Thread? mainLoopThread;
 
-        public TaskScheduler(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<TaskScheduler> logger, IScheduledTaskLoggerFactory? taskLoggerFactory)
+        public TaskScheduler(IServiceProvider serviceProvider, IConfiguration configuration, IWebHostEnvironment environment, ILogger<TaskScheduler> logger, IScheduledTaskLoggerFactory? taskLoggerFactory)
         {
-            this.mainLoop = new TaskSchedulerMainLoop(serviceProvider, configuration, logger, taskLoggerFactory, mainLoopCancellationTokenSource);
+            this.mainLoop = new TaskSchedulerMainLoop(serviceProvider, configuration, environment, logger, taskLoggerFactory, mainLoopCancellationTokenSource);
         }
 
         public System.Threading.Tasks.Task StartAsync(CancellationToken cancellationToken)
@@ -54,6 +55,7 @@ namespace MyMvcApp.Tasks
     {
         private readonly IServiceProvider serviceProvider;
         private readonly IConfiguration configuration;
+        private readonly IWebHostEnvironment environment;
         private readonly ILogger<TaskScheduler> logger;
         private readonly IScheduledTaskLoggerFactory? taskLoggerFactory;
         private readonly CancellationTokenSource mainLoopCancellationTokenSource;
@@ -63,10 +65,11 @@ namespace MyMvcApp.Tasks
         private readonly int schedulerMinimalDelayMs;
         private readonly int schedulerExtendedDelayMs;
 
-        public TaskSchedulerMainLoop(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<TaskScheduler> logger, IScheduledTaskLoggerFactory? taskLoggerFactory, CancellationTokenSource mainLoopCancellationTokenSource)
+        public TaskSchedulerMainLoop(IServiceProvider serviceProvider, IConfiguration configuration, IWebHostEnvironment environment, ILogger<TaskScheduler> logger, IScheduledTaskLoggerFactory? taskLoggerFactory, CancellationTokenSource mainLoopCancellationTokenSource)
         {
             this.serviceProvider = serviceProvider;
             this.configuration = configuration;
+            this.environment = environment;
             this.logger = logger;
             this.taskLoggerFactory = taskLoggerFactory;
             this.mainLoopCancellationTokenSource = mainLoopCancellationTokenSource;
@@ -205,31 +208,40 @@ namespace MyMvcApp.Tasks
                                 var arguments = new Dictionary<string, string?>();
                                 AddArguments(arguments, task.Definition.Arguments);
                                 AddArguments(arguments, task.Arguments);
-                                foreach (var prop in implementation.GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public))
+
+                                if (!this.environment.IsProduction() && arguments.Any(a => "ProductionOnly".Equals(a.Key) && a.Value != null && a.Value.Equals("true", StringComparison.OrdinalIgnoreCase)))
                                 {
-                                    var attr = (TaskArgumentAttribute?)prop.GetCustomAttribute(typeof(TaskArgumentAttribute));
-                                    if (attr != null)
+                                    task.OutputWriteLine($"Task is set to run only in production mode, but the application is not running in production mode. Skipping task.");
+                                }
+                                else
+                                {
+                                    // Set task arguments on implementation properties:
+                                    foreach (var prop in implementation.GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public))
                                     {
-                                        if (arguments.TryGetValue(attr.Name ?? prop.Name, out string? strvalue))
+                                        var attr = (TaskArgumentAttribute?)prop.GetCustomAttribute(typeof(TaskArgumentAttribute));
+                                        if (attr != null)
                                         {
-                                            prop.SetValue(implementation, ConvertValue(strvalue, prop.PropertyType));
+                                            if (arguments.TryGetValue(attr.Name ?? prop.Name, out string? strvalue))
+                                            {
+                                                prop.SetValue(implementation, ConvertValue(strvalue, prop.PropertyType));
+                                            }
                                         }
                                     }
-                                }
 
-                                // Execute task:
-                                var taskHost = new TaskHost(dbContext, task, arguments, taskCancellationTokenSource);
-                                taskHost.Logger = this.taskLoggerFactory?.CreateLogger(task);
-                                try
-                                {
-                                    var result = taskHost.Execute(implementation);
-                                    result.Wait();
+                                    // Execute task:
+                                    var taskHost = new TaskHost(dbContext, task, arguments, taskCancellationTokenSource);
+                                    taskHost.Logger = this.taskLoggerFactory?.CreateLogger(task);
+                                    try
+                                    {
+                                        var result = taskHost.Execute(implementation);
+                                        result.Wait();
+                                    }
+                                    finally
+                                    {
+                                        taskHost.Logger?.Dispose();
+                                    }
+                                    task.Succeeded = true;
                                 }
-                                finally
-                                {
-                                    taskHost.Logger?.Dispose();
-                                }
-                                task.Succeeded = true;
                             }
                             else
                             {

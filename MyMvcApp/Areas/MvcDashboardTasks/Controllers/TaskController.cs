@@ -43,6 +43,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 .Where(i => model.StatusFilter != "Queued" || (i.UtcTimeDone == null) && (i.Definition.IsActive || i.UtcTimeStarted != null))
                 .Where(i => model.StatusFilter != "Running" || (i.UtcTimeDone == null && i.UtcTimeStarted != null))
                 .Where(i => model.StatusFilter != "Succeeded" || i.Succeeded == true)
+                .Where(i => model.StatusFilter != "Skipped" || (i.UtcTimeDone != null && i.Succeeded == null))
                 .Where(i => model.StatusFilter != "Failed" || i.Succeeded == false)
                 .CountAsync();
             model.MaxPage = (count + model.PageSize - 1) / model.PageSize;
@@ -54,6 +55,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 .Where(i => model.StatusFilter != "Queued" || (i.UtcTimeDone == null) && (i.Definition.IsActive || i.UtcTimeStarted != null))
                 .Where(i => model.StatusFilter != "Running" || (i.UtcTimeDone == null && i.UtcTimeStarted != null))
                 .Where(i => model.StatusFilter != "Succeeded" || i.Succeeded == true)
+                .Where(i => model.StatusFilter != "Skipped" || (i.UtcTimeDone != null && i.Succeeded == null))
                 .Where(i => model.StatusFilter != "Failed" || i.Succeeded == false)
                 .OrderBy(model.Order ?? "Id DESC")
                 .Skip((model.Page - 1) * model.PageSize)

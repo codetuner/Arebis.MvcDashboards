@@ -33,7 +33,7 @@
     <div class="mb-3">
         <label for="@Html.IdFor(m => m.Item.DefinitionId)" class="form-label">Definition: *</label>
         <div class="input-group">
-            <select asp-for="Item.DefinitionId" asp-items="Model.Definitions!.Select(t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = (t.Id == Model.Item.DefinitionId) })" class="form-control onchange-submit">
+            <select asp-for="Item.DefinitionId" asp-items="Model.Definitions!.Select(t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = (t.Id == Model.Item.DefinitionId) })" class="form-select onchange-submit">
                 <option value="">-</option>
             </select>
             @if (Model.Item.DefinitionId != 0)
