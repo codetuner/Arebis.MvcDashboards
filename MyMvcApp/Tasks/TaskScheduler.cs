@@ -188,7 +188,7 @@ namespace MyMvcApp.Tasks
                         // Flag task as started:
                         task.MachineNameRanOn = Environment.MachineName;
                         task.UtcTimeStarted = DateTime.UtcNow;
-                        task.OutputWriteLine($"=== {task.UtcTimeStarted:yyyy/MM/yy HH:mm:ss} Started");
+                        task.OutputWriteLine($"=== {task.UtcTimeStarted:yyyy/MM/dd HH:mm:ss} Started");
                         dbContext.SaveChanges();
 
                         // Try to run task implementation:
@@ -245,7 +245,7 @@ namespace MyMvcApp.Tasks
                         finally
                         {
                             task.UtcTimeDone = DateTime.UtcNow;
-                            task.OutputWriteLine($"=== {task.UtcTimeDone:yyyy/MM/yy HH:mm:ss} Ended");
+                            task.OutputWriteLine($"=== {task.UtcTimeDone:yyyy/MM/dd HH:mm:ss} Ended");
                         }
                         dbContext.SaveChanges();
                     }
