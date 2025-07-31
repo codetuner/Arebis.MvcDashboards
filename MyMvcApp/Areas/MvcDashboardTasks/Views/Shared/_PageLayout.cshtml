@@ -264,17 +264,17 @@
                     if (this.tagName == "INPUT" && this.getAttribute('type') == 'checkbox') {
                         if ((!this.checked && this.value == value) || (this.checked && this.value != value)) {
                             this.checked = !this.checked;
-                            $(this).change();
+                            $(this).trigger("change");
                         }
                     } else if (this.tagName == "INPUT" && this.getAttribute('type') == 'radio') {
                         if (!this.checked && this.value == value) {
                             this.checked = !this.checked;
-                            $(this).change();
+                            $(this).trigger("change");
                         }
                     } else {
                         if (value != $(this).val()) {
                             $(this).val(value);
-                            $(this).change();
+                            $(this).trigger("change");
                         }
                     }
                 });
