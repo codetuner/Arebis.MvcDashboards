@@ -15,22 +15,24 @@
             <label class="btn"><input type="radio" x-onchange-sync="#StatusFilterSelect" name="StatusFilter" value="Queued" checked="@(Model.StatusFilter == "Queued" ? "checked" : null)" /> Queued</label>
             <label class="btn"><input type="radio" x-onchange-sync="#StatusFilterSelect" name="StatusFilter" value="Running" checked="@(Model.StatusFilter == "Running" ? "checked" : null)" /> Running</label>
             <label class="btn"><input type="radio" x-onchange-sync="#StatusFilterSelect" name="StatusFilter" value="Succeeded" checked="@(Model.StatusFilter == "Succeeded" ? "checked" : null)" /> Succeeded</label>
+            <label class="btn"><input type="radio" x-onchange-sync="#StatusFilterSelect" name="StatusFilter" value="Skipped" checked="@(Model.StatusFilter == "Skipped" ? "checked" : null)" /> Skipped</label>
             <label class="btn"><input type="radio" x-onchange-sync="#StatusFilterSelect" name="StatusFilter" value="Failed" checked="@(Model.StatusFilter == "Failed" ? "checked" : null)" /> Failed</label>
         </div>
-        <select id="StatusFilterSelect" class="ms-2 d-xxl-none form-control auto-width" x-onchange-sync="[name='StatusFilter']">
+        <select id="StatusFilterSelect" class="ms-2 d-xxl-none form-select auto-width" x-onchange-sync="[name='StatusFilter']" onchange-propagate="off">
             <option value="">All statusses</option>
             <option value="Queued" selected="@(Model.StatusFilter == "Queued" ? "selected" : null)">Queued</option>
             <option value="Running" selected="@(Model.StatusFilter == "Running" ? "selected" : null)">Running</option>
             <option value="Succeeded" selected="@(Model.StatusFilter == "Succeeded" ? "selected" : null)">Succeeded</option>
+            <option value="Skipped" selected="@(Model.StatusFilter == "Skipped" ? "selected" : null)">Skipped</option>
             <option value="Failed" selected="@(Model.StatusFilter == "Failed" ? "selected" : null)">Failed</option>
         </select>
         <div class="ms-2">
-            <select class="form-control auto-width" asp-for="DefinitionId" asp-items="Model.Definitions"><option value="">All definitions</option></select>
+            <select class="form-select auto-width" asp-for="DefinitionId" asp-items="Model.Definitions"><option value="">All definitions</option></select>
         </div>
         @if (Model.ProcessRoles.Count > 0)
         {
             <div class="ms-2">
-                <select class="form-control auto-width" asp-for="ProcessRole" asp-items="Model.ProcessRoles"><option value="">All roles</option></select>
+                <select class="form-select auto-width" asp-for="ProcessRole" asp-items="Model.ProcessRoles"><option value="">All roles</option></select>
             </div>
         }
         <div class="ms-2">
@@ -65,7 +67,7 @@
                     {
                         var tdstyle = (item.Succeeded == true) ? ""
                             : (item.Succeeded == false) ? "background-color: var(--bs-danger-bg-subtle)"
-                            : (item.UtcTimeStarted.HasValue) ? "background-color: var(--bs-info-bg-subtle)"
+                            : (item.UtcTimeStarted.HasValue && !item.UtcTimeDone.HasValue) ? "background-color: var(--bs-info-bg-subtle)"
                             : null;
                         var tdclass= (item.UtcTimeStarted == null && !item.Definition.IsActive) ? "x-text-dimmed" : null;
                         <tr href="@Url.Action("Edit", new { id = item.Id })">
@@ -79,8 +81,14 @@
                                 }
                                 else if (item.Succeeded == false)
                                 {
-                                    @*<i class="fas fa-solid fa-times"></i>*@
+                                    @*<i class="fas fa-solid fa-times-circle"></i>*@
                                     <i class="fas fa-solid fa-calendar-times"></i>
+                                }
+                                else if (item.UtcTimeDone.HasValue)
+                                {
+                                    @*<i class="fas fa-solid fa-times"></i>*@
+                                    @*<i class="far fa-times"></i>*@
+                                    <i class="far fa-calendar-times"></i>
                                 }
                                 else if (item.UtcTimeStarted.HasValue)
                                 {
@@ -104,8 +112,8 @@
                 </tbody>
             </table>
         </div>
-        <pagesize-select asp-for="PageSize" class="form-control auto-width float-end"></pagesize-select>
-        <pagination-nav asp-for="Page" max="Model.MaxPage" />
+        <pagesize-select asp-for="PageSize" class="form-select auto-width float-end"></pagesize-select>
+        <pagination-nav asp-for="Page" max="Model.MaxPage" keyboard="true" />
 
         <div>
             <span class="float-end">

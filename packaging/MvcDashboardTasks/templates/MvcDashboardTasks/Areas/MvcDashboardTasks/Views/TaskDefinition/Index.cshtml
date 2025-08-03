@@ -13,7 +13,7 @@
         @if (Model.ProcessRoles.Count > 0)
         {
             <div class="ms-2">
-                <select class="form-control auto-width" asp-for="ProcessRole" asp-items="Model.ProcessRoles"><option value="">All roles</option></select>
+                <select class="form-select auto-width" asp-for="ProcessRole" asp-items="Model.ProcessRoles"><option value="">All roles</option></select>
             </div>
         }
         <div class="ms-2">
@@ -61,8 +61,8 @@
                 </tbody>
             </table>
         </div>
-        <pagesize-select asp-for="PageSize" class="form-control auto-width float-end"></pagesize-select>
-        <pagination-nav asp-for="Page" max="Model.MaxPage" />
+        <pagesize-select asp-for="PageSize" class="form-select auto-width float-end"></pagesize-select>
+        <pagination-nav asp-for="Page" max="Model.MaxPage" keyboard="true" />
 
     </div>
 
