@@ -22,7 +22,7 @@
 
     <input type="hidden" asp-for="Item.Id" />
     <input type="hidden" asp-for="Item.Version" />
-    <input type="hidden" asp-for="Item.UtcTimeCreated" />
+    <input name="Item.UtcTimeCreated" value="@(Model.Item.UtcTimeCreated.ToString("u"))" type="x-datetime-utc-local" hidden />
     <input type="hidden" asp-for="HasChanges" />
 
     <div asp-validation-summary="All" class="alert alert-danger alert-dismissible fade show mb-3">

@@ -16,7 +16,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +42,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\MvcDashboardBlogs\Controllers\" />
+    <Folder Include="Areas\MvcDashboardBlogs\Data\" />
+    <Folder Include="Areas\MvcDashboardBlogs\Models\" />
+    <Folder Include="Areas\MvcDashboardBlogs\Views\" />
+    <Folder Include="Areas\MvcDashboardDiscuss\Controllers\" />
+    <Folder Include="Areas\MvcDashboardDiscuss\Data\" />
+    <Folder Include="Areas\MvcDashboardDiscuss\Models\" />
+    <Folder Include="Areas\MvcDashboardDiscuss\Views\" />
     <Folder Include="wwwroot\Media\NewFolder\" />
   </ItemGroup>
 
