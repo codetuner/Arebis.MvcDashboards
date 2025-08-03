@@ -23,7 +23,7 @@ namespace MyMvcApp.Tasks
         private readonly TaskSchedulerMainLoop mainLoop;
         private Thread? mainLoopThread;
 
-        public TaskScheduler(IServiceProvider serviceProvider, IConfiguration configuration, IWebHostEnvironment environment, ILogger<TaskScheduler> logger, IScheduledTaskLoggerFactory? taskLoggerFactory)
+        public TaskScheduler(IServiceProvider serviceProvider, IConfiguration configuration, IWebHostEnvironment environment, ILogger<TaskScheduler> logger, IScheduledTaskLoggerFactory? taskLoggerFactory = null)
         {
             this.mainLoop = new TaskSchedulerMainLoop(serviceProvider, configuration, environment, logger, taskLoggerFactory, mainLoopCancellationTokenSource);
         }
