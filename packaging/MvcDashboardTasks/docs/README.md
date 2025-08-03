@@ -40,7 +40,14 @@ Also make sure you have a route registered to handle ASP.NET MVC Areas:
 
 This route registration must be added _before_ the default route registration.
 
-Finally, start your ASP.NET MVC application and navigate to **/MvcDashboardTasks**. Run the database migrations if requested.
+## First run
+
+You can navigate to the dashboard and apply database migrations from there, or you can apply apply database migrations from the Package Manager Console with:
+
+    Update-Database -context ScheduledTasksDbContext
+
+Finally, start your ASP.NET MVC application and navigate to **/MvcDashboardTasks** to access the dashboard.
+If you haven't run database migrations yet, the dasboard will offer you to do so now.
 
 Press the **Get Started** button on the dashboard home page for further information.
 

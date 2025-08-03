@@ -57,11 +57,20 @@ _Note: You may add additional route sections **before** the {**path} section, su
     );
 </div>
 
-Next, add a reference to the **Arebis.Core.Services.Interfaces** nuget package.
+Following nuget packages will be added to your project:
+- **Arebis.Core.Services.Interfaces**
+- **Arebis.Core.Services.Translation**
+This last package provides translation services through the Bing, DeepL and Google Translate API's.
+See https://www.nuget.org/packages/Arebis.Core.Services.Translation for further setup and configuration instructions.
 
-If you want support for translations, then also add the **Arebis.Core.Services.Translation** package. This package provides translation services through the Bing, DeepL and Google Translate API's. See https://www.nuget.org/packages/Arebis.Core.Services.Translation for further setup and configuration instructions.
+## First run
 
-Finally, start your ASP.NET MVC application and navigate to **/MvcDashboardContent**. Run the database migrations if requested.
+You can navigate to the dashboard and apply database migrations from there, or you can apply apply database migrations from the Package Manager Console with:
+
+    Update-Database -context ContentDbContext
+
+Finally, start your ASP.NET MVC application and navigate to **/MvcDashboardContent** to access the dashboard.
+If you haven't run database migrations yet, the dasboard will offer you to do so now.
 
 Press the **Get Started** button on the dashboard home page for further information.
 

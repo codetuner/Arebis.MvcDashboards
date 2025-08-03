@@ -48,7 +48,16 @@ Also make sure you have a route registered to handle ASP.NET MVC Areas:
 
 This route registration must be added _before_ the default route registration.
 
-Finally, start your ASP.NET MVC application and navigate to **/MvcDashboardLogging**. Run the database migrations if requested. On the **Logs** tab you can now find logs for all failed requests.
+## First run
+
+You can navigate to the dashboard and apply database migrations from there, or you can apply apply database migrations from the Package Manager Console with:
+
+    Update-Database -context LoggingDbContext
+
+Finally, start your ASP.NET MVC application and navigate to **/MvcDashboardLogging** to access the dashboard.
+If you haven't run database migrations yet, the dasboard will offer you to do so now.
+
+On the **Logs** tab you can now find logs for all failed requests.
 
 When using the dashboard, it is adviced to have Output caching configured in your Program.cs. See:
 https://learn.microsoft.com/en-us/aspnet/core/performance/caching/output?view=aspnetcore-8.0
