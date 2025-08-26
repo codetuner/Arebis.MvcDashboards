@@ -5,6 +5,13 @@
 
 <h1>Task Definition <small class="text-muted">@(Model.Item.Name ?? "new")</small></h1>
 
+@if (!Model.UserIsAdmin)
+{
+    <div class="alert alert-info">
+        You have read-only access. To make changes, please contact your administrator.
+    </div>
+}
+
 <form asp-action="Submit" asp-route-id="@Model.Item.Id" method="post" onkeyenter-click="" autocomplete="off" onchange-set="HasChanges" onunloadchanged-confirm="Changes will be lost. Proceed anyway ?">
 
     <div class="overlay" hidden></div>
@@ -66,12 +73,15 @@
         <label asp-for="Item.IsActive" class="form-check-label">Active</label>
     </div>
 
-    @if (!Model.IsNew)
+    @if (Model.UserIsAdmin)
     {
-        <button type="submit" class="btn btn-danger float-end" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?"><i class="spinner fas fa-solid fa-trash-alt"></i> Delete</button>
+        if (!Model.IsNew)
+        {
+            <button type="submit" class="btn btn-danger float-end" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?"><i class="spinner fas fa-solid fa-trash-alt"></i> Delete</button>
+        }
+        <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Save")</button>
+        <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true" onkeydown-click="Ctrl+S"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
     }
-    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Save")</button>
-    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true" onkeydown-click="Ctrl+S"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
     <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>
 
 </form>

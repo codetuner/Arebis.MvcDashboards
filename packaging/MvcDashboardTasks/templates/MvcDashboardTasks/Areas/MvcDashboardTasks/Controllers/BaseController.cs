@@ -9,9 +9,19 @@ using System.Linq;
 namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
 {
     [Area("MvcDashboardTasks")]
-    [Authorize(Roles = "Administrator,TasksAdministrator")]
+    [Authorize(Roles = "Administrator,TasksAdministrator,TasksWriter,TasksReader")]
     public abstract class BaseController : Controller
     {
+        /// <summary>
+        /// An administrator can create and manage tasks as well as task definitions.
+        /// </summary>
+        public bool UserIsAdministrator => User.IsInRole("Administrator") || User.IsInRole("TasksAdministrator");
+
+        /// <summary>
+        /// A writer can create and manage tasks but not task definitions.
+        /// </summary>
+        public bool UserIsWriter => this.UserIsAdministrator || User.IsInRole("TasksWriter");
+
         [HttpGet]
         public IActionResult MvcDashboardsDropdown()
         {

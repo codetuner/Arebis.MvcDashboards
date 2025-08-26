@@ -10,5 +10,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Models.TaskDefinition
         public string? ProcessRole { get; set; }
 
         public List<SelectListItem> ProcessRoles { get; internal set; } = null!;
+        
+        public bool UserIsAdmin { get; internal set; }
     }
 }

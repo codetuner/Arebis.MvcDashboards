@@ -12,5 +12,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Models.Task
         public bool IsNew => this.Item.Id == 0;
 
         public Data.Tasks.ScheduledTaskDefinition[]? Definitions { get; internal set; } = null!;
+        
+        public bool UserCanWrite { get; internal set; }
     }
 }

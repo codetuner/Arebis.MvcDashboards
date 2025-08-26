@@ -66,12 +66,16 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 .Select(d => new SelectListItem() { Value = d.Id.ToString(), Text = d.Name, Selected = (model.DefinitionId == d.Id) })
                 .ToListAsync();
             model.ProcessRoles = (TaskController.ProcessRoles ??= await context.TaskDefinitions.Where(d => d.ProcessRole != null).Select(d => d.ProcessRole!).Distinct().OrderBy(r => r).Select(r => new SelectListItem() { Value = r, Text = r, Selected = (model.ProcessRole == r) }).ToListAsync());
+            model.UserCanWrite = this.UserIsWriter;
 
             return View("Index", model);
         }
 
         public async Task<IActionResult> IndexDelete(IndexModel model)
         {
+            // Check authorization:
+            if (!this.UserIsWriter) return Forbid();
+
             var deletedCount = 0;
             var skippedCount = 0;
             if (model.Selection != null)
@@ -115,6 +119,9 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         [HttpGet]
         public async Task<IActionResult> New(int? definitionId, int? cloneOfId)
         {
+            // Check authorization:
+            if (!this.UserIsWriter) return Forbid();
+
             var cloneOf = context.Tasks.Find(cloneOfId ?? 0);
             if (cloneOf == null)
             {
@@ -185,6 +192,9 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         [HttpPost]
         public async Task<IActionResult> Save(int id, EditModel model, bool apply = false)
         {
+            // Check authorization:
+            if (!this.UserIsWriter) return Forbid();
+
             // Ignore errors on "Definition":
             ModelState.Remove("Item.Definition");
 
@@ -223,6 +233,9 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id, EditModel model)
         {
+            // Check authorization:
+            if (!this.UserIsWriter) return Forbid();
+
             try
             {
                 var item = await context.Tasks.FindAsync(id);
@@ -255,6 +268,9 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         [HttpPost]
         public async Task<IActionResult> ForceRestart(int id)
         {
+            // Check authorization:
+            if (!this.UserIsWriter) return Forbid();
+
             var item = await context.Tasks.FindAsync(id);
             if (item != null && item.UtcTimeDone == null)
             {
@@ -270,6 +286,9 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         [HttpPost]
         public async Task<IActionResult> ForceAbort(int id)
         {
+            // Check authorization:
+            if (!this.UserIsWriter) return Forbid();
+
             var item = await context.Tasks.FindAsync(id);
             if (item != null && item.UtcTimeDone == null)
             {
@@ -291,6 +310,9 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
             // Retrieve all definitions:
             model.Definitions = await context.TaskDefinitions.OrderBy(d => d.Name).ToArrayAsync();
             if (model.Definitions.Length == 1) model.Item.DefinitionId = model.Definitions[0].Id;
+
+            // Authorizations:
+            model.UserCanWrite = this.UserIsWriter;
 
             // Return the view:
             return View("Edit", model);

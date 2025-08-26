@@ -79,15 +79,18 @@
 
     @if (Model.Item.UtcTimeDone == null && Model.Item.UtcTimeStarted.HasValue && Model.Item.UtcTimeStarted.Value.AddMinutes(5) < DateTime.UtcNow)
     {
-        <form>
-            <div class="alert alert-warning">
-                This task is still running. If this task is hanging due to an ungracefull shutdown of the host, you can either <button class="btn btn-link x-btn-inline" formaction="@Url.Action("ForceRestart", new { id = Model.Item.Id })" formmethod="post" onclick-confirm="Are you sure you want to restart this task ?">restart</button> or <button class="btn btn-link x-btn-inline" formaction="@Url.Action("ForceAbort", new { id = Model.Item.Id })" formmethod="post" onclick-confirm="Are you sure you want to abort this task ?">abort</button> this task.
-            </div>
-        </form>
+        if (Model.UserCanWrite)
+        {
+            <form>
+                <div class="alert alert-warning">
+                    This task is still running. If this task is hanging due to an ungracefull shutdown of the host, you can either <button class="btn btn-link x-btn-inline" formaction="@Url.Action("ForceRestart", new { id = Model.Item.Id })" formmethod="post" onclick-confirm="Are you sure you want to restart this task ?">restart</button> or <button class="btn btn-link x-btn-inline" formaction="@Url.Action("ForceAbort", new { id = Model.Item.Id })" formmethod="post" onclick-confirm="Are you sure you want to abort this task ?">abort</button> this task.
+                </div>
+            </form>
+        }
     }
 
     <div class="mb-3">
-        @if (!Model.IsNew)
+        @if (!Model.IsNew && Model.UserCanWrite)
         {
             <a class="btn btn-outline-secondary float-end" asp-action="New" asp-route-cloneOfId="@Model.Item.Id" history="replace"><i class="spinner fa fa-clone"></i> Clone</a>
         }

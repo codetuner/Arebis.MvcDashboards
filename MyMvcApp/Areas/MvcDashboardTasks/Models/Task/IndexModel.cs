@@ -22,5 +22,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Models.Task
         public List<SelectListItem> Definitions { get; internal set; } = null!;
 
         public List<SelectListItem> ProcessRoles { get; internal set; } = null!;
+
+        public bool UserCanWrite { get; internal set; } = false;
     }
 }

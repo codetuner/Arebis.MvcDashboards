@@ -48,6 +48,8 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
 
             model.ProcessRoles = (TaskController.ProcessRoles ??= await context.TaskDefinitions.Where(d => d.ProcessRole != null).Select(d => d.ProcessRole!).Distinct().OrderBy(r => r).Select(r => new SelectListItem() { Value = r, Text = r, Selected = (model.ProcessRole == r) }).ToListAsync());
 
+            model.UserIsAdmin = this.UserIsAdministrator;
+
             return View("Index", model);
         }
 
@@ -58,6 +60,9 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         [HttpGet]
         public IActionResult New()
         {
+            // Check authorization:
+            if (!this.UserIsAdministrator) return Forbid();
+
             var model = new EditModel
             {
                 Item = new Data.Tasks.ScheduledTaskDefinition()
@@ -91,6 +96,9 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         [HttpPost]
         public async Task<IActionResult> Save(int id, EditModel model, bool apply = false)
         {
+            // Check authorization:
+            if (!this.UserIsAdministrator) return Forbid();
+
             if (ModelState.IsValid)
             {
                 try
@@ -127,6 +135,9 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id, EditModel model)
         {
+            // Check authorization:
+            if (!this.UserIsAdministrator) return Forbid();
+
             try
             {
                 var item = await context.TaskDefinitions.FindAsync(id);
@@ -174,6 +185,9 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 .Distinct()
                 .OrderBy(s => s)
                 .ToList();
+
+            // Retrieve authorization:
+            model.UserIsAdmin = this.UserIsAdministrator;
 
             // Return the view:
             return View("Edit", model);

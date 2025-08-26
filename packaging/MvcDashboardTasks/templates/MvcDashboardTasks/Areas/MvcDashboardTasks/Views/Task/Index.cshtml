@@ -8,7 +8,10 @@
 <form id="taskIndexForm" class="card p-3 bg-white onchange-submit" action="@Url.Action("Index")" method="get" history="replace" sub-target="#subTarget">
 
     <div class="d-flex justify-content-between">
-        <a href="@Url.Action("New", new { definitionId = Model.DefinitionId })" class="btn btn-primary @(Model.Definitions.Any() ? "" : "disabled")" onkeydown-click="+"><i class="spinner fas fa-solid fa-plus"></i> New</a>
+        @if (Model.UserCanWrite)
+        {
+            <a href="@Url.Action("New", new { definitionId = Model.DefinitionId })" class="btn btn-primary @(Model.Definitions.Any() ? "" : "disabled")" onkeydown-click="+"><i class="spinner fas fa-solid fa-plus"></i> New</a>
+        }
         <div class="flex-grow-1"></div>
         <div class="ms-2 d-none d-xxl-block" style="border: solid 1px var(--bs-border-color); border-radius: var(--bs-border-radius);">
             <label class="btn"><input type="radio" x-onchange-sync="#StatusFilterSelect" name="StatusFilter" value="" checked="@(String.IsNullOrEmpty(Model.StatusFilter) ? "checked" : null)" /> All</label>
@@ -122,10 +125,13 @@
                     <input class="form-check-input" type="checkbox" id="autoRefresh" name="@(Html.NameFor(m => m.AutoRefresh))" value="True" checked="@(Model.AutoRefresh ? "checked" : null)">
                 </div>
             </span>
-            <button class="btn btn-danger" formaction="@Url.Action("IndexDelete")" formmethod="post" enable-ifanychecked="[name=Selection].candelete" onclick-confirm="Are you sure ?
+            @if (Model.UserCanWrite)
+            {
+                <button class="btn btn-danger" formaction="@Url.Action("IndexDelete")" formmethod="post" enable-ifanychecked="[name=Selection].candelete" onclick-confirm="Are you sure ?
 Note that only unstarted tasks will be deleted.">
-                <i class="spinner fas fa-solid fa-trash"></i> Delete
-            </button>
+                    <i class="spinner fas fa-solid fa-trash"></i> Delete
+                </button>
+            }
         </div>
 
     </div>

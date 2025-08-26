@@ -12,5 +12,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Models.TaskDefinition
         public List<string> ImplementationCandidateNames { get; internal set; } = new();
         
         public List<string> ProcessRoleCandidateNames { get; internal set; } = new();
+        
+        public bool UserIsAdmin { get; internal set; }
     }
 }
