@@ -94,12 +94,8 @@
             <div class="card-body p-2">
                 <input type="hidden" asp-for="Values[i].Id" />
                 <input type="hidden" asp-for="Values[i].Culture" />
-                <h5 class="card-title">@Model.Values[i].Culture</h5>
                 @if (User.IsAdministrator() || Model.WritableCultures.Contains(Model.Values[i].Culture))
                 {
-                    <div class="grow-wrap" style="max-height: 12em">
-                        <textarea asp-for="Values[i].Value" class="form-control @(Model.Item.MimeType == "text/html" ? "x-onfocusout-validatehtml" : null)" rows="1" style="max-height: 12em"></textarea>
-                    </div>
                     @if (Model.Item.MimeType == "text/html")
                     {
                         <span class="float-end">
@@ -132,21 +128,22 @@
                             </span>
                         </span>
                     }
+                }
+                <div>
+                    <h5 class="card-title me-4">@Model.Values[i].Culture</h5>
+                </div>
+                <div class="grow-wrap">
+                    @{ var writable = User.IsAdministrator() || Model.WritableCultures.Contains(Model.Values[i].Culture); }
+                    <textarea asp-for="Values[i].Value" class="form-control @(Model.Item.MimeType == "text/html" ? "x-onfocusout-validatehtml" : null)" rows="1" onfocusin-removeclass="current on textarea" onfocusin-addclass="current" readonly="@(!writable)"></textarea>
+                </div>
+                @if (User.IsAdministrator() || Model.WritableCultures.Contains(Model.Values[i].Culture))
+                {
                     <label>
                         <input type="checkbox" asp-for="Values[i].Reviewed" class="reviewed-chk" ifchecked-readonly="#@Html.IdFor(m => m.Values[i].Value)" ifchecked-hide="#@Html.IdFor(m => m.Values[i].Value)_tb" ifchecked-removeclass="d-none on #cult-rev-@(Model.Values[i].Culture)" ifchecked-addclass="d-none on #cult-tor-@(Model.Values[i].Culture)" /> Is reviewed
                     </label>
                 }
                 else
                 {
-                    <div class="grow-wrap" style="max-height: 12em">
-                        <textarea asp-for="Values[i].Value" class="form-control @(Model.Item.MimeType == "text/html" ? "x-onfocusout-validatehtml" : null)" rows="1" style="max-height: 12em" readonly></textarea>
-                    </div>
-                    @if (Model.Item.MimeType == "text/html")
-                    {
-                        <span class="float-end">
-                            <button type="submit" class="btn btn-light btn-sm p-0" asp-action="Preview" asp-route-id="@Model.Item.Id" asp-route-previewculture="@Model.Values[i].Culture" target="#preview-modal-body" tabindex="-1">Preview</button>
-                        </span>
-                    }
                     <input type="hidden" asp-for="Values[i].Reviewed" />
                 }
             </div>
@@ -190,8 +187,8 @@
             }
         }
     </span>
-    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Save")</button>
-    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true" onkeydown-click="Ctrl+S"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
+    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" onkeydown-click="Ctrl+S"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Save")</button>
+    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
     <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>
 
 </form>
