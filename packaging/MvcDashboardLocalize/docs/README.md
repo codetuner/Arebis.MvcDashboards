@@ -16,7 +16,7 @@ To install the project item template (to be done once per developer machine):
 
 To add the dashboard to an ASP.NET Core MVC 8+ project, from the project folder:
 
-    dotnet new MvcDashboardLocalize -- force
+    dotnet new MvcDashboardLocalize --force
 
 Or from the the solution folder:
 
