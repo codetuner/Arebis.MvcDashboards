@@ -177,12 +177,12 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
         #region Edit
 
         [HttpGet]
-        public async Task<IActionResult> New(int? typeId = null, string? culture = null, string? path = null, CancellationToken ct = default)
+        public async Task<IActionResult> New(int? typeId = null, string? path = null, CancellationToken ct = default)
         {
             var model = new EditModel();
             model.Item = Activator.CreateInstance<Data.Content.Document>();
-            if (this.localizationOptions.Value.SupportedUICultures != null && this.localizationOptions.Value.SupportedUICultures.Count > 1)
-                model.Item.Culture = this.localizationOptions.Value.DefaultRequestCulture.UICulture.Name;
+            //if (this.localizationOptions.Value.SupportedUICultures != null && this.localizationOptions.Value.SupportedUICultures.Count > 1)
+            //    model.Item.Culture = this.localizationOptions.Value.DefaultRequestCulture.UICulture.Name;
             model.Item.TypeId = typeId ?? 0;
             model.Item.Path = path;
 
@@ -261,7 +261,7 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
                         model.Item.LastPublishedOnUtc = null;
                         Response.Headers["X-Sircl-History-Replace"] = Url.Action("New");
                     }
-                    else if (andtranslate != null && this.translationService != null && model.Item.Culture != null)
+                    else if (andtranslate != null && this.translationService != null)
                     {
                         ModelState.Clear();
                         model.HasChanges = true;
@@ -270,7 +270,7 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
                         Response.Headers["X-Sircl-History-Replace"] = Url.Action("New");
 
                         // Translate properties:
-                        var fromLanguage = model.Item.Culture;
+                        var fromLanguage = model.Item.Culture ?? this.localizationOptions.Value.DefaultRequestCulture.UICulture.Name;
                         model.Item.Culture = andtranslate;
                         foreach (var property in model.Item.Properties ?? [])
                         {
@@ -360,7 +360,22 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
             {
                 var docCultures = await context.ContentDocuments.Where(d => d.Name == model.Item!.Name && d.Id != model.Item!.Id && d.DeletedOnUtc == null)
                     .Select(d => d.Culture).ToListAsync(ct);
-                model.SupportedUICultures = this.localizationOptions.Value.SupportedUICultures.Where(c => !docCultures.Contains(c.Name)).ToList();
+                model.SupportedUICultures = new List<System.Globalization.CultureInfo>();
+                foreach (var culture in this.localizationOptions.Value.SupportedUICultures.OrderBy(c => c.Name))
+                {
+                    // Add language-only culture:
+                    if (culture.Name.Length > 2
+                        && !model.SupportedUICultures.Any(c => c.Name == culture.TwoLetterISOLanguageName)
+                        && !docCultures.Contains(culture.TwoLetterISOLanguageName))
+                    {
+                        model.SupportedUICultures.Add(new System.Globalization.CultureInfo(culture.TwoLetterISOLanguageName));
+                    }
+                    // Add culture:
+                    if (!docCultures.Contains(culture.TwoLetterISOLanguageName))
+                    {
+                        model.SupportedUICultures.Add(culture);
+                    }
+                }
             }
             model.PathsList = context.ContentDocuments.Where(d => d.Path != null).Select(d => d.Path!).Distinct().OrderBy(p => p).ToList();
             model.HasTranslationService = this.translationService != null;

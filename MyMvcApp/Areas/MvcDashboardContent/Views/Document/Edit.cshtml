@@ -141,7 +141,7 @@
             <div class="float-end mb-2">
                 <button type="submit" asp-action="Preview" asp-route-id="@Model.Item.Id" class="btn btn-outline-primary" formtarget="_blank"><i class="fas fa-solid fa-eye"></i> Preview</button>
                 <button type="submit" asp-action="Save" asp-route-id="@Model.Item.Id" class="btn btn-primary" name="andcopy" value="true"><i class="spinner fas fa-solid fa-copy"></i> @(Model.IsNew ? "Create" : "Save") &amp; Copy</button>
-                @if (Model.HasTranslationService && Model.SupportedUICultures.Count > 1 && !String.IsNullOrWhiteSpace(Model.Item.Culture))
+                @if (Model.HasTranslationService && Model.SupportedUICultures.Count > 1)
                 {
                     <div class="btn-group dropup">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
