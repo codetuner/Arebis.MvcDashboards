@@ -50,11 +50,10 @@
 
     <h3>Register ContentDbContext</h3>
 
-    <p>To register the ContentDbContext, add the following line of code to the ConfigureServices method of the Startup class of your project:</p>
+    <p>To register the ContentDbContext, add the following line of code to the Program class of your project (before building the app):</p>
 <pre>
-<b><span class="new-code">services.AddDbContext&lt;Data.Content.ContentDbContext&gt;(options =&gt;
-    options.UseSqlServer(
-        Configuration.GetConnectionString("DefaultConnection")));</span></b>
+<b><span class="new-code">builder.Services.AddDbContext&lt;<i>YourWebApp</i>.Data.Content.ContentDbContext&gt;(options =&gt;
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));</span></b>
 </pre>
 
     <p>If you do not yet have a <code>"DefaultConnection"</code>, or whish to use a different connection, do not forget to register the connection in the ConnectionStrings section of your appsettings.js file.</p>
@@ -62,22 +61,28 @@
     <h3>Add routing for the MvcDashboardContent area and for content rendering</h3>
 
     <p>
-        Configure the following routes in the Configure method of your Startup class:
+        Configure the following routes in your Program class (after building the app):
     </p>
 
 <pre>
-app.UseEndpoints(endpoints =>
-{
-<b><span class="new-code">    endpoints.MapAreaControllerRoute(null, "MvcDashboardContent", "MvcDashboardContent/{controller=Home}/{action=Index}/{id?}");</span></b>
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
-    endpoints.MapRazorPages();
-<b><span class="new-code">    endpoints.MapControllerRoute(
-        name: "content",
-        pattern: "{**path}",
-        defaults: new { controller = "Content", action = "Render" });</span></b>
-});
+<b><span class="new-code">// Map routes to MVC Area controllers:
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");</span></b>
+
+// Map routes to non-area MVC controllers:
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Map routes to Razor pages (optional):
+app.MapRazorPages();
+
+<b><span class="new-code">// Map all remaining requests to the Content controller:
+app.MapControllerRoute(
+    name: "content",
+    pattern: "{**path}",
+    defaults: new { controller = "Content", action = "Render" });</span></b>
 </pre>
 
     <p>The first registration (using MapAreaControllerRoute) will register the MvcDashbboardContent area and make the content manager dashboard available on the <code>/MvcDashboardContent</code> URL.</p>
@@ -94,6 +99,16 @@ app.UseEndpoints(endpoints =>
 
 <pre>
 PM&gt; <b>Update-Database -Context "ContentDbContext"</b>
+</pre>
+
+    <h3>Enable Media files</h3>
+
+    <p>To enable uploading media files (images, video's you want to appear in the content), create a "Content" section with "Media" key in the appsettings.json file. The value is a folder or path relative to the wwwroot folder, where to upload media files.</p>
+
+<pre>
+  "Content": {
+    "Media": "Media"
+  },
 </pre>
 
     <h2>Security</h2>

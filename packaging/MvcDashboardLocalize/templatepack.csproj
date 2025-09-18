@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageType>Template</PackageType>
-    <PackageVersion>8.3.0</PackageVersion>
+    <PackageVersion>8.3.2</PackageVersion>
     <PackageId>Arebis.MvcDashboardLocalize</PackageId>
     <Title>ASP.NET MVC Dasboard Localize</Title>
     <Authors>codetuner</Authors>

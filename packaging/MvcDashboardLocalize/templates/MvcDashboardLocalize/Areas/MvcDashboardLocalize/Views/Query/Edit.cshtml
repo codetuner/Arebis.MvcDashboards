@@ -19,7 +19,7 @@
 
     <div class="mb-3">
         <label for="@Html.IdFor(m => m.Item.DomainId)" class="form-label">Domain: *</label>
-        <select asp-for="Item.DomainId" asp-items="Model.Domains!.Select(t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = (t.Id == Model.Item.DomainId) })" class="form-control">
+        <select asp-for="Item.DomainId" asp-items="Model.Domains!.Select(t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = (t.Id == Model.Item.DomainId) })" class="form-select">
             <option value="">-</option>
         </select>
         <span asp-validation-for="Item.DomainId" class="text-danger"></span>
@@ -60,8 +60,8 @@
     {
         <button type="submit" class="btn btn-danger float-end" asp-action="Delete" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure ?"><i class="spinner fas fa-solid fa-trash-alt"></i> Delete</button>
     }
-    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Save")</button>
-    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true" onkeydown-click="Ctrl+S"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
+    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" onkeydown-click="Ctrl+S"><i class="spinner fas fa-solid fa-check"></i> @(Model.IsNew ? "Create" : "Save")</button>
+    <button type="submit" class="btn btn-primary" asp-action="Save" asp-route-id="@Model.Item.Id" name="apply" value="true"><i class="spinner fas fa-solid fa-check"></i> Apply</button>
     <a href="history:back" class="btn btn-secondary"><i class="fas fa-solid fa-angle-left"></i> Back</a>
 
 </form>

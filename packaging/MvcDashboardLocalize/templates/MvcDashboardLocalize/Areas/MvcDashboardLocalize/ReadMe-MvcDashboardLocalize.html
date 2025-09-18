@@ -99,15 +99,18 @@
         The Arebis MvcDashboardLocalize component is implemented as an area. Therefore area routing must be defined. If this is not yet done in your project (if you do not use areas yet or did not define a default route for the areas), add the following (highlighted) code <i>before</i> the "default" route declaration:
     </p>
 
-<pre>
-<b><span class="new-code">app.MapControllerRoute(
-    name: "area",
+    <pre>
+<b><span class="new-code">// Map routes to MVC Area controllers:
+app.MapControllerRoute(
+    name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");</span></b>
 
+// Map routes to non-area MVC controllers:
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+// Map routes to Razor pages (optional):
 app.MapRazorPages();
 </pre>
 
@@ -154,8 +157,7 @@ app.MapRazorPages();
     </ol>
 
 <pre><span class="new-code">builder.Services.AddDbContext&lt;<i>YourWebApp</i>.Data.Localize.LocalizeDbContext&gt;(optionsAction: options =&gt;
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("<i>DefaultConnection</i>")));</span></pre>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("<i>DefaultConnection</i>")));</span></pre>
 
     <p><i><code>YourWebApp</code> should be replaced by the root namespace of the web project.</i></p>
 

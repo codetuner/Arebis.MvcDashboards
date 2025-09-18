@@ -55,4 +55,4 @@ Finally, start your ASP.NET MVC application and navigate to **/MvcDashboardLocal
 If you haven't run database migrations yet, the dasboard will offer you to do so now.
 
 To make your application localizable, read the article published on CodeProject:
-> [Localizing ASP.NET Core MVC Applications from Database](https://web.archive.org/web/20241113103935/https://www.codeproject.com/Articles/5348357/Localizing-ASP-NET-Core-MVC-applications-from-data)
+> [Localizing ASP.NET Core MVC Applications from Database](https://www.codeproject.com/articles/Localizing-ASP-NET-Core-MVC-Applications-from-Data) or [archived](https://web.archive.org/web/20241113103935/https://www.codeproject.com/Articles/5348357/Localizing-ASP-NET-Core-MVC-applications-from-data)
