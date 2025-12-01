@@ -2,7 +2,7 @@
 @inject MyMvcApp.Data.Content.ContentDbContext context
 @{
     Layout = "_Layout";
-    ViewData["Title"] = Html.Content("Title");
+    ViewData["Title"] = Model.Document["Title"].Value;
     var IsPreview = (bool)(ViewBag.IsPreview ?? false);
 }
 
