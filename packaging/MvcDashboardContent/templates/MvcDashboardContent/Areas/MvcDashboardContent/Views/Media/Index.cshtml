@@ -83,6 +83,7 @@
 </div>
 
 <form class="card p-3 bg-white" action="Index" method="post" history="replace" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Path" />
 
     <input id="uploadfile" type="file" name="files" class="onchange-submit" formaction="@Url.Action("UploadFiles")" multiple maxtotalsize="250 MB" maxtotalsize-alert="Total file size may not exceed 250 MB." hidden>
