@@ -46,7 +46,12 @@
 
     <div class="mb-3">
         <label for="@Html.IdFor(m => m.Item.Name)" class="form-label">Name: *</label>
-        <input asp-for="Item.Name" type="text" class="form-control" readonly="@(!User.IsAdministrator())" />
+        <input asp-for="Item.Name" type="text" class="form-control" readonly="@(!User.IsAdministrator())" onchange="
+            if (document.getElementById('@Html.IdFor(m => m.Values[0].Reviewed)').checked == false) {
+                var valueElement = document.getElementById('@Html.IdFor(m => m.Values[0].Value)');
+                if (valueElement && valueElement.value.trim() === '') { valueElement.value = this.value; }
+            }
+        " />
         <span asp-validation-for="Item.Name" class="text-danger"></span>
     </div>
     <div class="mb-3">
