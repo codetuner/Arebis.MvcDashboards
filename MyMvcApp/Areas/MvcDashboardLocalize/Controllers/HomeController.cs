@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {
-    public class HomeController : BaseController
+    public partial class HomeController : BaseController
     {
         private static bool migrationsComplete = false;
 

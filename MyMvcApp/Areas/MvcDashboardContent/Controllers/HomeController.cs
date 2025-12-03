@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
 {
-    public class HomeController : BaseController
+    public partial class HomeController : BaseController
     {
         private static bool migrationsComplete = false;
 

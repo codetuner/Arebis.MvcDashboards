@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
 {
-    public class RulesController : BaseController
+    public partial class RulesController : BaseController
     {
         #region Construction
 

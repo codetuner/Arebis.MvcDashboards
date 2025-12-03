@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
 {
     [Authorize(Roles = "Administrator,ContentAdministrator,ContentEditor,ContentAuthor")]
-    public class DocumentController : BaseController
+    public partial class DocumentController : BaseController
     {
         #region Construction
 

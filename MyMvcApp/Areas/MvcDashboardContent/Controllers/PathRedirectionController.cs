@@ -10,7 +10,7 @@ using System.Linq;
 namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
 {
     [Authorize(Roles = "Administrator,ContentAdministrator")]
-    public class PathRedirectionController : BaseController
+    public partial class PathRedirectionController : BaseController
     {
         #region Construction
 

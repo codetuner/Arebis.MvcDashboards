@@ -15,7 +15,7 @@ using System.Xml;
 
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {
-    public class DomainController : BaseController
+    public partial class DomainController : BaseController
     {
         #region Construction
 
