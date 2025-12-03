@@ -130,7 +130,7 @@
                     }
                 }
                 <div>
-                    <h5 class="card-title me-4">@Model.Values[i].Culture</h5>
+                    <h5 class="card-title me-4">@Model.Values[i].Culture <small class="ms-3 text-secondary">@(new System.Globalization.CultureInfo(Model.Values[i].Culture).EnglishName) (@(new System.Globalization.CultureInfo(Model.Values[i].Culture).NativeName))</small></h5>
                 </div>
                 <div class="grow-wrap">
                     @{ var writable = User.IsAdministrator() || Model.WritableCultures.Contains(Model.Values[i].Culture); }
