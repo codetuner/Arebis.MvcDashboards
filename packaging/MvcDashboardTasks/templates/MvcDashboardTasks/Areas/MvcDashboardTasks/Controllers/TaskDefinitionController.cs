@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
 {
-    public class TaskDefinitionController : BaseController
+    public partial class TaskDefinitionController : BaseController
     {
         #region Construction
 

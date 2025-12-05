@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
 {
-    public class TaskController : BaseController
+    public partial class TaskController : BaseController
     {
         internal static List<SelectListItem>? ProcessRoles = null;
 

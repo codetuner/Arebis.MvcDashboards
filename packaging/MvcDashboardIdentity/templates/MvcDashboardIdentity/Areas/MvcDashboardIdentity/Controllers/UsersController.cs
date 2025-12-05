@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
 {
-    public class UsersController : BaseController
+    public partial class UsersController : BaseController
     {
         #region Construction
 

@@ -9,7 +9,7 @@ using System.Linq;
 namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
 {
     [Authorize(Roles = "Administrator,ContentAdministrator")]
-    public class SecuredPathController : BaseController
+    public partial class SecuredPathController : BaseController
     {
         #region Construction
 

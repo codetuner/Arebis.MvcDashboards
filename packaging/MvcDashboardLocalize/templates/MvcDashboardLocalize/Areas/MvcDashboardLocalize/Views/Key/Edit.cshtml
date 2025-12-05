@@ -46,7 +46,12 @@
 
     <div class="mb-3">
         <label for="@Html.IdFor(m => m.Item.Name)" class="form-label">Name: *</label>
-        <input asp-for="Item.Name" type="text" class="form-control" readonly="@(!User.IsAdministrator())" />
+        <input asp-for="Item.Name" type="text" class="form-control" readonly="@(!User.IsAdministrator())" onchange="
+            if (document.getElementById('@Html.IdFor(m => m.Values[0].Reviewed)').checked == false) {
+                var valueElement = document.getElementById('@Html.IdFor(m => m.Values[0].Value)');
+                if (valueElement && valueElement.value.trim() === '') { valueElement.value = this.value; }
+            }
+        " />
         <span asp-validation-for="Item.Name" class="text-danger"></span>
     </div>
     <div class="mb-3">
@@ -130,7 +135,7 @@
                     }
                 }
                 <div>
-                    <h5 class="card-title me-4">@Model.Values[i].Culture</h5>
+                    <h5 class="card-title me-4">@Model.Values[i].Culture <small class="ms-3 text-secondary">@(new System.Globalization.CultureInfo(Model.Values[i].Culture).EnglishName) (@(new System.Globalization.CultureInfo(Model.Values[i].Culture).NativeName))</small></h5>
                 </div>
                 <div class="grow-wrap">
                     @{ var writable = User.IsAdministrator() || Model.WritableCultures.Contains(Model.Values[i].Culture); }

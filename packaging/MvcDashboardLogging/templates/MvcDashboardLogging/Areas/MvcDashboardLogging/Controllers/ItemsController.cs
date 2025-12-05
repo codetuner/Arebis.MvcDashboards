@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
 {
-    public class ItemsController : BaseController
+    public partial class ItemsController : BaseController
     {
         #region Construction
 

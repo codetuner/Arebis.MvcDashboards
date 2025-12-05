@@ -11,7 +11,7 @@ using System.Linq;
 namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
 {
     [Authorize(Roles = "Administrator,ContentAdministrator")]
-    public class DocumentTypeController : BaseController
+    public partial class DocumentTypeController : BaseController
     {
         #region Construction
 

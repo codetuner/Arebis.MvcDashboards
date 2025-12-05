@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageType>Logging</PackageType>
-    <PackageVersion>8.1.5</PackageVersion>
+    <PackageVersion>8.2.0</PackageVersion>
     <PackageId>Arebis.MvcDashboardLogging</PackageId>
     <Title>ASP.NET MVC Dasboard Logging</Title>
     <Authors>codetuner</Authors>

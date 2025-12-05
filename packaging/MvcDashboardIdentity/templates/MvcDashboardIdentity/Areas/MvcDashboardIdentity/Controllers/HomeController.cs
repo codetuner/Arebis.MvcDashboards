@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
 {
-    public class HomeController : BaseController
+    public partial class HomeController : BaseController
     {
         #region Construction
 

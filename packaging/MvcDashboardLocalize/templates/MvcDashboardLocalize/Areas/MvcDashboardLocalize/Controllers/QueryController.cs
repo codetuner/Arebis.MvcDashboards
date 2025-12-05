@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 {
     [Authorize(Roles = "Administrator,LocalizeAdministrator")]
-    public class QueryController : BaseController
+    public partial class QueryController : BaseController
     {
         #region Construction
 

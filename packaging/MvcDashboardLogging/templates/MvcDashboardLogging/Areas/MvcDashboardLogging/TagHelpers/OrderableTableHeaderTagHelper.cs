@@ -10,24 +10,41 @@ using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardLogging.TagHelpers
 {
+    /// <summary>
+    /// Creates a sortable table header.
+    /// Set the "asp-order" attribute with as value the current ordering expression to make the header sortable.
+    /// Add a "field-name" attribute if the table header innertext is different from the field name.
+    /// </summary>
     [HtmlTargetElement("th", Attributes = "asp-order")]
     public class OrderableTableHeaderTagHelper : TagHelper
     {
+        /// <summary>
+        /// Name of the form fields (by default "order").
+        /// </summary>
         [HtmlAttributeName("name")]
         public string Name { get; set; } = "order";
 
+        /// <summary>
+        /// Name of the field.
+        /// </summary>
         [HtmlAttributeName("field-name")]
         public string? FieldName { get; set; }
 
+        /// <summary>
+        /// Current order expression.
+        /// </summary>
         [HtmlAttributeName("asp-order")]
         public string? CurrentOrder { get; set; }
 
+        /// <summary>
+        /// Processes the taghelper.
+        /// </summary>
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             var originalContent = (await output.GetChildContentAsync()).GetContent();
             var fieldName = FieldName ?? originalContent;
 
-            output.Attributes.Add("onclick-check", "> INPUT[name='"+ Name + "']:not(:checked)");
+            output.Attributes.Add("onclick-check", "> INPUT[name='" + Name + "']:not(:checked)");
 
             var builder = new StringBuilder();
 

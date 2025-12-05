@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MyMvcApp.Areas.MvcDashboardIdentity.Controllers
 {
-    public class RolesController : BaseController
+    public partial class RolesController : BaseController
     {
         #region Construction
 
