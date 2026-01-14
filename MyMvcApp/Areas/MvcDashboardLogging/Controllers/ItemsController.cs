@@ -36,6 +36,7 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
             var query = context.RequestLogs
                 .AsQueryable()
                 .Where(d => model.ApplicationFilter == null || d.ApplicationName == model.ApplicationFilter)
+                .Where(d => model.HostFilter == null || d.Host == model.HostFilter)
                 .Where(d => model.AspectFilter == null || d.AspectName == model.AspectFilter)
                 .Where(d => model.BookmarkedFilter == false || d.IsBookmarked == true);
             if (!String.IsNullOrWhiteSpace(model.Query))

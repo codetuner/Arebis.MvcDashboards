@@ -9,6 +9,13 @@
 
     <div class="d-flex justify-content-between">
         <div class="flex-grow-1"></div>
+        @if (Model.HostFilter != null) 
+        {
+            <div class="me-3 border rounded px-2 py-1">
+                <input type="hidden" asp-for="HostFilter" />
+                <i class="fas fa-server" title="@Model.HostFilter"></i>
+            </div>
+        }
         <div>
             <select class="form-select auto-width" asp-for="ApplicationFilter" onload-load="@Url.Action("ApplicationNameOptions", "Items", new { Selected = Model.ApplicationFilter })">
                 <option value="">All apps</option>

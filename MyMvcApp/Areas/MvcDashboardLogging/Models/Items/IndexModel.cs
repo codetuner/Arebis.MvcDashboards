@@ -10,6 +10,8 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Models.Items
 {
     public class IndexModel : BaseIndexModel<RequestLog>
     {
+        public string? HostFilter { get; set; }
+
         public string? ApplicationFilter { get; set; }
         
         public string? AspectFilter { get; set; }

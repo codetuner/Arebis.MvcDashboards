@@ -37,13 +37,13 @@ else if (item.StatusCode >= 400)
 else
 {<span class="badge rounded-pill bg-success">@item.StatusCode</span>}
     <small>@item.Method</small>
-    <b><a href="@(item.Request.ContainsKey("Header: cf-visitor") ? item.Request["Header: cf-visitor"].Contains("https") ? "https:" : "http:" : item.Request.ContainsKey("Scheme") ? item.Request["Scheme"] + ":" : "")//@(item.Request.ContainsKey("Header: Host") ? item.Request["Header: Host"] : "")@(item.Url)" target="_blank">@(item.Url)</a><button class="btn btn-light btn-sm" onclick-copytext="@(item.Request.ContainsKey("Header: cf-visitor") ? item.Request["Header: cf-visitor"].Contains("https") ? "https:" : "http:" : item.Request.ContainsKey("Scheme") ? item.Request["Scheme"] + ":" : "")//@(item.Request.ContainsKey("Header: Host") ? item.Request["Header: Host"] : "")@(item.Url)" title="Copy to clipboard"><i class="far fa-clipboard spinner"></i></button></b>
+    <b><a href="@(item.Request.ContainsKey("Header: cf-visitor") ? item.Request["Header: cf-visitor"].Contains("https") ? "https:" : "http:" : item.Request.ContainsKey("Scheme") ? item.Request["Scheme"] + ":" : "")//@(item.Request.ContainsKey("Header: Host") ? item.Request["Header: Host"] : "")@(item.Url)" target="_blank" title="Navigate URL">@(item.Url)</a><button class="btn btn-light btn-sm" onclick-copytext="@(item.Request.ContainsKey("Header: cf-visitor") ? item.Request["Header: cf-visitor"].Contains("https") ? "https:" : "http:" : item.Request.ContainsKey("Scheme") ? item.Request["Scheme"] + ":" : "")//@(item.Request.ContainsKey("Header: Host") ? item.Request["Header: Host"] : "")@(item.Url)" title="Copy to clipboard"><i class="far fa-clipboard spinner"></i></button></b>
 </div>
 <div class="mb-1">
-    Application Name: <b>@item.ApplicationName</b>
+    Application Name: <a asp-action="Index" asp-route-ApplicationFilter="@item.ApplicationName" title="Filter by application"><b>@item.ApplicationName</b></a>
 </div>
 <div class="mb-3">
-    Host Name: <b>@item.Host</b>
+    Host Name: <a asp-action="Index" asp-route-HostFilter="@item.Host" title="Filter by host"><b>@item.Host</b></a>
 </div>
 
 @if (item.StatusCode == 400 && (item.Method == "POST" || item.Method == "PUT"))
@@ -57,8 +57,10 @@ else
 {
     <div class="card mb-3">
         <div class="card-body">
-            <span id="typeAndMessage"><strong>@item.Type</strong>@if (!String.IsNullOrWhiteSpace(item.Message))
-            {<text>: <span>@item.Message <button class="btn btn-light btn-sm" onclick-copyinnertext="#typeAndMessage" title="Copy to clipboard"><i class="far fa-clipboard spinner"></i></button></span></text>}</span>
+            <span id="typeAndMessage">
+                <strong>@item.Type</strong>@if (!String.IsNullOrWhiteSpace(item.Message))
+                {<text>: <span>@item.Message <button class="btn btn-light btn-sm" onclick-copyinnertext="#typeAndMessage" title="Copy to clipboard"><i class="far fa-clipboard spinner"></i></button></span></text>}
+            </span>
         </div>
     </div>
 }
