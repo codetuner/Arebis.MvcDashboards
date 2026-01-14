@@ -156,6 +156,7 @@ app.UseArebisRequestLog()
     .ApplyDoNotLogRule()
     .LogSlowRequests()
     .LogExceptions()
+    .LogStatus()
     .LogNotFounds();
 
 #endregion
