@@ -1,0 +1,81 @@
+﻿@using System.Globalization
+@model PreviewModel
+
+<h1>Preview @Model.Item.Name</h1>
+
+<div class="ms-2 mb-3 fs-4">
+    @foreach (var cult in Model.Item.Cultures ?? [])
+    {
+        if (cult == Model.CultureCode)
+        {
+            <b class="me-3" title="@(new CultureInfo(cult).EnglishName)">@cult</b>
+        }
+        else
+        {
+            <a asp-action="Preview" asp-route-id="@Model.Item.Id" asp-route-cultureCode="@cult" asp-route-codeView="@Model.CodeView" class="me-3" title="@(new CultureInfo(cult).EnglishName)" history="replace">@cult</a>
+        }
+    }
+    @if (Model.CodeView)
+    {
+        <span class="float-end">
+            <a asp-action="Preview" asp-route-id="@Model.Item.Id" asp-route-cultureCode="@Model.CultureCode" asp-route-codeView="false" class="me-3" history="replace">Result</a><b class="me-3">Code</b>
+        </span>
+    }
+    else
+    {
+        <span class="float-end">
+            <b class="me-3">Result</b><a asp-action="Preview" asp-route-id="@Model.Item.Id" asp-route-cultureCode="@Model.CultureCode" asp-route-codeView="true" class="me-3" history="replace">Code</a>
+        </span>
+    }
+</div>
+
+<div class="card">
+    <div class="card-body xtable-responsive">
+        <table class="table table-hover" style="table-layout: fixed; width: 100%;">
+            <colgroup>
+                <col style="width: 80px;">
+                <col style="width: 200px;">
+                <col style="width: 140px;">
+                <col>
+                <col style="width: 100px;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Key</th>
+                    <th>MimeType</th>
+                    <th>Value</th>
+                    <th>Reviewed</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Item.Keys ?? [])
+                {
+                    <tr>
+                        <td valign="top"><a asp-action="Edit" asp-controller="Key" asp-route-id="@item.Id">@item.Id</a></td>
+                        <td valign="top">
+                            <div style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@item.Name</div>
+                        </td>
+                        <td valign="top">@item.MimeType</td>
+                        <td valign="top">
+                            @if ("text/html".Equals(item.MimeType) && !Model.CodeView)
+                            {
+                                @:@Html.Raw(item.Values?.SingleOrDefault()?.Value)
+                            }
+                            else
+                            {
+                                @:@item.Values?.SingleOrDefault()?.Value
+                            }
+                        </td>
+                        <td valign="top">
+                            @if (item.Values?.SingleOrDefault()?.Reviewed == true) 
+                            {
+                                <i class="bi bi-check">V</i> 
+                            }
+                            </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

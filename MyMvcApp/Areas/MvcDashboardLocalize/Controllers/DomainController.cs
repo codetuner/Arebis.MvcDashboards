@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
@@ -255,6 +256,33 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
             {
                 doc.WriteContentTo(writer);
             }
+        }
+
+        #endregion
+
+        #region Preview
+
+        public async Task<IActionResult> Preview(int id, string? cultureCode = null, bool codeView = false)
+        {
+            var domain = context.LocalizeDomains.AsNoTracking().FirstOrDefault(d => d.Id == id);
+            if (domain == null) return NotFound();
+
+            cultureCode ??= domain.Cultures?.FirstOrDefault();
+            if (cultureCode == null) return NotFound();
+            if (domain.Cultures == null || !domain.Cultures.Contains(cultureCode)) return NotFound();
+
+            domain = await context.LocalizeDomains.AsNoTracking()
+                .Include(d => d.Keys!.OrderBy(k => k.Id)).ThenInclude(k => k.Values!.Where(v => v.Culture == cultureCode))
+                .FirstAsync(d => d.Id == id);
+
+            var model = new PreviewModel
+            {
+                Item = domain,
+                CultureCode = cultureCode,
+                CodeView = codeView
+            };
+
+            return View(model);
         }
 
         #endregion

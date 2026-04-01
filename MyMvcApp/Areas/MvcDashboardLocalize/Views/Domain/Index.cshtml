@@ -23,6 +23,7 @@
                 <a asp-action="Edit" asp-route-id="@domain.Id" class="card-link" target="#modal">Edit</a>
             }
             <a asp-action="Index" asp-controller="Key" asp-route-domainid="@domain.Id" class="card-link">Keys</a>
+            <a asp-action="Preview" asp-controller="Domain" asp-route-id="@domain.Id" class="card-link">Preview</a>
             @if (User.IsAdministrator())
             {
                 <a asp-action="Index" asp-controller="Query" asp-route-domainid="@domain.Id" class="card-link">Queries</a>
