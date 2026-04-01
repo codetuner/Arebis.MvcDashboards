@@ -139,7 +139,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
                 if (valuesToTranslate.Any())
                 {
                     var substitutions = new List<KeyValuePair<string, string>>();
-                    var result = (await translationService.TranslateAsync(source.Culture, valuesToTranslate.Select(v => v.Culture), model.Item.MimeType, ToTranslatable(source.Value, substitutions), cancellationToken)).ToList();
+                    var result = (await translationService.TranslateAsync(source.Culture, valuesToTranslate.Select(v => v.Culture), model.Item.MimeType, ToTranslatable(source.Value, substitutions), ct: cancellationToken)).ToList();
                     for (int i = 0; i < valuesToTranslate.Count; i++)
                     {
                         if (result[i] != null)

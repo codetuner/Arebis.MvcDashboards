@@ -282,7 +282,7 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
                             {
                                 if (Boolean.Parse((string)css ?? "false") == true)
                                 {
-                                    var translation = await this.translationService.TranslateAsync(fromLanguage, andtranslate, type.CombinedSettings.ContainsKey("MimeType") ? (string)type.CombinedSettings["MimeType"] : "text/text", new string[] { property.Value }, ct);
+                                    var translation = await this.translationService.TranslateAsync(fromLanguage, andtranslate, type.CombinedSettings.ContainsKey("MimeType") ? (string)type.CombinedSettings["MimeType"] : "text/text", new string[] { property.Value }, ct: ct);
                                     property.Value = translation.FirstOrDefault();
                                 }
                             }
