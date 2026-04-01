@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -65,12 +66,12 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
             return this.Forward(Url.Action(action, controller, values) ?? String.Empty, target);
         }
 
-        protected void SetToastrMessage(string level, string text, string? title = null)
-        { 
+        protected void AddToastrMessage(string level, string text, string? title = null)
+        {
             if (String.IsNullOrWhiteSpace(title))
-                Response.Headers["X-Sircl-Toastr"] = $"{level}|{text}";
+                Response.Headers.Append("X-Sircl-Toastr", $"{level}|{text}");
             else
-                Response.Headers["X-Sircl-Toastr"] = $"{level}|{text}|{title}";
+                Response.Headers.Append("X-Sircl-Toastr", $"{level}|{text}|{title}");
         }
     }
 }

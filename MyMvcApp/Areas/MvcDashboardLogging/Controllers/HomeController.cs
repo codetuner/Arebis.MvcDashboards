@@ -146,11 +146,11 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
             // Set Toaster:
             if (count > 0)
             {
-                SetToastrMessage("success", $"Successfully flushed {count:#,##0} request log records.");
+                AddToastrMessage("success", $"Successfully flushed {count:#,##0} request log records.");
             }
             else
             {
-                SetToastrMessage("info", $"No request log records flushed.");
+                AddToastrMessage("info", $"No request log records flushed.");
             }
 
             // Return view:

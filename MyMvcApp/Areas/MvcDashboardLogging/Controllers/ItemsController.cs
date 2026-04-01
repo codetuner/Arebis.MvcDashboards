@@ -136,7 +136,7 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
 
                 if (matchingRules.Any(r => r.IsActive == true))
                 {
-                    this.SetToastrMessage("info", "There is already a matching rule. The server may need to be restarted for the rule to be applied.");
+                    this.AddToastrMessage("info", "There is already a matching rule. The server may need to be restarted for the rule to be applied.");
                 }
                 else if (matchingRules.Any(r => r.IsActive == false))
                 {
@@ -144,7 +144,7 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
                     {
                         rule.IsActive = true;
                     }
-                    this.SetToastrMessage("success", "A rule existed and has now been activated.");
+                    this.AddToastrMessage("success", "A rule existed and has now been activated.");
                 }
                 else
                 {
@@ -158,14 +158,14 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
                         Url = log.Url,
                         IsActive = true
                     });
-                    this.SetToastrMessage("success", "A rule has been created to ignore similar logs in the future.");
+                    this.AddToastrMessage("success", "A rule has been created to ignore similar logs in the future.");
                 }
 
                 context.SaveChanges();
             }
             else
             {
-                this.SetToastrMessage("error", "Failed to create rule: missing template log.");
+                this.AddToastrMessage("error", "Failed to create rule: missing template log.");
             }
 
             return NoContent();

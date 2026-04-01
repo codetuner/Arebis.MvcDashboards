@@ -149,7 +149,7 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
             }
             else
             {
-                SetToastrMessage("error", "Failed to save the rule.<br/>See validation messages for more information.");
+                AddToastrMessage("error", "Failed to save the rule.<br/>See validation messages for more information.");
             }
 
             //Response.Headers.Add("X-Sircl-History-Replace", Url.Action("Edit", new { id = model.Item!.Id }));
@@ -164,13 +164,13 @@ namespace MyMvcApp.Areas.MvcDashboardLogging.Controllers
                 var item = await context.LogActionRules.FindAsync(id);
                 if (item == null)
                 {
-                    this.SetToastrMessage("error", "Rule not found.");
+                    this.AddToastrMessage("error", "Rule not found.");
                 }
                 else
                 {
                     context.Remove(item);
                     await context.SaveChangesAsync();
-                    this.SetToastrMessage("success", "Rule deleted");
+                    this.AddToastrMessage("success", "Rule deleted");
                 }
                 return Back(false);
             }

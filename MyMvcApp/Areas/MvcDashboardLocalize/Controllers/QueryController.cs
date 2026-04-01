@@ -102,7 +102,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
             }
             else
             {
-                SetToastrMessage("error", "Failed to save the query.<br/>See validation messages for more information.");
+                AddToastrMessage("error", "Failed to save the query.<br/>See validation messages for more information.");
             }
 
             Response.Headers["X-Sircl-History-Replace"] = Url.Action("Edit", new { id = model.Item.Id });

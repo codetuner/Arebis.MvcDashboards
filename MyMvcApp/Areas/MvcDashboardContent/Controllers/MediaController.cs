@@ -107,7 +107,7 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
         {
             if (files == null)
             {
-                this.SetToastrMessage("error", "Failed to upload files. Make sure total file size is not too large.");
+                this.AddToastrMessage("error", "Failed to upload files. Make sure total file size is not too large.");
                 return NoContent();
             }
             else
@@ -124,7 +124,7 @@ namespace MyMvcApp.Areas.MvcDashboardContent.Controllers
                         }
                     }
                 }
-                this.SetToastrMessage("success", "File(s) uploaded.");
+                this.AddToastrMessage("success", "File(s) uploaded.");
             }
 
             return IndexView(model);

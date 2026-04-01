@@ -98,11 +98,11 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
             
             if (skippedCount > 0)
             {
-                this.SetToastrMessage("warning", $"{deletedCount} task(s) deleted. Some tasks were already running or completed and could not be deleted.");
+                this.AddToastrMessage("warning", $"{deletedCount} task(s) deleted. Some tasks were already running or completed and could not be deleted.");
             }
             else if (deletedCount> 0)
             {
-                this.SetToastrMessage("success", $"{deletedCount} task(s) deleted.");
+                this.AddToastrMessage("success", $"{deletedCount} task(s) deleted.");
             }
 
 
@@ -223,7 +223,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
             }
             else
             {
-                SetToastrMessage("error", "Failed to save the task.<br/>See validation messages for more information.");
+                AddToastrMessage("error", "Failed to save the task.<br/>See validation messages for more information.");
             }
 
             Response.Headers["X-Sircl-History-Replace"] = Url.Action("Edit", new { id = model.Item!.Id });
@@ -241,17 +241,17 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 var item = await context.Tasks.FindAsync(id);
                 if (item == null)
                 {
-                    this.SetToastrMessage("error", "Task not found.");
+                    this.AddToastrMessage("error", "Task not found.");
                 }
                 else if (item.UtcTimeStarted != null)
                 {
-                    this.SetToastrMessage("error", "Cannot delete a task that has already started.");
+                    this.AddToastrMessage("error", "Cannot delete a task that has already started.");
                 }
                 else
                 {
                     context.Remove(item);
                     await context.SaveChangesAsync();
-                    this.SetToastrMessage("success", "Task deleted");
+                    this.AddToastrMessage("success", "Task deleted");
                 }
                 return Back(false);
             }

@@ -125,7 +125,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
             }
             else
             {
-                SetToastrMessage("error", "Failed to save the task definition.<br/>See validation messages for more information.");
+                AddToastrMessage("error", "Failed to save the task definition.<br/>See validation messages for more information.");
             }
 
             Response.Headers["X-Sircl-History-Replace"] = Url.Action("Edit", new { id = model.Item!.Id });
@@ -143,11 +143,11 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 var item = await context.TaskDefinitions.FindAsync(id);
                 if (item == null)
                 {
-                    this.SetToastrMessage("error", "Task definition not found.");
+                    this.AddToastrMessage("error", "Task definition not found.");
                 }
                 else if (context.Tasks.Any(t => t.DefinitionId == id && t.UtcTimeStarted != null))
                 {
-                    this.SetToastrMessage("error", "Cannot delete definitions when tasks have already run or started.");
+                    this.AddToastrMessage("error", "Cannot delete definitions when tasks have already run or started.");
                 }
                 else
                 {
@@ -155,7 +155,7 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                     await context.SaveChangesAsync();
                     TaskController.ProcessRoles = null; // Flush cached data
 
-                    this.SetToastrMessage("success", "Task definition deleted");
+                    this.AddToastrMessage("success", "Task definition deleted");
                 }
                 return Back(false);
             }

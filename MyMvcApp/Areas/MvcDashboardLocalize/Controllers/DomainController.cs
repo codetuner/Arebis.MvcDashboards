@@ -162,7 +162,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
                 {
                     context.LocalizeDomains.Add(domain);
                     context.SaveChanges();
-                    SetToastrMessage("success", $"Domain {domain.Name} imported with Id {domain.Id}.");
+                    AddToastrMessage("success", $"Domain {domain.Name} imported with Id {domain.Id}.");
                 }
             }
 

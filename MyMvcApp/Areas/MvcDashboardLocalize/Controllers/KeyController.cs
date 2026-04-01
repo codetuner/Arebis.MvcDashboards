@@ -117,7 +117,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
             // Check MimeType (Plain text or Html) is given:
             if (String.IsNullOrEmpty(model.Item?.MimeType))
             {
-                SetToastrMessage("error", "Select content type then retry.");
+                AddToastrMessage("error", "Select content type then retry.");
                 return await EditView(model);
             }
 
@@ -158,15 +158,15 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 
             if (failedTranslations.Any())
             {
-                SetToastrMessage($"warning", $"Key translated with errors for {(String.Join(", ", failedTranslations))}.");
+                AddToastrMessage($"warning", $"Key translated with errors for {(String.Join(", ", failedTranslations))}.");
             }
             else if (succeededTranslations.Any())
             {
-                SetToastrMessage("success", $"Key successfully translated in {(String.Join(", ", succeededTranslations))}.");
+                AddToastrMessage("success", $"Key successfully translated in {(String.Join(", ", succeededTranslations))}.");
             }
             else
             {
-                SetToastrMessage("info", "Nothing to translate.<br/>Only empty, non-reviewed cultures are translated.");
+                AddToastrMessage("info", "Nothing to translate.<br/>Only empty, non-reviewed cultures are translated.");
             }
 
             return await EditView(model);
@@ -319,7 +319,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
             }
             else
             {
-                SetToastrMessage("error", "Failed to save the key.<br/>See validation messages for more information.");
+                AddToastrMessage("error", "Failed to save the key.<br/>See validation messages for more information.");
             }
 
             return await EditView(model);
