@@ -35,6 +35,7 @@
                 <thead>
                     <tr>
                         <th class="d-none onchange-nosubmit"><input type="checkbox" ifchecked-check="<table|>tbody input[type=checkbox]" ifunchecked-uncheck="<table|>tbody input[type=checkbox]" /></th>
+                        <th asp-order="@Model.Order">Id</th>
                         <th>Domain</th>
                         <th asp-order="@Model.Order">Name</th>
                         <th class="d-none d-md-table-cell" asp-order="@Model.Order" field-name="ForPath">For path</th>
@@ -46,6 +47,7 @@
                     {
                         <tr href="@Url.Action("Edit", new { id = item.Id })">
                             <td class="d-none onchange-nosubmit" onclick-propagate="off"><input type="checkbox" /></td>
+                            <td>@item.Id</td>
                             <td>@item.Domain!.Name</td>
                             <td>
                                 @if (item.MimeType == MediaTypeNames.Text.Html)

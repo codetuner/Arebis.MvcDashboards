@@ -64,5 +64,7 @@ namespace MyMvcApp.Data.Localize
         public DbSet<KeyValue> LocalizeKeyValues { get; set; } = null!;
 
         public DbSet<Query> LocalizeQueries { get; set; } = null!;
+     
+        public DbSet<BackgroundJob> LocalizeBackgroundJobs { get; set; } = null!;
     }
 }

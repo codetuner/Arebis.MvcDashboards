@@ -65,6 +65,8 @@ builder.Services.AddTransient<ILocalizationSource, DbContextLocalizationSource>(
 builder.Services.AddTransient<ITranslationService, GoogleTranslationService>();
 //builder.Services.AddTransient<ITranslationService, BingTranslationService>();
 
+builder.Services.AddHostedService<LocalizeBackgroundService>();
+
 #endregion
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)

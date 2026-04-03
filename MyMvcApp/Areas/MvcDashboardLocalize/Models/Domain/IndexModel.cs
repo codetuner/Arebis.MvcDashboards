@@ -7,5 +7,6 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Models.Domain
 {
     public class IndexModel : BaseIndexModel<Data.Localize.Domain>
     {
+        public bool HasTranslationService { get; internal set; }
     }
 }

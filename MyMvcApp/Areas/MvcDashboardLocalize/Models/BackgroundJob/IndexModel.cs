@@ -1,0 +1,15 @@
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace MyMvcApp.Areas.MvcDashboardLocalize.Models.BackgroundJob
+{
+    public class IndexModel : BaseIndexModel<Data.Localize.BackgroundJob>
+    {
+        public int? DomainId { get; set; }
+
+        public List<SelectListItem> Domains { get; internal set; } = null!;
+    }
+}

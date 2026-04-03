@@ -12,6 +12,10 @@
             <h5 class="card-title">@domain.Name</h5>
             <p class="card-text"><em>@String.Join(", ", domain.Cultures ?? Array.Empty<string>())</em></p>
             <span class="float-end">
+                @if (Model.HasTranslationService && User.IsAdministrator())
+                {
+                    <a asp-action="TranslateAll" asp-route-id="@domain.Id" class="card-link" onclick-confirm="Post a background job to translate all untranslated texts in this domain ?">Translate all</a>
+                }
                 <a asp-action="ExportToTmx" asp-route-id="@domain.Id" class="card-link" target="#modal">Export to TMX</a>
                 @if (User.IsAdministrator())
                 {
@@ -23,7 +27,7 @@
                 <a asp-action="Edit" asp-route-id="@domain.Id" class="card-link" target="#modal">Edit</a>
             }
             <a asp-action="Index" asp-controller="Key" asp-route-domainid="@domain.Id" class="card-link">Keys</a>
-            <a asp-action="Preview" asp-controller="Domain" asp-route-id="@domain.Id" class="card-link">Preview</a>
+            <a asp-action="Preview" asp-route-id="@domain.Id" class="card-link">Preview</a>
             @if (User.IsAdministrator())
             {
                 <a asp-action="Index" asp-controller="Query" asp-route-domainid="@domain.Id" class="card-link">Queries</a>

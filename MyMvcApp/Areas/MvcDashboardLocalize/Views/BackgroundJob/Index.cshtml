@@ -1,0 +1,92 @@
+﻿@model IndexModel
+@{
+    ViewBag.Title = "Background jobs";
+}
+
+<h1>Background jobs</h1>
+
+<form class="card p-3 bg-white onchange-submit" action="@Url.Action("Index")" method="get" history="replace" sub-target="#subTarget">
+
+    <div id="subTarget">
+
+        <div class="overlay" hidden></div>
+
+        <div class="table-responsive">
+            <table class="table table-hover mt-3">
+                <thead>
+                    <tr>
+                        <th class="d-none onchange-nosubmit"><input type="checkbox" ifchecked-check="<table|>tbody input[type=checkbox]" ifunchecked-uncheck="<table|>tbody input[type=checkbox]" /></th>
+                        <th asp-order="@Model.Order">Id</th>
+                        <th asp-order="@Model.Order">JobType</th>
+                        <th asp-order="@Model.Order">Name</th>
+                        <th asp-order="@Model.Order" field-name="UtcTimeStarted">Started</th>
+                        <th>Duration</th>
+                        <td align="right"><b>Outcome</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td class="d-none onchange-nosubmit" onclick-propagate="off"><input type="checkbox" /></td>
+                            <td>@item.Id</td>
+                            <td>@item.JobType</td>
+                            <td>@item.Name</td>
+                            <td>@item.UtcTimeStarted.ToString("G")</td>
+                            <td>
+                                @(((item.UtcTimeEnded ?? DateTime.UtcNow) - item.UtcTimeStarted).ToString("hh\\:mm\\:ss"))
+                            </td>
+                            <td align="right">
+                                @if (item.Succeeded == null)
+                                {
+                                    <i class="fas fa-running fa-fade text-primary"></i>
+                                }
+                                else if (item.Succeeded == true)
+                                {
+                                    <i class="fas fa-check text-success"></i>
+                                }
+                                else if (item.Succeeded == false)
+                                {
+                                    <i class="fas fa-exclamation-triangle text-danger"></i>
+                                }
+                                @if (!String.IsNullOrWhiteSpace(item.Output))
+                                {
+                                    <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#notes-modal-@(item.Id)">
+                                        <i class="fas fa-sticky-note text-secondary" "></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-light btn-sm" style="visibility:hidden;">
+                                        <i class="fas fa-sticky-note text-secondary"></i>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                        <div class="modal fade modal-lg" id="notes-modal-@(item.Id)" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">@item.Id @item.Name</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <pre style="min-height:240px;">@item.Output</pre>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" onclick-copyinnertext="<.modal-content|>pre"><i class="far fa-copy spinner"></i> Copy</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <pagesize-select asp-for="PageSize" class="form-select auto-width float-end"></pagesize-select>
+        <pagination-nav asp-for="Page" max="Model.MaxPage" keyboard="true" />
+
+    </div>
+
+</form>

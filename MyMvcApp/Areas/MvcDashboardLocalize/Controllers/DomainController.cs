@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Arebis.Core.Services.Interfaces;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MyMvcApp.Areas.MvcDashboardLocalize.Models.Domain;
 using MyMvcApp.Data.Localize;
+using MyMvcApp.Localize;
 using System;
 using System.Linq;
 using System.Net.Mime;
@@ -22,11 +24,13 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
 
         private readonly LocalizeDbContext context;
         private readonly ILogger logger;
+        private readonly ITranslationService? translationService;
 
-        public DomainController(LocalizeDbContext context, ILogger<DomainController> logger)
+        public DomainController(LocalizeDbContext context, ILogger<DomainController> logger, ITranslationService? translationService = null)
         {
             this.context = context;
             this.logger = logger;
+            this.translationService = translationService;
         }
 
         #endregion
@@ -40,6 +44,8 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
             model.Items = context.LocalizeDomains
                 .OrderBy(i => i.Name).ThenBy(i => i.Id)
                 .ToArray();
+
+            model.HasTranslationService = (this.translationService != null);
 
             return View("Index", model);
         }
@@ -283,6 +289,35 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
             };
 
             return View(model);
+        }
+
+        #endregion
+
+        #region TranslateAll
+
+        public IActionResult TranslateAll(int id, CancellationToken ct)
+        {
+            var domain = context.LocalizeDomains.AsNoTracking().FirstOrDefault(d => d.Id == id);
+
+            if (LocalizeBackgroundService.Instance == null)
+            {
+                this.AddToastrMessage("error", "LocalizeBackgroundService not installed.");
+            }
+            else
+            {
+                var job = new BackgroundJob
+                {
+                    Name = $"AutoTranslateDomain - {domain?.Name}",
+                    JobType = "AutoTranslateDomain",
+                    Parameters = JsonSerializer.Serialize(new { DomainId = id.ToString() }),
+                };
+
+                LocalizeBackgroundService.Instance.EnqueueJob(job);
+
+                this.AddToastrMessage("success", "Translation job enqueued. It will be processed in the background.");
+            }
+
+            return NoContent();
         }
 
         #endregion
