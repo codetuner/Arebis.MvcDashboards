@@ -58,13 +58,17 @@
                         </td>
                         <td valign="top">@item.MimeType</td>
                         <td valign="top">
-                            @if ("text/html".Equals(item.MimeType) && !Model.CodeView)
+                            @if (Model.CodeView)
+                            {
+                                @:@item.Values?.SingleOrDefault()?.Value
+                            }
+                            else if ("text/html".Equals(item.MimeType))
                             {
                                 @:@Html.Raw(item.Values?.SingleOrDefault()?.Value)
                             }
                             else
                             {
-                                @:@item.Values?.SingleOrDefault()?.Value
+                                <pre>@item.Values?.SingleOrDefault()?.Value</pre>
                             }
                         </td>
                         <td valign="top">
