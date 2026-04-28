@@ -38,13 +38,47 @@ namespace MyMvcApp.Areas.MvcDashboardTasks.Controllers
                 .Where(i => noQuery || i.Name!.Contains(model.Query ?? ""))
                 .CountAsync();
             model.MaxPage = (count + model.PageSize - 1) / model.PageSize;
-            model.Items = await context.TaskDefinitions
-                .Where(i => i.ProcessRole == model.ProcessRole || model.ProcessRole == null)
-                .Where(i => noQuery || i.Name!.Contains(model.Query ?? ""))
+
+            var query = from td in context.TaskDefinitions
+                        where td.ProcessRole == model.ProcessRole || model.ProcessRole == null
+                        where noQuery || td.Name!.Contains(model.Query ?? "")
+                        //orderby 
+                        select new
+                        {
+                            td.Id,
+                            td.Name,
+                            td.ProcessRole,
+                            td.IsActive,
+                            LastRun = context.Tasks
+                                .Where(ti => ti.DefinitionId == td.Id && ti.UtcTimeStarted != null)
+                                .OrderByDescending(ti => ti.UtcTimeStarted)
+                                .Select(ti => new { ti.UtcTimeStarted, ti.IsRunning, ti.Duration, ti.Succeeded })
+                                .FirstOrDefault(),
+                            NextRun = context.Tasks
+                                .Where(ti => ti.DefinitionId == td.Id && ti.UtcTimeStarted == null)
+                                .OrderBy(ti => ti.UtcTimeToExecute)
+                                .Select(ti => new { ti.UtcTimeToExecute })
+                                .FirstOrDefault()
+                        };
+
+            var items = await query
                 .OrderBy(model.Order ?? "Name ASC, Id ASC")
                 .Skip((model.Page - 1) * model.PageSize)
                 .Take(model.PageSize)
                 .ToArrayAsync();
+
+            model.Items = items.Select(i => new IndexItemModel()
+            {
+                Id = i.Id,
+                Name = i.Name!,
+                ProcessRole = i.ProcessRole,
+                IsActive = i.IsActive,
+                UtcTimeLastRun = i.LastRun?.UtcTimeStarted,
+                IsRunningLastRun = i.LastRun?.IsRunning,
+                DuractionLastRun = i.LastRun?.Duration,
+                SucceededLastRun = i.LastRun?.Succeeded,
+                UtcTimeNextRun = i.NextRun?.UtcTimeToExecute
+            }).ToArray();
 
             model.ProcessRoles = (TaskController.ProcessRoles ??= await context.TaskDefinitions.Where(d => d.ProcessRole != null).Select(d => d.ProcessRole!).Distinct().OrderBy(r => r).Select(r => new SelectListItem() { Value = r, Text = r, Selected = (model.ProcessRole == r) }).ToListAsync());
 
