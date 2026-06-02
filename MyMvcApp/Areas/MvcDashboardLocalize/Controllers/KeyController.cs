@@ -229,6 +229,23 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> DeleteAllUnreviewed(int id, EditModel model)
+        {
+            ModelState.Clear();
+
+            foreach (var value in Writable(model.Values))
+            {
+                if (!value.Reviewed && !String.IsNullOrEmpty(value.Value))
+                {
+                    value.Value = null;
+                    model.HasChanges = true;
+                }
+            }
+
+            return await EditView(model);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Submit(int id, EditModel model)
         {
             ModelState.Clear();

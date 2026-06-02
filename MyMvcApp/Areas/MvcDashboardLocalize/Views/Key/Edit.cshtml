@@ -158,7 +158,8 @@
     @if (Model.Item.DomainId != 0)
     {
         <div class="mb-3">
-            <button type="submit" class="btn btn-link" asp-action="MarkAllReviewed" asp-route-id="@Model.Item.Id">Mark all as reviewed</button>
+            <button type="submit" class="btn btn-link me-2" asp-action="MarkAllReviewed" asp-route-id="@Model.Item.Id">Mark all as reviewed</button>
+            <button type="submit" class="btn btn-link me-2" asp-action="DeleteAllUnreviewed" asp-route-id="@Model.Item.Id" onclick-confirm="Are you sure you want toolbar delete all the translations not marked as reviewed ?">Delete all unreviewed</button>
         </div>
     }
 
