@@ -264,6 +264,7 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
                 try
                 {
                     var domain = await context.LocalizeDomains.FindAsync(model.Item!.DomainId);
+                    var toRemove = new List<KeyValue>();
 
                     if (User == null)
                     {
@@ -276,7 +277,8 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
                             ? null
                             : model.ArgumentNames.Split(',').Select(s => s.Trim()).Where(s => s.Length > 0).ToArray();
                         model.Item.Values = model.Values.Where(v => v.Reviewed || v.Value != null).ToList();
-                        foreach (var value in model.Values.Where(v => !v.Reviewed && v.Value == null && v.Id != default)) context.Remove(value);
+                        foreach (var value in model.Values.Where(v => !v.Reviewed && v.Value == null && v.Id != default)) toRemove.Add(value);
+                        foreach (var value in toRemove) context.Remove(value);
                         model.Item.ValuesToReview = (domain?.Cultures ?? Array.Empty<string>()).Except(model.Item.Values.Where(v => v.Reviewed).Select(v => v.Culture)).ToArray();
                         context.Update(model.Item);
                     }
@@ -298,14 +300,17 @@ namespace MyMvcApp.Areas.MvcDashboardLocalize.Controllers
                             }
                             else if (originalValue != null)
                             {
-                                context.Remove(originalValue);
+                                toRemove.Add(originalValue);
                             }
                         }
+                        foreach (var value in toRemove) context.Remove(value);
                         original.ValuesToReview = (domain?.Cultures ?? Array.Empty<string>()).Except(original.Values!.Where(v => v.Reviewed).Select(v => v.Culture)).ToArray();
                         context.Update(original);
                     }
 
                     await context.SaveChangesAsync();
+
+                    foreach (var value in toRemove) value.Id = default;
 
                     if (andcopy && User.IsAdministrator())
                     {
