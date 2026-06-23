@@ -9,7 +9,7 @@ namespace MyMvcApp.Logging
 
         public override void PreInvoke(HttpContext context, RequestLogger requestLogger)
         {
-            requestLogger.RequestStarted();
+            requestLogger.RequestStarted(context);
         }
 
         public override void PostInvoke(HttpContext context, RequestLogger requestLogger)

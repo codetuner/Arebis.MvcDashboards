@@ -1,5 +1,6 @@
 ﻿using MyMvcApp.Logging;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -122,5 +123,48 @@ namespace MyMvcApp.Data.Logging
         /// Whether this log is bookmarked.
         /// </summary>
         public virtual bool IsBookmarked { get; set; }
+
+        /// <summary>
+        /// Writes exception message and data to this record.
+        /// </summary>
+        public void SetException(Exception ex)
+        {
+            this.Aspect = LogAspect.Error;
+            this.Type = ex.GetType().FullName;
+            this.Message = ex.Message;
+            this.Details = ex.ToString();
+            WriteExceptionData("Ex", ex);
+        }
+
+        /// <summary>
+        /// Recursively writes exception data to this record.
+        /// </summary>
+        protected void WriteExceptionData(string path, Exception ex)
+        {
+            if (ex.Data != null)
+            {
+                foreach (DictionaryEntry entry in ex.Data)
+                {
+                    try
+                    {
+                        this.Data[path + "." + Convert.ToString(entry.Key)] = Convert.ToString(entry.Value) ?? String.Empty;
+                    }
+                    catch (Exception) { }
+                }
+            }
+            if (ex.InnerException != null)
+            {
+                WriteExceptionData(path + ".Inner", ex.InnerException);
+            }
+            if (ex is AggregateException agex)
+            {
+                var i = 0;
+                foreach (var subex in agex.InnerExceptions)
+                {
+                    WriteExceptionData(path + ".Inner[" + i + "]", subex);
+                    i++;
+                }
+            }
+        }
     }
 }

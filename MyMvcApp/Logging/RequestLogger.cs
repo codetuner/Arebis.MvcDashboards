@@ -4,6 +4,7 @@ using MyMvcApp.Data.Logging;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text;
 
 #nullable enable
@@ -12,7 +13,7 @@ namespace MyMvcApp.Logging
 {
     public class RequestLogger
     {
-        private RequestLog record = new();
+        private RequestLog record = null!;
         private Stopwatch? stopwatch;
         private StringBuilder detailsBuilder = new();
         private bool doNotLog = false;
@@ -35,8 +36,9 @@ namespace MyMvcApp.Logging
 
         public Exception? Exception { get; set; }
 
-        public void RequestStarted()
+        public void RequestStarted(HttpContext httpContext)
         {
+            this.record = NewRecord(httpContext);
             this.record.Timestamp = DateTime.UtcNow;
             this.stopwatch = Stopwatch.StartNew();
         }
@@ -45,31 +47,15 @@ namespace MyMvcApp.Logging
         {
             if (this.doNotLog == false && this.StoreLog == true)
             {
-                // type, message
-
                 // Add information:
                 this.record.Details = this.detailsBuilder.ToString();
                 this.record.DurationMs = this.stopwatch?.ElapsedMilliseconds ?? 0L;
-                this.record.Host = Environment.MachineName;
                 this.record.TraceIdentifier = Activity.Current?.Id ?? httpContext.TraceIdentifier;
 
-                // Add request information:
-                this.record.ApplicationName = GetApplicationName();
-                this.record.Method = httpContext.Request.Method;
-                this.record.Url = TrimLength(httpContext.Request.Path.ToString(), 2000);
-                this.record.User = httpContext.User?.Identity?.Name;
-                this.record.Request["QueryString"] = httpContext.Request.QueryString.Value ?? String.Empty;
-                this.record.Request["Scheme"] = httpContext.Request.Scheme;
-                foreach (var pair in httpContext.Request.Headers)
+                // Additional information:
+                foreach (var pair in httpContext.Items.Where(pair => pair.Value != null))
                 {
-                    this.record.Request["Header: " + pair.Key] = pair.Value!;
-                }
-                if (httpContext.Request.HasFormContentType)
-                {
-                    foreach (var pair in httpContext.Request.Form)
-                    {
-                        this.record.Request["Form: " + pair.Key] = pair.Value!;
-                    }
+                    this.record.Request["Items: " + pair.Key] = pair.Value?.ToString() ?? "(none)";
                 }
 
                 // Add response information:
@@ -79,6 +65,35 @@ namespace MyMvcApp.Logging
                 this.Context.RequestLogs.Add(this.record);
                 this.Context.SaveChanges();
             }
+        }
+
+        public RequestLog NewRecord(HttpContext httpContext)
+        {
+            // Create a new record:
+            var record = new RequestLog();
+
+            // Add request information:
+            record.Host = Environment.MachineName;
+            record.ApplicationName = GetApplicationName();
+            record.Method = httpContext.Request.Method;
+            record.Url = TrimLength(httpContext.Request.Path.ToString(), 2000);
+            record.User = httpContext.User?.Identity?.Name;
+            record.Request["QueryString"] = httpContext.Request.QueryString.Value ?? String.Empty;
+            record.Request["Scheme"] = httpContext.Request.Scheme;
+            foreach (var pair in httpContext.Request.Headers)
+            {
+                record.Request["Header: " + pair.Key] = pair.Value!;
+            }
+            if (httpContext.Request.HasFormContentType)
+            {
+                foreach (var pair in httpContext.Request.Form)
+                {
+                    record.Request["Form: " + pair.Key] = pair.Value!;
+                }
+            }
+
+            // Return the record:
+            return record;
         }
 
         [return: NotNullIfNotNull(nameof(str))]
@@ -107,8 +122,7 @@ namespace MyMvcApp.Logging
         {
             if ((doNotLog == false) && (this.record.AspectName == null || @override == true))
             {
-                this.record.Type = ex.GetType().FullName;
-                this.record.Message = ex.Message;
+                this.record.SetException(ex);
                 this.record.AspectName = aspectName;
             }
             return this;
